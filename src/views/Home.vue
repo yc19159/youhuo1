@@ -40,12 +40,14 @@
      </div>
      <div class="content-bottom">
          <ul class="content-bottom-ul">
+           <router-link :to="{name: 'search',params:{typeId:1}}">
            <li>
              <p class="strong">热门排行</p>
              <p class="small">热租爆品</p>
              <img src="../assets/image/home_hot.png" class="hot" alt="">
              <img src="../assets/image/home_remen.png" class="remen" alt="">
            </li>
+            </router-link>
            <li>
               <p class="strong">优选租品</p>
               <p class="small">推荐租品</p>

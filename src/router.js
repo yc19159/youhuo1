@@ -16,7 +16,7 @@ export default new VueRouter({
     {
       path: '/search/:typeId',
       name: 'search',
-      component: Search
+      component: Search,
     },
     {
       path: '/login',
@@ -70,6 +70,11 @@ export default new VueRouter({
       component: ()=> import('./views/MyOrder.vue'),
     },
     {
+      path: '/orderdetail/:orderId',
+      name: 'orderdetail',
+      component: ()=> import('./views/OrderDetail.vue'),
+    },
+    {
       path: '/givewarm',
       name: 'givewarm',
       component: ()=> import('./views/GiveWarm.vue'),
@@ -114,7 +119,7 @@ export default new VueRouter({
       component: ()=> import('@/views/AddressManage.vue'),
     },
     {
-      path: '/dianpu',
+      path: '/dianpu/:shopId',
       name: 'dianpu',
       component: ()=> import('@/views/Dianpu.vue'),
     },
@@ -123,5 +128,15 @@ export default new VueRouter({
       name: 'vipmember',
       component: ()=> import('@/views/VipMember.vue'),
     },
+    {
+      path: '/dindan',
+      name: 'dindan',
+      component: ()=> import('@/views/Dindan.vue'),
+    },
+    {
+      path: '/return',
+      name: 'return',
+      component: ()=> import('@/views/Return.vue'),
+    }
   ]
 })

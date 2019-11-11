@@ -114,7 +114,7 @@ export default {
     //  this.active=this.$route.params.active;
      console.log(this.active)
       // alert(this.actice)
-      this.$axios.get("/goods/category",{
+      this.$axios.get("http://192.168.0.21:8080/wx/goods/category",{
         params:{
           id:"1005000",
         }

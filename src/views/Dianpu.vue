@@ -4,7 +4,10 @@
             <!-- 头部返回标签搜索框 -->
             <div class="header">
                 <i @click='back'  class="el-icon-back"></i>
-                <input type="text" placeholder="华为nove 5z">
+                <input type="search" placeholder="华为nove 5z"
+                       @change="onSearch"
+                       v-model="keywords"
+                       >
             </div>
             <!-- 店铺信息粉丝量关注 -->
             <div class="shop">
@@ -17,7 +20,7 @@
             <!-- tab滑动 -->
             <div class="header_tab">
                 <van-tabs v-model="active">
-                    <van-tab title="价格" style="flex-basis: 12%;">
+                    <van-tab title="手机" style="flex-basis: 12%;">
                          <!--价格销量筛选 -->
                          <div class="price">
                                 <ul>
@@ -28,15 +31,15 @@
                              </div>
                             <!-- 商品信息渲染 -->
                              <ul class="box">
-                                 <li>
-                                    <!-- <p class="commodity_i"><img src="../assets/image/phone.png" alt="商品照片"></p> -->
-                                    <p class="commodity_name">Apple iPhone X</p>
+                                 <li v-for="(item,index) in goodsList" :key="item.id">
+                                    <p class="commodity_i"><img :src="item.picUrl" alt="商品照片"></p>
+                                    <p class="commodity_name">{{item.name}}</p>
                                     <p class="size"> 
                                          <span>6.26英寸</span>|
                                          <span>超长待机</span>|
                                          <span>128GB</span>
                                     </p>
-                                    <p class="commodity_price">&yen;<span>9.99</span>/天限时价</p>  
+                                    <p class="commodity_price">&yen;<span>{{item.counterPrice}}</span>/天限时价</p>  
                                     <p class="all">
                                          <span class="new">全新</span>
                                          <span class="free">免押金</span>
@@ -47,71 +50,13 @@
                                         <span>99%</span>好评
                                     </p>
                                  </li>
-                                 <li>
-                                        <!-- <p class="commodity_i"><img src="../assets/image/phone.png" alt="商品照片"></p> -->
-                                        <p class="commodity_name">Apple iPhone X</p>
-                                        <p class="size"> 
-                                             <span>6.26英寸</span>|
-                                             <span>超长待机</span>|
-                                             <span>128GB</span>
-                                        </p>
-                                        <p class="commodity_price">&yen;<span>9.99</span>/天限时价</p>  
-                                        <p class="all">
-                                             <span class="new">全新</span>
-                                             <span class="free">免押金</span>
-                                             <span class="gift">赠</span>
-                                        </p>
-                                        <p class="people">
-                                            <span>52.7万</span>人付款
-                                            <span>99%</span>好评
-                                        </p>
-                                     </li>
-                                     <li>
-                                            <!-- <p class="commodity_i"><img src="../assets/image/phone.png" alt="商品照片"></p> -->
-                                            <p class="commodity_name">Apple iPhone X</p>
-                                            <p class="size"> 
-                                                 <span>6.26英寸</span>|
-                                                 <span>超长待机</span>|
-                                                 <span>128GB</span>
-                                            </p>
-                                            <p class="commodity_price">&yen;<span>9.99</span>/天限时价</p>  
-                                            <p class="all">
-                                                 <span class="new">全新</span>
-                                                 <span class="free">免押金</span>
-                                                 <span class="gift">赠</span>
-                                            </p>
-                                            <p class="people">
-                                                <span>52.7万</span>人付款
-                                                <span>99%</span>好评
-                                            </p>
-                                         </li>
-                                         <li>
-                                                <!-- <p class="commodity_i"><img src="../assets/image/phone.png" alt="商品照片"></p> -->
-                                                <p class="commodity_name">Apple iPhone X</p>
-                                                <p class="size"> 
-                                                     <span>6.26英寸</span>|
-                                                     <span>超长待机</span>|
-                                                     <span>128GB</span>
-                                                </p>
-                                                <p class="commodity_price">&yen;<span>9.99</span>/天限时价</p>  
-                                                <p class="all">
-                                                     <span class="new">全新</span>
-                                                     <span class="free">免押金</span>
-                                                     <span class="gift">赠</span>
-                                                </p>
-                                                <p class="people">
-                                                    <span>52.7万</span>人付款
-                                                    <span>99%</span>好评
-                                                </p>
-                                             </li>
-                             </ul>
-                       
-                       
+                                
+                             </ul>                 
                     </van-tab>
-                    <van-tab title="销量" style="flex-basis: 12%;">
+                    <van-tab title="游戏机" style="flex-basis: 12%;">
                            
                     </van-tab>
-                    <van-tab title="筛选" style="flex-basis: 12%;">
+                    <van-tab title="电脑" style="flex-basis: 12%;">
                         <!--价格销量筛选 -->
                          <div class="price">
                            <ul>
@@ -143,8 +88,8 @@
                             </li>
                         </ul>
                     </van-tab>
-                    <van-tab title="筛选" style="flex-basis: 12%;">内容 4</van-tab>
-                   <van-tab title="筛选" style="flex-basis: 12%;"></van-tab>
+                    <van-tab title="相机" style="flex-basis: 12%;">内容 4</van-tab>
+                   <van-tab title="办公用品" style="flex-basis: 12%;"></van-tab>
                 </van-tabs>
             </div> 
         </div>
@@ -157,14 +102,42 @@
 export default {
     data(){
         return{
-
+            goodsList:[],
+            // search:'',
+            keywords:''
         }
     },
     methods:{
         //返回上一级目录
         back(){
             this.$router.go(-1)
+        },
+        //商品数据
+        getgoodsList(){
+            this.$axios.get("http://192.168.0.18:8080/wx/goods/list",{params:{
+                 keyword:this.keywords
+            }})
+                .then(res=>{
+                    console.log(res.data.data.list);
+                    this.goodsList=res.data.data.list;
+                    console.log(this.goodsList);
+                })
+        },
+        onSearch(){
+            //获取到的值
+            let keyword=this.keywords;
+            this.$axios.get("http://192.168.0.18:8080/wx/goods/list",{params:{
+                 keyword:this.keywords
+            }})
+                .then(res=>{
+                    console.log(res.data.data.list);
+                    this.goodsList=res.data.data.list;
+                    console.log(this.goodsList);
+                })
+
         }
+       
+        
     },
     //tab点击
     mounted(){
@@ -199,7 +172,11 @@ export default {
               smallDay.style.color='black';
             }
         }
+    },
+    created(){
+        this.getgoodsList();
     }
+   
    
     
 }
@@ -210,7 +187,7 @@ export default {
         list-style: none;
     }
     .main{
-        background-image: url("../assets/image/main_bng.png") ;
+        /* background-image: url("../assets/image/main_bng.png") ; */
         background-color: #F8F9FB;
         background-repeat: no-repeat;
         background-position: -0.5rem -0.1rem;
@@ -233,6 +210,8 @@ export default {
     }
     .shop{
         padding: 0.1rem;
+        padding-left: 0.26rem;
+        padding-right: 0.2rem;
     }
     .shop h2{
         color:#fff;
@@ -315,6 +294,7 @@ export default {
   .box{
       width: 100%;
       overflow: hidden;
+      padding-right:0.2rem;
   }
   .box li{
       width: 1.6rem;

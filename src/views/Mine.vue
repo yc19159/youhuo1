@@ -28,7 +28,7 @@
            <!-- <Uploadavatar :username="isLogin"/> -->
             <p class="newfriend">HI，新朋友</p>
             <p class="sp">立即登录，享受更多服务</p>
-            <button class="login">登录</button>
+            <button class="login" @click="gotoLogin">登录</button>
             
        </div>
        <div class="some-fun">
@@ -57,7 +57,7 @@
            <p class="vipdiv-title">VIP权益卡</p>
            <p class="vipdiv-save">花0.85/每天，预计省<span :style="{color:'#95862D'}">2500</span> /每年</p>
        </div>
-       <button class="vipdiv-right">点击抢购</button>
+       <button class="vipdiv-right" @click="openVip">点击抢购</button>
       </div>
                </div>
       </div>
@@ -156,7 +156,7 @@ import Uploadavatar from "@/components/Uploadavatar.vue";
 export default {
     data(){
         return{
-            isLogin:true,
+            isLogin:false,
             userinfo:[],
             username:"",
         }
@@ -166,7 +166,9 @@ export default {
      Uploadavatar,
     },
     methods: {
-        
+        openVip(){
+          this.$router.push({name:'vipmember'})
+        },
         gotoLogin(){
             this.$router.push({name:'login'})
         },
@@ -184,14 +186,14 @@ export default {
     },
     mounted() {
         // var username=sessionStorage.username;
-        // if(username){
-        //     this.isLogin=true;
-        //     this.username=username
-        // };
+        if(localStorage.token){
+            this.isLogin=true;
+          
+        };
        
-        this.$axios.post("http://192.168.0.20:8080/wx/user/info").then(res=>{
+        this.$axios.post("/user/info").then(res=>{
             this.userinfo=res.data.data
-            console.log(this.userinfo)
+            console.log(res)
         })
          
     },

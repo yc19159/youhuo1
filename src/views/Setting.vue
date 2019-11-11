@@ -16,7 +16,7 @@
              <span class="hy-level">1.1.0</span>
        </div>
         <div class="loginOut">
-             <p class="loginOut-title">退出登录</p>
+             <p class="loginOut-title" @click="loginOut">退出登录</p>
              <img src="../assets/image/more.png" class="more" alt="">
             
        </div>
@@ -44,6 +44,10 @@ export default {
     },
     methods: {
         ...mapMutations(['changeSearch']),
+        loginOut(){
+             localStorage.removeItem('token');
+             this.$router.push('login')
+        }
     },
 }
 </script>

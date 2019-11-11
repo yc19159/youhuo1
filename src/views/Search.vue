@@ -4,13 +4,43 @@
        <!-- <input type="text" class=" searchInput" > -->
        <van-tabs v-model="active">
   <van-tab title="价格">
+    
     <div class="price">
       <ul class="glist">
-       <li class="glist-item" @click="drawer = true">
-          <img src="../assets/image/a.png" class="glist-img"/>
-          <p class="phont-type">S 01</p>
-           <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span> 9.99 <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
-          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：298</span>
+       <li class="glist-item"  v-for="(item , i) in goodsList" :key="i">
+          <img :src="item.picUrl" class="glist-img"/>
+          <p class="phont-type">{{item.name}}</p>
+           <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
+          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+          <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
+              <p :style="{color:'#269CF0','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem',border:'1px solid #269CF0','border-radius':'0.02rem',width:'0.44rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}">免押金</p>
+          <p :style="{color:'#FB9F00','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem',border:'1px solid #FCAC39','border-radius':'0.02rem',width:'0.2rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
+          <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
+          <p class="shop">荣耀京东自营旗舰店</p>
+          <router-link :to="{name:'dianpu',params:{shopId:item.Id}}">
+          <p class="toshop">进店</p>
+          </router-link>
+          <img src="../assets/image/more.png" alt="" class="more">
+
+        </li>
+        
+      </ul>
+    </div> 
+    </van-tab>
+  <van-tab title="销量 " > 
+     <div class="price">
+        <ul class="glist">
+           <li class="glist-item" @click="drawer = true" v-for="(item , i) in listxiaoliang" :key="i">
+          <img :src="item.picUrl" class="glist-img"/>
+          <p class="phont-type">{{item.name}}</p>
+           <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
+          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
           <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
           'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
@@ -26,54 +56,54 @@
           <img src="../assets/image/more.png" alt="" class="more">
 
         </li>
-         <li class="glist-item">
-           
-
-         </li>
-          <li class="glist-item">
-            
-
-          </li>
-          <li class="glist-item">
-            
-
-          </li>
-      </ul>
-    </div> 
-    </van-tab>
-  <van-tab title="销量 ">  <div class="price">
-      <ul class="glist">
-        <li class="glist-item" @click="drawer = true">
-          
-        </li>
-         <li class="glist-item">
-          
-         </li>
-          <li class="glist-item">
-           
-          </li>
-          <li class="glist-item">
-           
-          </li>
+       
       </ul>
     </div> </van-tab>
-  <van-tab title="筛选">内容 3</van-tab>
+  <van-tab title="筛选">
+    <div class="price">
+        <ul class="glist">
+           <li class="glist-item" @click="drawer = true" v-for="(item , i) in listselect" :key="i">
+          <img :src="item.picUrl" class="glist-img"/>
+          <p class="phont-type">{{item.name}}</p>
+           <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
+          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+          <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
+              <p :style="{color:'#269CF0','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem',border:'1px solid #269CF0','border-radius':'0.02rem',width:'0.44rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}">免押金</p>
+          <p :style="{color:'#FB9F00','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem',border:'1px solid #FCAC39','border-radius':'0.02rem',width:'0.2rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
+          <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
+          <p class="shop">荣耀京东自营旗舰店</p>
+          <p class="toshop">进店</p>
+          <img src="../assets/image/more.png" alt="" class="more">
+
+        </li>
+       
+      </ul>
+    </div>
+     </van-tab>
  
 </van-tabs>
-<el-drawer
+<img src="../assets/image/retail_price.png" class="retail_price" alt="" @click="orderByPrice">
+<div class="xiaoliang" @click="orderByNumber"></div>
+<div class="bolting" @click="drawer = true"></div>
+  <el-drawer
   title=""
   :visible.sync="drawer"
-  :direction="direction"
-  
+  :direction="direction" 
   >
   <div class="alert-content">
       <div class="zujin ">
         <span class="strong-t">租金</span>
         <span class="normal-c">(元/天)</span>
         <div class="between-price ">
-              <p class="l-price">最低价</p>
+              <input class="l-price" placeholder="最低价" v-model="lowerprice">
               <p class="crossing"></p>
-               <p class="m-price">最高价</p>
+               <input class="m-price" placeholder="最高价" v-model="highprice">
         </div>
       </div>
         <div class="days ">
@@ -96,7 +126,7 @@
       </div>
       <div class="makesure">
         <button class="reset">重置</button>
-        <button class="sure">确定</button>
+        <button class="sure " @click="chooseGoods">确定</button>
       </div>
   </div>
 </el-drawer>
@@ -124,16 +154,75 @@ export default {
   data(){
     return{
     //  value:'',
-    //  goods:[],
+     sort:"",
+     order:"",
      drawer: false,
-      direction: 'rtl',
+     direction: 'rtl',
+     active:0,
+     lowerprice:"",
+     highprice:"",
+     goodsList:[],
+     listxiaoliang:[],
+     listselect:[],
     }
   },
   components:{
   Head,
   },
   methods: {
-    ...mapMutations(['changeSearch']),
+     ...mapMutations(['changeSearch']),
+     orderByPrice(){
+      this.sort="retail_price";
+      if(!this.order){
+            this.order="asc"
+      }else if(this.order=="asc"){
+        this.order="desc"
+      }else if(this.order=="desc"){
+        this.order="asc"
+      }
+      
+      this.$axios.get("/goods/listGoods",{
+      params:{
+        categoryId:this.$route.params.typeId,
+        limit:100,
+        sort: this.sort,
+        order:this.order,
+      }
+    }).then(res=>{
+     console.log(res)
+      this.goodsList=res.data.data.list
+    })
+    },
+    orderByNumber(){
+      this.active=1;
+       this.sort="number";
+      this.order="desc";
+      this.$axios.get("/goods/listGoods",{
+      params:{
+        categoryId:this.$route.params.typeId,
+        limit:100,
+        sort: this.sort,
+        order:this.order,
+      }
+    }).then(res=>{
+      this.listxiaoliang=res.data.data.list;
+    })
+    },
+    chooseGoods(){
+       this.active=2;
+       this.drawer=false;
+       console.log(this.$route.params.typeId)
+       this.$axios.get("/goods/select",{
+      params:{
+        minPrice: this.lowerprice,
+        maxPrice: this.highprice,
+        categoryId: this.$route.params.typeId,
+      }
+    }).then(res=>{
+      console.log(res)
+      this.listselect=res.data.data.list;
+    })
+    },
     onSearch(){
      this.$axios.get('/vue/getGoods',{
        params:{value:this.value}
@@ -179,19 +268,64 @@ export default {
       }
    
     },
-    this.$axios.get("http://192.168.0.17:8080/wx/brand/list",{
+    console.log(this.$route.params.typeId)
+        //  type: "categoryId",
+      if(this.$route.params.typeId==1){
+    this.$axios.get("/goods/listGoods",{
       params:{
-        id:1006002,
-        userId: 12 ,
+        isHot:this.$route.params.typeId,
+        limit:100,
+        sort: this.sort,
+        order:this.order,
       }
     }).then(res=>{
-      console.log(res)
+     
+      this.goodsList=res.data.data.list
+       console.log(this.goodsList)
+      // 
     })
+    }else{
+      this.$axios.get("/goods/listGoods",{
+      params:{
+        categoryId:this.$route.params.typeId,
+        limit:100,
+        sort: this.sort,
+        order:this.order,
+      }
+    }).then(res=>{
+      
+       this.goodsList=res.data.data.list
+        console.log(this.goodsList)
+    })
+    }
   },
 }
 </script>
 
 <style  scoped>
+.retail_price{
+  position: absolute;
+  width: 0.1rem;
+  height: 0.08rem;
+  top: 0.70rem;
+  left: 0.82rem;
+}
+.xiaoliang{
+  position: absolute;
+  width: 1.15rem;
+  height: 0.44rem;
+  opacity: 0;
+  top: 0.55rem;
+  left: 1.2rem;
+}
+.bolting{
+  position: absolute;
+  width: 1.15rem;
+  height: 0.44rem;
+  opacity: 0;
+  top: 0.55rem;
+  left: 2.5rem;
+}
 .searchInput{
   width: 3.02rem;
   height: 0.32rem;
@@ -245,7 +379,6 @@ export default {
      border-radius: 0.16rem;
      float: left;
      margin-top: 0.25rem;
-     /* margin-bottom: 0.2rem; */
      overflow: hidden;
   }
   .glist .glist-item:nth-child(2n){
@@ -276,6 +409,7 @@ export default {
     white-space: nowrap;
   }
   .glist .glist-item .toshop{
+    color: black;
     font-size: 0.12rem;
     font-weight: bold;
     float: left;
@@ -352,7 +486,8 @@ export default {
    text-align: center;
    line-height: 0.31rem;
    background-color: #F5F6FA;
-  
+   border: none;
+   outline: none;
  }
  .crossing{
       width: 0.15rem;
@@ -371,7 +506,9 @@ export default {
    text-align: center;
    line-height: 0.31rem;
    background-color: #F5F6FA;
-     margin-left: 0.07rem;
+   margin-left: 0.07rem;
+   border: 0;
+   outline: 0;
  }
  .zujin{
    height: 0.6rem;

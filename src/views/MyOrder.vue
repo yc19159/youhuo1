@@ -3,22 +3,66 @@
         <Head></Head>
          <van-tabs v-model="active">
           <van-tab title="全部">
+<div :style="{background:'#F5F6FA'}">
     <div class="bg-content" v-for="(item , i) in listsearch" :key="i">
          <div class="content" >
               <div class="store">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
-                    <span class="storename">{佳佳手机专营店}</span>
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
                     <img src="../assets/image/more.png" alt="" class="more">
-                     <span class="state">交易成功</span>
+                     <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
-                      <img src="" alt="">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                     <div class="goods-right">
+                         <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
+                         <div class="goods-model">
+                            <span v-bind:color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
+                         </p>
+                         <p class="goods-number">×{{item.goodsList[0].number}}</p>
+                         </div>
+                     </div>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共200件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
+             </div>
+             <div class="operate">
+             
+                     <button class="delete">删除</button>
+                    <button class="comment">评论</button>
+                     <button class="buyonce">再次购买</button>
+         
+               <!-- <button class="pay">去支付</button> -->
+             </div>
+             </div>
+             
+    </div>
+</div>
+    </van-tab>
+  <van-tab title="待付款">
+  <div :style="{background:'#F5F6FA'}" >
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" v-show="item.orderStatusText=='待结算'">
+         <div class="content" >
+              <div class="store">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
                      <div class="goods-right">
                          <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
                          <div class="goods-model">
-                            <span v-bind="color">{{color}} </span>
+                            <span :color="color">{{color}} </span>
                             <span>{规格：256GB}</span>
-                            
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -34,17 +78,106 @@
                   <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
              </div>
              <div class="operate">
-            <button class="comment">评论</button>
-            <button class="buyonce">再次购买</button>
+                 <div>
+                     <button class="delete">删除</button>
+                     <button class="comment">评论</button>
+                     <button class="buyonce">再次购买</button>
+                </div>
                <!-- <button class="pay">去支付</button> -->
              </div>
              </div>
              
-              </div>
-    </van-tab>
-  <van-tab title="待付款">内容 2</van-tab>
-  <van-tab title="待收货">内容 3</van-tab>
-  <van-tab title="已完成">内容 3</van-tab>
+    </div>
+  </div>
+  </van-tab>
+  <van-tab title="租用中">
+      <div :style="{background:'#F5F6FA'}" >
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" v-show="item.orderStatusText=='租用中'" >
+         <div class="content" >
+              <div class="store">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                     <div class="goods-right">
+                         <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
+                         <div class="goods-model">
+                            <span :color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
+                         </p>
+                         <p class="goods-number">×200</p>
+                         </div>
+                     </div>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共200件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
+             </div>
+             <div class="operate">
+                 <div>
+                     <button class="delete">删除</button>
+                     <button class="comment">评论</button>
+                     <button class="buyonce">再次购买</button>
+                </div>
+               <!-- <button class="pay">去支付</button> -->
+             </div>
+             </div>
+             
+    </div>
+  </div>
+  </van-tab>
+  <van-tab title="已完成">
+      <div :style="{background:'#F5F6FA'}" >
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" v-show="item.orderStatusText=='已完成'" >
+         <div class="content" >
+              <div class="store">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                     <div class="goods-right">
+                         <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
+                         <div class="goods-model">
+                            <span v-bind:color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
+                         </p>
+                         <p class="goods-number">×200</p>
+                         </div>
+                     </div>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共200件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
+             </div>
+             <div class="operate">
+                 <div>
+                     <button class="delete">删除</button>
+                     <button class="comment">评论</button>
+                     <button class="buyonce">再次购买</button>
+                </div>
+               <!-- <button class="pay">去支付</button> -->
+             </div>
+             </div>
+             
+    </div>
+  </div>
+  </van-tab>
 </van-tabs>
   
         
@@ -62,6 +195,7 @@ export default {
             active:0,
             color:'黑色',
             listsearch: [],
+            
         }
     },
     created() {
@@ -85,9 +219,10 @@ export default {
              sort:"update_time",
              order:"desc",
          }).then(res=>{
-           
+             console.log(res)
              this.listsearch=res.data.data.list;
-               console.log( this.listsearch)
+               console.log( res.data.data.list[0].goodsList) 
+            //    console.log( this.listsearch[0].goodsList[0])
          })
     },
 }
@@ -96,17 +231,10 @@ export default {
 <style  scoped>
 .myorder{
     width: 100%;
-    height: auto;
+    height: 100%;
     background: #F5F6FA;
 }
-.myorder::after{
-    content:" ";
-    display:block;
-    clear:both;
-    height:0; 
-    overflow:hidden; 
-    visibility:hidden; 
-}
+
 .van-tabs {
   height: 0.55rem;
     background: white;
@@ -142,24 +270,29 @@ export default {
    }
    .content{
        width: 3.43rem;
-       height: 2.55rem;
+       height: auto;
        margin: auto;
        overflow: hidden;
    }
    .content .goods-desc{
        width: 100%;
-       height: 0.9rem;
        margin-top: 0.24rem;
    }
+   .content .goods-desc::after{
+              content:" ";
+              display:block;
+              clear:both;
+              height:0; 
+              overflow:hidden; visibility:hidden; 
+   }
    .content .goods-desc img{
-       width: 0.63rem;
-       height: 0.88rem;
-       border: 1px solid;
-       float: left;
+       width: 0.8rem;
+       height: 1rem;
+       position: absolute;
    }
    .content .goods-desc .goods-right{
        width: 2.51rem;
-       height: 0.9rem;
+       /* height: 0.9rem; */
        float: right;
        margin-left: 0.13rem;
    }
@@ -215,10 +348,10 @@ export default {
     .content .store .state{
         float: right;
         font-size: 0.13rem;
-        color: #007BFF;
+        color: #EB5516;
     }
     .total{
-        margin-top:  0.16rem;
+        margin-top:  0.1rem;
     }
     .total .total-number{
         margin-left: 45%;
@@ -232,6 +365,8 @@ export default {
     }
      .content .operate{
          margin-top: 0.25rem;
+         height: 0.26rem;
+         margin-bottom: 0.1rem;
      }
     .content .operate button{
         box-sizing: border-box;
@@ -247,8 +382,13 @@ export default {
         padding-right: 0.1rem;
         float: left;
     }
- .content .operate .comment{
-     margin-left: 2rem;
+   .content .operate .delete{
+       float: left;
+       margin-left: 1.3rem;
+   } 
+  .content .operate .comment{
+     float: left;
+     margin-left: 0.2rem;
  }
  .content .operate .buyonce{
     float: right;

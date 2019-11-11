@@ -1,7 +1,8 @@
 <template>
     <div class="login">
         <Head ></Head>
-         <h2 class="login-title">注册</h2>
+         <img src="../assets/image/login_logo.png" alt="" class="logo">
+         <h2 class="login-title">欢迎注册飞鸟</h2>
          <div class="login-content">
              <div>
              <input type="text" placeholder="请输入手机号" class="username" v-model="phonenumber">
@@ -20,14 +21,16 @@
              <div>
              <input type="password" placeholder="请确认密码" class="dbpwd" v-model="dbpwd">
              </div>
-             <button class="register" @click="todoRegister">注册</button>
-               
+             
+               <img src="../assets/image/login_toLogin.png"  class="register" @click="todoRegister" alt="这是注册按钮">
+               <router-link to="/login">
+              <p class="register">登录</p>
+              </router-link>
                <div class="agree">
                    <input type="checkbox" id="check"> 
                    <span class="read">我已经阅读并同意</span> 
-                   <span class="user-aggrement">《用户协议》</span>
+                   <span class="user-aggrement" @click="myAlert">《用户协议》</span>
                </div>
-              
          </div>
 
        
@@ -35,9 +38,10 @@
 </template>
 
 <script>
-
+import { Dialog } from 'vant';
 import {mapMutations,mapState} from "vuex";
-import Head from '@/components/Head.vue'
+import Head from '@/components/Head.vue';
+
 export default {
    data(){
        return{
@@ -49,6 +53,7 @@ export default {
            dbpwd: "",
            num: 60,
            codeFlag: false, 
+           show:false,
        }
    },
    components: {
@@ -61,6 +66,9 @@ export default {
        this.changeSearch(false)
    },
    methods: {
+       myAlert(){
+        Dialog({ message: '提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示提示' });
+       },
        ...mapMutations(['changeSearch']),
        getTestCode(){
             var reg=/^[\u4e00-\u9fa50-9a-zA-Z_$]{2,8}$/;
@@ -72,14 +80,16 @@ export default {
             var txt="";
              if(reg.test(username)){
               if(regtel.test(phonenumber)){
-                   this.$axios.post().then(res=>{
-                       if(res){
+                //    this.$axios.post().then(res=>{
+                //        if(res){
 
-                       }
-                   })
-                    this.$axios.post("http://182.92.4.245:2906/react/sendCode").then(res=>{
-                        this.code=res.data.param;
-                        console.log(this.code)
+                //        }
+                //    })
+                    this.$axios.post("/auth/regCaptcha",{
+                        mobile: "15926388481",
+                    }).then(res=>{
+                        // this.code=res.data.param;
+                        console.log(res)
             timer = setInterval(()=>{
               if(this.num>0){
                 this.num--;
@@ -105,21 +115,7 @@ export default {
                 this.$notify({message: '请输入长度为2-8位的用户名(请勿使用特殊字符)', color: 'black',background: '#FF4444'});
              }
        },
-       todoLogin(){
-           
-        //   console.log(this.login)
-           this.$axios.post("/vue/login",this.login).then(res=>{
-               
-            console.log(res.data)
-               if(res.data.type){
-                   sessionStorage.username=this.login.keys
-                   setTimeout(()=>{
-                      location.href="http://182.92.4.245/yc";
-                    },600); 
-               }
-         
-           })
-       },
+      
        todoRegister(){
             var reg=/^[\u4e00-\u9fa50-9a-zA-Z_$]{2,8}$/
             var regtel=/^1[0-9]{10}$/
@@ -139,7 +135,7 @@ export default {
                        if(pwd==dbpwd){
                            var checkInput=document.getElementById('check');
                            if(document.getElementById('check').checked){
-              this.$axios.post("http://192.168.0.14:8080/wx/auth/register",{
+              this.$axios.post("/auth/register",{
                   "username":this.username,
                    "password":this.pwd,
                    "mobile":this.phonenumber,
@@ -189,7 +185,24 @@ export default {
 }
 </script>
 
-<style>
+<style  scoped>
+
+.login{
+    height: 100%;
+    width: 100%;
+    background: url('../assets/image/login_bg.png') 0rem 0 no-repeat;
+    background-size: 3.75rem 100%;  
+}
+.logo{
+    width: 0.48rem;
+    height: 0.3rem;
+    margin-top: 0.2rem;
+    margin-left: 0.16rem;
+}
+.van-dialog /deep/ .van-dialog__message{
+    text-align: left !important;
+    text-indent: 0.32rem;
+}
 #tishi{
    margin-left: 30%;
    text-align: center;
@@ -198,7 +211,7 @@ export default {
   font-size: 0.22rem;
   font-weight: bold;
   margin-left: 0.16rem;
-  margin-top: 0.5rem;
+  margin-top: 0.2rem;
 }
 .login-content{
  width: 3.43rem;
@@ -224,21 +237,20 @@ input::-webkit-input-placeholder {
     font-size: 0.13rem;
     }
 .login-content .register{
-    margin-top: 0.5rem;
-    width: 100%;
-    height: 0.44rem;
-    border-radius: 0.22rem;
-    background: #007BFF;
-    border: none;
-    color: white;
+   margin-top: 0.2rem;
+   color: #666666;
+   font-size: 0.15rem;
+}
+.login-content .login{
+
 }
 .login-content .agree{
-    margin-top: 0.3rem;
+    margin-top: 0.2rem;
     border: 0;
 }
-.login-content .agree #check{
-    margin-left: 0.45rem;
-}
+/* .login-content .agree #check{
+
+} */
 .login-content .agree .read{
     font-size: 0.14rem;
     margin-left: 0.08rem;

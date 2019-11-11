@@ -58,7 +58,7 @@ export default {
             //     file: file,
             // }
             this.$axios({
-                url:"http://192.168.0.20:8080/wx/user/uploadAvatar",
+                url:"/user/uploadAvatar",
                 method:"POST",
                 data:data,
                 // contentType:false,
@@ -66,7 +66,7 @@ export default {
             }).then(res=>{
                 //  this.touxiang =res.data.data.avatarUrl;   // 配置代理 
                 console.log(res);
-                this.$axios.post("http://192.168.0.20:8080/wx/user/info").then(res=>{
+                this.$axios.post("/user/info").then(res=>{
             console.log(res.data.data.avatarUrl)
                   if(res.data.data.avatarUrl){
                       console.log(res.data.data.avatarUrl)
@@ -92,7 +92,7 @@ export default {
         //     // 使用默认 
         //     this.touxiang = require("@/assets/images/img4.jpg");
         // }
-        this.$axios.post("http://192.168.0.20:8080/wx/user/info").then(res=>{
+        this.$axios.post("/user/info").then(res=>{
             console.log(res.data.data.avatarUrl)
                   if(res.data.data.avatarUrl){
                       console.log(res.data.data.avatarUrl)
