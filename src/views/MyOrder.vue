@@ -4,16 +4,19 @@
          <van-tabs v-model="active">
           <van-tab title="全部">
 <div :style="{background:'#F5F6FA'}">
-    <div class="bg-content" v-for="(item , i) in listsearch" :key="i">
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
          <div class="content" >
               <div class="store">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].id}}">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
                     <span class="storename">{{item.goodsList[0].shopName}}</span>
                     <img src="../assets/image/more.png" alt="" class="more">
+                  </router-link>
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    <router-link :to="{name:'dindan',params:{orderId:item.goodsList[0].id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
@@ -22,22 +25,25 @@
                          </div>
                          <div>
                          <p class="goods-price" >
-                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
+                           ￥<span :style="{'font-size':'0.18rem'}">{{item.actualPrice.toFixed(2)}}</span> 
                          </p>
                          <p class="goods-number">×{{item.goodsList[0].number}}</p>
                          </div>
                      </div>
+                    </router-link>
              </div> 
              <div class="total">
-                  <span class="total-number">共200件</span>
+                  <span class="total-number">共{{item.goodsList[0].number}}件</span>
                   <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
-                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
              </div>
-             <div class="operate">
-             
-                     <button class="delete">删除</button>
-                    <button class="comment">评论</button>
+             <div class="operate">  
                      <button class="buyonce">再次购买</button>
+                     <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
+                     <button v-if="item.orderStatusText=='租用中'" class="return">归还</button>
+                     </router-link >
+                     <button class="comment">评论</button>
+                     <button class="delete" @click="del(i)">删除</button>
          
                <!-- <button class="pay">去支付</button> -->
              </div>
@@ -51,9 +57,11 @@
     <div class="bg-content" v-for="(item , i) in listsearch" :key="i" v-show="item.orderStatusText=='待结算'">
          <div class="content" >
               <div class="store">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].id}}">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
                     <span class="storename">{{item.goodsList[0].shopName}}</span>
                     <img src="../assets/image/more.png" alt="" class="more">
+                    </router-link>
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
@@ -75,13 +83,14 @@
              <div class="total">
                   <span class="total-number">共200件</span>
                   <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
-                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem',}">999.00</span> </span>
              </div>
              <div class="operate">
                  <div>
-                     <button class="delete">删除</button>
-                     <button class="comment">评论</button>
                      <button class="buyonce">再次购买</button>
+                     <button v-if="item.orderStatusText=='租用中'" class="return">归还</button>
+                     <button class="comment">评论</button>
+                     <button class="delete">删除</button>
                 </div>
                <!-- <button class="pay">去支付</button> -->
              </div>
@@ -123,9 +132,10 @@
              </div>
              <div class="operate">
                  <div>
-                     <button class="delete">删除</button>
-                     <button class="comment">评论</button>
                      <button class="buyonce">再次购买</button>
+                     <button v-if="item.orderStatusText=='租用中'" class="return">归还</button>
+                     <button class="comment">评论</button>
+                     <button class="delete">删除</button>
                 </div>
                <!-- <button class="pay">去支付</button> -->
              </div>
@@ -167,9 +177,10 @@
              </div>
              <div class="operate">
                  <div>
-                     <button class="delete">删除</button>
-                     <button class="comment">评论</button>
                      <button class="buyonce">再次购买</button>
+                     <button v-if="item.orderStatusText=='租用中'" class="return">归还</button>
+                     <button class="comment">评论</button>
+                     <button class="delete">删除</button>
                 </div>
                <!-- <button class="pay">去支付</button> -->
              </div>
@@ -206,6 +217,9 @@ export default {
     },
       methods: {
          ...mapMutations(['changeSearch']),
+           del(index){
+              this.$refs.content[index].remove();
+          },
     },
     computed: {
          ...mapState(['searchShow']),
@@ -223,7 +237,8 @@ export default {
              this.listsearch=res.data.data.list;
                console.log( res.data.data.list[0].goodsList) 
             //    console.log( this.listsearch[0].goodsList[0])
-         })
+         });
+        
     },
 }
 </script>
@@ -301,6 +316,7 @@ export default {
        font-weight: bold;
        line-height: 0.23rem;
        margin-top: -0.04rem;
+       color: black;
    }
    .content .goods-desc .goods-model span{
        font-size: 0.12rem;
@@ -336,7 +352,8 @@ export default {
     .content .store .storename{
             float: left;
             font-size: 0.13rem;
-             margin-left: 0.1rem;
+            margin-left: 0.1rem;
+            color: black;
         }
     .content .store .more{
            float: left;
@@ -362,12 +379,14 @@ export default {
         margin-left: 0.1rem;
         font-size: 0.13rem;
         font-weight: bold;
+        float: right;
     }
      .content .operate{
          margin-top: 0.25rem;
          height: 0.26rem;
-         margin-bottom: 0.1rem;
+         margin-bottom: 0.6rem;
      }
+     
     .content .operate button{
         box-sizing: border-box;
         outline: none;
@@ -380,18 +399,19 @@ export default {
         border-radius: 0.13rem;
         padding-left: 0.1rem;
         padding-right: 0.1rem;
-        float: left;
+        margin-left: 0.1rem;
+        float: right;
     }
    .content .operate .delete{
-       float: left;
-       margin-left: 1.3rem;
+       /* float: left; */
+       /* margin-left: 1rem; */
    } 
   .content .operate .comment{
-     float: left;
-     margin-left: 0.2rem;
+     /* float: left; */
+     /* margin-left: 0.1rem; */
  }
  .content .operate .buyonce{
-    float: right;
+    /* float: right; */
  }
  .content .operate .pay{
      float: right;

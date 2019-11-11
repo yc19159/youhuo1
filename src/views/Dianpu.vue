@@ -31,7 +31,7 @@
                              </div>
                             <!-- 商品信息渲染 -->
                              <ul class="box">
-                                 <li v-for="(item,index) in goodsList" :key="item.id">
+                                 <li v-for="(item,index) in goodsList" :key="index">
                                     <p class="commodity_i"><img :src="item.picUrl" alt="商品照片"></p>
                                     <p class="commodity_name">{{item.name}}</p>
                                     <p class="size"> 

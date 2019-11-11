@@ -129,12 +129,12 @@ export default new VueRouter({
       component: ()=> import('@/views/VipMember.vue'),
     },
     {
-      path: '/dindan',
+      path: '/dindan/:orderId',
       name: 'dindan',
       component: ()=> import('@/views/Dindan.vue'),
     },
     {
-      path: '/return',
+      path: '/return/:orderId',
       name: 'return',
       component: ()=> import('@/views/Return.vue'),
     }

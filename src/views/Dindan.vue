@@ -42,7 +42,7 @@
                 </div>
 
            </div> -->
-           <div class="logistics_i" v-for="(item,index) in newList" :key="item.id">
+           <div class="logistics_i" v-for="(item,index) in newList" :key="index">
                <div class="time">
                    <p>{{item.oneTime}}</p>
                    <p>{{item.subTime}}</p>
