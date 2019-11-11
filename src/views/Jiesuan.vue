@@ -213,7 +213,11 @@ export default {
      },
      mounted() {
          this.changeSearch(false);
-         
+         this.$axios.get('/address/listDfault',{
+             params:{
+                 
+             }
+         })
        
      },
 }

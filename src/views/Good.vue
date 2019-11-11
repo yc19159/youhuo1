@@ -2,20 +2,24 @@
     <div class="main">
          <Head></Head>
          <div class="item">
-            <img 
-           :src="1"
-            alt="" class="item-img">
+           <van-swipe  indicator-color="white">
+             <van-swipe-item><img :src="detail.info.gallery[0]" alt="" class="item-img"></van-swipe-item>
+             <van-swipe-item><img :src="detail.info.gallery[1]" alt="" class="item-img"></van-swipe-item>
+             <van-swipe-item><img :src="detail.info.gallery[2]" alt="" class="item-img"></van-swipe-item>
+            
+</van-swipe>
+            
         </div>
        <div class="descript">
           <div class="descript-content">
                <div class="item-price">
-                 <span class="price-span">￥<span :style="{'font-size':'0.2rem'}">{9.99}</span>/天</span>   
+                 <span class="price-span">￥<span :style="{'font-size':'0.2rem'}">{{detail.info.retailPrice.toFixed(2)}}</span>/天</span>   
                  <span class="quanxin" :style="{color:'white','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
           'text-align':'center','margin-top':'0.05rem','font-weight':'normal',display:'block',float:'left'}" >全新</span>
            <span class="halfyear"> 半年起租</span>
                </div>
-               <p class="item-phone">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
+               <p class="item-phone">{{detail.info.name}}</p>
                <div class="sell">
                  <p class="sell-number">
                    销量：XXX件
@@ -41,21 +45,21 @@
        </div>
        <div class="descript-sec">
            <div class="descript-sec-content">
-                 <div class="descript-sec-taocan">
+                 <!-- <div class="descript-sec-taocan">
                    <p :style="{'font-size':'0.14rem','font-family':'NSimSun','font-weight':'bold',
-                   width:'0.3rem',float:'left'}">套餐</p>
-                   <p :style="{width:'2.9rem',float:'right',height:'0.55rem',
+                   float:'left'}">套餐</p>
+                   <p :style="{width:'2.9rem',float:'right',height:'0.53rem',
                   'box-sizing':'border-box','border-bottom':'1px solid #F5F6FA',
                   'font-size':'0.13rem',color:'#2F3031'}">{IphoneX s64 全新无锁一年起租起租}
                   <img src="../assets/image/more.png" class="more" alt=""></p>
                   
-                 </div>
+                 </div> -->
                  <div class="descript-sec-maiduan">
-                 <p :style="{'font-size':'0.14rem','font-family':'NSimSun','font-weight':'bold',
-                   width:'0.75rem',float:'left'}">
-                   买断规则
+                 <p :style="{'font-size':'0.14rem','font-weight':'bold',
+                 float:'left'}">
+                   买断
                  </p>
-                 <p :style="{width:'2.55rem',float:'right',height:'0.55rem',
+                 <p :style="{width:'2.9rem',float:'right',height:'0.53rem',
                   'box-sizing':'border-box','border-bottom':'1px solid #F5F6FA',
                   'font-size':'0.13rem',color:'#2F3031'}">可<span :style="{color:'#D13717',
                   'font-size':'0.14rem'}"> ￥7999.00 </span>买断
@@ -67,7 +71,7 @@
            <div class="descript-third-content">
                  <div class="descript-third-choose">
                    <p :style="{'font-size':'0.14rem','font-family':'NSimSun','font-weight':'bold',
-                   width:'0.3rem',float:'left'}">选择</p>
+                   float:'left'}">选择</p>
                    <p :style="{width:'2.9rem',float:'right',height:'0.53rem',
                   'box-sizing':'border-box','border-bottom':'1px solid #F5F6FA',
                   'font-size':'0.13rem',color:'#2F3031'}">{IphoneX s64 全新无锁一年起租起租}
@@ -76,7 +80,7 @@
                  </div>
                  <div class="descript-third-canshu">
                  <p :style="{'font-size':'0.14rem','font-family':'NSimSun','font-weight':'bold',
-                   width:'0.3rem',float:'left'}">
+                   float:'left'}">
                    参数
                  </p>
                  <p :style="{width:'2.9rem',float:'right',height:'0.53rem',
@@ -146,15 +150,7 @@
                
                 </ul>
             </div>
-            <div class="d-content-from">
-                <p>起租日期</p>
-                <ul>
-                  <li class="from-li">半年</li> 
-                  <li class="from-li">一年</li>
-                  <li class="from-li">两年</li>
-               
-                </ul>
-            </div>
+           
              <div class="d-content-num">
                 <p>数量</p>
                 <van-stepper v-model="value" />
@@ -179,14 +175,12 @@ export default {
     data(){
         return{
             value:1,
-            show:true,
             detail:{},
             flag:false,
             count:1,
             total:0,
             num:5,
-            
- 
+            loop: false,
         }
     },
     components:{
@@ -249,11 +243,12 @@ export default {
 //       }
 //        };
      console.log(this.$route.params.goodId)
-        this.$axios.get('http://192.168.0.17:8080/wx/goods/detail',{
-        params:{id:1017000,
+        this.$axios.get('/goods/detail',{
+        params:{id:this.$route.params.goodId,
                userId:"123"}
         }).then(res=>{
-        console.log(res.data)
+          this.detail=res.data.data
+        console.log(this.detail)
         })
   //       this.$axios.post("/vue/getShopcarInfo",{
   //     username:sessionStorage.username,
@@ -280,9 +275,13 @@ export default {
   width: 100%;
  height: 3.5rem;
  overflow: hidden;
+ background: -webkit-linear-gradient(to bottom, white, #F5F6FA) !important;
+    background: -o-linear-gradient(to bottom, white, #F5F6FA) !important;
+    background: -moz-linear-gradient(to bottom, white, #F5F6FA) !important;
+    background: linear-gradient(to bottom, white, #F5F6FA) !important;
 }
 .item-img {
- width: 1.92rem;
+ width: 3.5rem;
  height: 2.64rem;
  margin: auto;
 margin-top: 0.43rem
@@ -326,8 +325,8 @@ overflow: hidden;
    line-height: 0.32rem;
  }
  .item-phone{
-   margin-top: 0.07rem;
-   font-size: 0.15rem;
+   margin-top: 0.1rem;
+   font-size: 0.17rem;
    line-height: 0.24rem;
    font-family: 'NSimSun';
   //  font-family: '微软雅黑';
@@ -407,7 +406,7 @@ overflow: hidden;
      }
  .descript-sec{
    width: 100%;
-   height: 1.2rem;
+   height: 0.6rem;
    background-color: white;
    margin-top: 0.12rem;
    border-radius: 0.2rem;

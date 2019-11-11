@@ -8,7 +8,9 @@
     <div class="price">
       <ul class="glist">
        <li class="glist-item"  v-for="(item , i) in goodsList" :key="i">
+         <router-link :to="{name:'good',params:{goodId:item.id}}">
           <img :src="item.picUrl" class="glist-img"/>
+        </router-link>
           <p class="phont-type">{{item.name}}</p>
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
@@ -36,7 +38,7 @@
   <van-tab title="销量 " > 
      <div class="price">
         <ul class="glist">
-           <li class="glist-item" @click="drawer = true" v-for="(item , i) in listxiaoliang" :key="i">
+           <li class="glist-item" v-for="(item , i) in listxiaoliang" :key="i">
           <img :src="item.picUrl" class="glist-img"/>
           <p class="phont-type">{{item.name}}</p>
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
@@ -62,7 +64,7 @@
   <van-tab title="筛选">
     <div class="price">
         <ul class="glist">
-           <li class="glist-item" @click="drawer = true" v-for="(item , i) in listselect" :key="i">
+           <li class="glist-item" v-for="(item , i) in listselect" :key="i">
           <img :src="item.picUrl" class="glist-img"/>
           <p class="phont-type">{{item.name}}</p>
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 

@@ -86,10 +86,10 @@ export default {
                 //        }
                 //    })
                     this.$axios.post("/auth/regCaptcha",{
-                        mobile: "15926388481",
+                        mobile: this.phonenumber,
                     }).then(res=>{
-                        // this.code=res.data.param;
-                        console.log(res)
+                        this.code=res.data.data;
+                        console.log(res.data.data)
             timer = setInterval(()=>{
               if(this.num>0){
                 this.num--;
@@ -139,6 +139,7 @@ export default {
                   "username":this.username,
                    "password":this.pwd,
                    "mobile":this.phonenumber,
+                   "code":this.code,
                     }).then(res=>{
                         console.log(res)
                if(res.data.errno==0){
