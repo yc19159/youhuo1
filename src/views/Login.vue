@@ -51,8 +51,8 @@ export default {
        ...mapMutations(['changeSearch']),
        todoLogin(){
            this.$axios.post("auth/login",{
-               username: this.username,
-               password: this.pwd,
+               "username": this.username,
+               "password": this.pwd,
            }).then(res=>{
                localStorage.token=res.data.data.token;
               location.href="/"

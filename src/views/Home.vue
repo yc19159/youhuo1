@@ -32,7 +32,11 @@
             <li><img src="../assets/image/home_bangong.png" alt=""><p>数码</p></li>
             <li><img src="../assets/image/home_jiadian.png" alt=""><p>家电</p></li>
             <li><img src="../assets/image/home_shuma.png" alt=""><p>游戏</p></li>
-            <li><img src="../assets/image/home_all.png" alt=""><p>全部</p></li>
+            <li>
+              <router-link to="list">
+                <img src="../assets/image/home_all.png" alt="">
+              </router-link>
+              <p>全部</p></li>
           </ul>
      </div>
      <div class="advertise">

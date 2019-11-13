@@ -25,7 +25,7 @@
           'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
           <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
           <p class="shop">荣耀京东自营旗舰店</p>
-          <router-link :to="{name:'dianpu',params:{shopId:item.Id}}">
+          <router-link :to="{name:'dianpu',params:{shopId:item.id}}">
           <p class="toshop">进店</p>
           </router-link>
           <img src="../assets/image/more.png" alt="" class="more">
@@ -175,6 +175,7 @@ export default {
      ...mapMutations(['changeSearch']),
      orderByPrice(){
       this.sort="retail_price";
+      this.active=0;
       if(!this.order){
             this.order="asc"
       }else if(this.order=="asc"){
@@ -182,9 +183,21 @@ export default {
       }else if(this.order=="desc"){
         this.order="asc"
       }
-      
-      this.$axios.get("/goods/listGoods",{
-      params:{
+       if(this.$route.params.typeId==1){
+        this.$axios.get("/goods/listGoods",{
+        params:{
+        isHot:this.$route.params.typeId,
+        limit:100,
+        sort: this.sort,
+        order:this.order,
+      }
+    }).then(res=>{
+     console.log(res)
+      this.goodsList=res.data.data.list
+    })
+    }else{
+     this.$axios.get("/goods/listGoods",{
+       params:{
         categoryId:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -194,12 +207,26 @@ export default {
      console.log(res)
       this.goodsList=res.data.data.list
     })
+    }
+     
     },
     orderByNumber(){
       this.active=1;
-       this.sort="number";
+      this.sort="number";
       this.order="desc";
-      this.$axios.get("/goods/listGoods",{
+      if(this.$route.params.typeId==1){
+        this.$axios.get("/goods/listGoods",{
+       params:{
+        isHot:this.$route.params.typeId,
+        limit:100,
+        sort: this.sort,
+        order:this.order,
+      }
+    }).then(res=>{
+      this.listxiaoliang=res.data.data.list;
+    })
+      }else{
+         this.$axios.get("/goods/listGoods",{
       params:{
         categoryId:this.$route.params.typeId,
         limit:100,
@@ -209,13 +236,27 @@ export default {
     }).then(res=>{
       this.listxiaoliang=res.data.data.list;
     })
+      }
+     
     },
     chooseGoods(){
        this.active=2;
        this.drawer=false;
-       console.log(this.$route.params.typeId)
-       this.$axios.get("/goods/select",{
-      params:{
+      //  console.log(this.$route.params.typeId)
+       if(this.$route.params.typeId==1){
+         this.$axios.get("goods/selectHot",{
+        params:{
+        minPrice: this.lowerprice,
+        maxPrice: this.highprice,
+        isHot: this.$route.params.typeId,
+      }
+    }).then(res=>{
+      console.log(res)
+      this.listselect=res.data.data.list;
+    })
+       }else{
+        this.$axios.get("/goods/select",{
+       params:{
         minPrice: this.lowerprice,
         maxPrice: this.highprice,
         categoryId: this.$route.params.typeId,
@@ -224,6 +265,8 @@ export default {
       console.log(res)
       this.listselect=res.data.data.list;
     })
+       }
+      
     },
     onSearch(){
      this.$axios.get('/vue/getGoods',{

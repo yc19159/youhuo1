@@ -100,7 +100,7 @@ export default new VueRouter({
       component: ()=>import('@/views/Setting'),
     },
     {
-      path: '/resetpwd',redirect:"/resetpwd",
+      path: '/resetpwd',
       name: 'resetpwd',
       component: ()=>import('@/views/ResetPwd'),
     },{

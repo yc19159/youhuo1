@@ -187,7 +187,7 @@ export default {
         list-style: none;
     }
     .main{
-        /* background-image: url("../assets/image/main_bng.png") ; */
+        background-image: url("../assets/image/main_bng.png") ;
         background-color: #F8F9FB;
         background-repeat: no-repeat;
         background-position: -0.5rem -0.1rem;

@@ -2,9 +2,9 @@
 
 import axios from "axios";
 
-let AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGlzIGlzIGxpdGVtYWxsIHRva2VuIiwiYXVkIjoiTUlOSUFQUCIsImlzcyI6IkxJVEVNQUxMIiwidXNlcklkIjoyLCJpYXQiOjE1NzEzODM0NTV9.Bd8k6nLAJpUm114pzoFK5Zeekeb59kJKYA-Ja9HkrrU";
-// let AUTH_TOKEN = ""
-axios.defaults.baseURL = "http://192.168.0.9:8080/wx"; // 基路径   
+// let AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGlzIGlzIGxpdGVtYWxsIHRva2VuIiwiYXVkIjoiTUlOSUFQUCIsImlzcyI6IkxJVEVNQUxMIiwidXNlcklkIjoyLCJpYXQiOjE1NzEzODM0NTV9.Bd8k6nLAJpUm114pzoFK5Zeekeb59kJKYA-Ja9HkrrU";
+let AUTH_TOKEN = ""
+axios.defaults.baseURL = "http://192.168.0.18:8080/wx"; // 基路径   
 axios.defaults.headers.common['X-Litemall-Token'] = AUTH_TOKEN;    // token 
 // axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -35,7 +35,7 @@ axios.interceptors.request.use(function (config) {
     // console.log(config);
     Toast.loading({
         message: '加载中...',
-        duration:4000
+        duration:3000
     });
     return config;
 }, function (error) {

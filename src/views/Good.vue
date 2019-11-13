@@ -22,7 +22,7 @@
                <p class="item-phone">{{detail.info.name}}</p>
                <div class="sell">
                  <p class="sell-number">
-                   销量：XXX件
+                   销量：{{detail.info.number}}件
                  </p>
                  <p class="heiger-yajin">
                    最高押金：￥5000
@@ -43,9 +43,9 @@
                </div>
           </div>
        </div>
-       <div class="descript-sec">
+       <!-- <div class="descript-sec">
            <div class="descript-sec-content">
-                 <!-- <div class="descript-sec-taocan">
+                 <div class="descript-sec-taocan">
                    <p :style="{'font-size':'0.14rem','font-family':'NSimSun','font-weight':'bold',
                    float:'left'}">套餐</p>
                    <p :style="{width:'2.9rem',float:'right',height:'0.53rem',
@@ -53,7 +53,7 @@
                   'font-size':'0.13rem',color:'#2F3031'}">{IphoneX s64 全新无锁一年起租起租}
                   <img src="../assets/image/more.png" class="more" alt=""></p>
                   
-                 </div> -->
+                 </div>
                  <div class="descript-sec-maiduan">
                  <p :style="{'font-size':'0.14rem','font-weight':'bold',
                  float:'left'}">
@@ -66,7 +66,7 @@
                    <img src="../assets/image/more.png" class="more" alt=""></p>
                  </div>
            </div>
-       </div>
+       </div> -->
         <div class="descript-third">
            <div class="descript-third-content">
                  <div class="descript-third-choose">
@@ -74,7 +74,7 @@
                    float:'left'}">选择</p>
                    <p :style="{width:'2.9rem',float:'right',height:'0.53rem',
                   'box-sizing':'border-box','border-bottom':'1px solid #F5F6FA',
-                  'font-size':'0.13rem',color:'#2F3031'}">{IphoneX s64 全新无锁一年起租起租}
+                  'font-size':'0.13rem',color:'#2F3031'}" @click="choose">点击选择颜色，型号，
                   <img src="../assets/image/more.png" class="more" alt=""></p>
                   
                  </div>
@@ -85,8 +85,7 @@
                  </p>
                  <p :style="{width:'2.9rem',float:'right',height:'0.53rem',
                   'box-sizing':'border-box','border-bottom':'1px solid #F5F6FA',
-                  'font-size':'0.13rem',color:'#2F3031'}">可<span :style="{color:'#D13717',
-                  'font-size':'0.14rem'}"> ￥7999.00 </span>买断
+                  'font-size':'0.13rem',color:'#2F3031'}">网络类型，品牌...
                    <img src="../assets/image/more.png" class="more" alt=""></p>
                  </div>
            </div>
@@ -103,7 +102,7 @@
        </div>
  
         <van-goods-action >
-  <van-goods-action-icon icon="shop-o" text="店铺" />
+  <van-goods-action-icon icon="shop-o" text="店铺" @click="getShopId"/>
   <van-goods-action-icon icon="chat-o" text="客服"  />
   <van-goods-action-icon icon="star-o" text="收藏"  />
 
@@ -122,23 +121,20 @@
           'text-align':'center','margin-top':'0.05rem','font-weight':'normal',display:'block',float:'left'
         ,'margin-top':'0.75rem'}">全新</span>
             </div>
-            <div class="d-content-color">
+            <div class="d-content-color" v-if="this.detail.specificationList[1]">
                 <p>颜色</p>
                 <ul>
-                  <li class="color-li">蓝色</li> 
-                  <li class="color-li">黑色</li>
-                  <li class="color-li">金色</li>
-                  <li class="color-li">红色</li>
-                  <li class="color-li">珊瑚色</li>
+                  <li class="color-li" v-for="(item , i) in this.detail.specificationList[1].valueList" 
+                  :key="i" @click="chooseColor(i)" :class="{active: isActiveIndex === i}" ref="chooseColor">{{item.value}}</li> 
+                  
                 </ul>
             </div>
               <div class="d-content-spec">
                 <p>规格</p>
                 <ul>
-                  <li class="spec-li">64GB</li> 
-                  <li class="spec-li">128GB</li>
-                  <li class="spec-li">256GB</li>
-               
+                  <li class="spec-li" v-for="(item , i) in this.detail.specificationList[0].valueList" 
+                  :key="i"  @click="chooseSize(i)" :class="{activeSize: isActiveIndexSize === i}" ref="size" >{{item.value}}</li> 
+                  
                 </ul>
             </div>
               <div class="d-content-day">
@@ -170,17 +166,19 @@
 // console.log(sessionStorage.username)
 import Head from '@/components/Head.vue'
 import {mapState,mapMutations} from "vuex"
+import { Dialog } from 'vant';
 var username=sessionStorage.username;
 export default {
     data(){
         return{
             value:1,
             detail:{},
-            flag:false,
-            count:1,
-            total:0,
-            num:5,
-            loop: false,
+            isActiveIndex: -1,
+            isActiveIndexSize:-1,
+            color:"",
+            size: "",
+            goodsStock:[],
+            stockId:"",
         }
     },
     components:{
@@ -191,46 +189,92 @@ export default {
     },
     methods: {
         ...mapMutations(['changeSearch']),
+        choose(){
+ document.getElementsByClassName('goods-right-picker')[0].style.display="block";
+        },
       
         close(){
    document.getElementsByClassName('goods-right-picker')[0].style.display="none";
         },
          confirm(){
-            //  console.log(this.value)
-              var count=this.value
-              
-              document.getElementsByClassName('goods-right-picker')[0].style.display="none"; 
-        //        this.$axios.post("/vue/addShopCar",{
-        //        username: sessionStorage.username,
-        //        goodId:this.$route.params.goodId,
-        //        count:count,
-        //        goodname:this.detail.goods_name,
-        //        goodimg: this.detail.thumb_url,
-        //        goodprice: this.detail.normal_price/100
-        // }).then(res=>{
-        //     this.total+=this.count
-             this.$router.push({name:"jiesuan"})    
-        // })
+              // var count=this.value
+              this.goodsStock=this.detail.productList
+              console.log(this.goodsStock)
+               
+              for(var i=0; i<this.goodsStock.length;i++){
+                this.goodsStock[i].specifications.join('');
+                if((this.goodsStock[i].specifications.join('')).indexOf(this.size+this.color)!="-1"){
+                  console.log(this.goodsStock[i].indexOf(""))
+                }
+              }
+              // document.getElementsByClassName('goods-right-picker')[0].style.display="none"; 
+         
           },
-          gotocart(){
-            this.$router.push({name:"cart"})
-           
-          },
- 
+       chooseColor(index){
+          this.isActiveIndex = index;  
+         this.color=this.$refs.chooseColor[index].innerHTML;
+          this.goodsStock=this.detail.productList
+          // console.log( this.color)
+          // console.log(this.goodsStock)
+           console.log(this.goodsStock[i].indexOf(""))
+          for(var i=0; i<this.goodsStock.length;i++){
+            this.goodsStock[i].specifications.join('');
+            console.log(this.goodsStock[i].specifications.join('').indexOf(this.color))
+            if(this.goodsStock[i].specifications.join('').indexOf(this.color)!="-1"){
+              console.log(this.goodsStock[i])
+            }
+          }
+       },
+       chooseSize(index){
+        this.isActiveIndexSize = index;  
+        this.size=this.$refs.size[index].innerHTML;
+         console.log( this.size)
+          this.goodsStock=this.detail.productList
+          // console.log(this.goodsStock)
+          for(var i=0; i<this.goodsStock.length;i++){
+            this.goodsStock[i].specifications.join('');
+            console.log(this.goodsStock[i].specifications.join('').indexOf(this.color))
+            if(this.goodsStock[i].specifications.join('').indexOf(this.color)!="-1"){
+              console.log(this.goodsStock[i])
+              if(this.color){
+
+              }else{
+                if(this.goodsStock[i].number>0){
+                   this.stockId=this.goodsStock[i].id;
+                }else{
+                   Dialog({message:'此商品以没有库存'})
+                }
+                 console.log(this.stockId)
+              }
+            }
+          }
+       },
         paynow(){
-          // location.href="https://chat.mqimg.com/dist/standalone.html?eid=173987&agentid=81117ee5efcbf5936481c8fae1d02bfd"
-          console.log(this.$route.params)
-          // if(username){
-   document.getElementsByClassName('goods-right-picker')[0].style.display="block";
-          // }else{
-          //   this.$router.push({name: "login"})
-          // }
+         if(this.detail.specificationList[1]){
+            if(!this.color){
+               Dialog({message:'q请选择颜色'})
+              console.log("q请选择颜色")
+            }else{
+              this.$axios.get("",{
+
+              })
+            }
+         }
+      console.log(this.$route.params)
+
+     
+ 
+        },
+        getShopId(){
+              this.$axios.get('/shop/listproductsbyshop',{
+                 
+              })
         },
         confirmbuy(){
           sessionStorage.count=this.value;
-            // this.$router.push({name:"pay"})
             sessionStorage.goodId=this.$route.params.goodId;
-       this.$router.push({name:"jiesuan"})
+         this.$router.push({name:"jiesuan"})
+        
         }
     },
     mounted(){
@@ -262,6 +306,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+
 .main{
   width: 100%;
   height:auto;
@@ -538,7 +583,7 @@ overflow: hidden;
     }
       .d-content-color{
         margin-top: 0.2rem;
-        height: 1.4rem;
+        height: auto;
         p{
           font-size: 0.13rem;
           font-weight: bold;
@@ -560,10 +605,21 @@ overflow: hidden;
            .color-li:nth-child(4){
              margin-right: 0;
            }
+          .active{
+            background: #FD9828;
+          }
         }
       }
+      .d-content-color::after{
+              content:" ";
+              display:block;
+              clear:both;
+              height:0; 
+              overflow:hidden; visibility:hidden; 
+      }
       .d-content-spec{
-        height: 0.9rem;
+       height: auto;
+       margin-top: 0.15rem;
          p{
           font-size: 0.13rem;
           font-weight: bold;
@@ -573,19 +629,30 @@ overflow: hidden;
               float: left;
               background: #F5F6FA;
               color: #2F3031;
-              height: 0.31rem;
+             
               line-height: 0.31rem;
               padding-left: 0.24rem;
               padding-right: 0.24rem;
               border-radius: 0.155rem;
               font-size: 0.13rem;
-              margin-right: 0.15rem;
+              margin-left: 0.1rem;
               margin-top: 0.15rem;
+          }
+          .activeSize{
+            background: #FD9828;
           }
         }
       }
+      .d-content-spec::after{
+              content:" ";
+              display:block;
+              clear:both;
+              height:0; 
+              overflow:hidden; visibility:hidden; 
+      }
       .d-content-day{
         height: 0.9rem;
+        margin-top: 0.15rem;
          p{
           font-size: 0.13rem;
           font-weight: bold;
