@@ -5,8 +5,12 @@
   :area-list="areaList"
    show-search-result
   @save="onSave"
-/>
+    />
+    <div class="isDefaute">
+      <span>是否设置为默认地址</span>
+      <van-switch v-model="checked" />
     </div>
+  </div>
 </template>
 
 <script>
@@ -16,17 +20,18 @@ import Head from '@/components/Head.vue';
 export default {
   data() {
     return {
+        checked:false,
         areaList :{
       province_list: {
-        110000: '北京市',
-        120000: '天津市',
+        110000: '北京',
+        120000: '天津',
         130000: '河北省',
         140000: '山西省',
         150000: '内蒙古自治区',
         210000: '辽宁省',
         220000: '吉林省',
         230000: '黑龙江省',
-        310000: '上海市',
+        310000: '上海',
         320000: '江苏省',
         330000: '浙江省',
         340000: '安徽省',
@@ -39,7 +44,7 @@ export default {
         440000: '广东省',
         450000: '广西壮族自治区',
         460000: '海南省',
-        500000: '重庆市',
+        500000: '重庆',
         510000: '四川省',
         520000: '贵州省',
         530000: '云南省',
@@ -3817,6 +3822,9 @@ export default {
       searchResult: []
     }
   },
+  created() {
+    
+  },
   components:{
    Head,
   },
@@ -3824,7 +3832,6 @@ export default {
   mounted(){
     this.changeSearch(false);
     function unshow() {
-    
         var cancel=document.getElementsByClassName('van-picker__cancel')[0];
         var confirm=document.getElementsByClassName('van-picker__confirm')[0];
             cancel.style.backgroundColor='white';
@@ -3853,21 +3860,19 @@ export default {
        var county=address1.split('/')[2];
      }
      if(address1.split('/').length==2){
-       var province='';
+       var province=address1.split('/')[0];
        var city=address1.split('/')[0];
        var county=address1.split('/')[1];
      }
+     var addressInfo={name,tel,province,city,county,address:address1,addressDetail:address2,isDefault:this.checked}
+     console.log(addressInfo)
      console.log(province)
      console.log(city)
-            // this.$axios.post('/vue/setaddress',{
-            //   username:sessionStorage.username,
-            //   name,
-            //   tel,
-            //   address
-            // }).then(res=>{
-            //   // console.log(res.data)
-            //   this.$router.push({name:"jiesuan"})
-            // })
+    //  console.log(this.checked)
+            this.$axios.post('/address/save',addressInfo).then(res=>{
+              console.log(res.data)
+              this.$router.push({name:"addressmanage"})
+            })
     },
     onDelete() {
       
@@ -3889,7 +3894,7 @@ button{
   background: white;
 }
  .van-address-edit /deep/.van-button{
-
+    margin-top: 0.5rem;
     background: -webkit-linear-gradient(to left, #D50000, #FD9A28) !important;
     background: -o-linear-gradient(to left, #D50000, #FD9A28) !important;
     background: -moz-linear-gradient(to left, #D50000, #FD9A28) !important;
@@ -3911,5 +3916,18 @@ button{
     background: none;
     border: none !important;
 } */
+.isDefaute{
+  width: 3.43rem;
+  position: absolute;
+  top: 2.6rem;
+  left: 0.16rem;
+}
+.van-switch{
+  float: right;
+  background: grey;
+}
+.van-switch--on {
+    background-color: #1989fa;
+}
 
 </style>

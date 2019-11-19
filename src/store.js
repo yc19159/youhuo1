@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     searchShow:true,
     active:0,
+    activeOrder:0,
     list:[
       {img:"",content:"首页",isActive:true,luyou:'/'},
       {img:"",content:"送温暖",isActive:false,luyou:'givewarm'},
@@ -20,7 +21,10 @@ export default new Vuex.Store({
    },
    changeActive(state,active){
     state.active=active;
-   }
+   },
+   changeActiveOrder(state,activeOrder){
+    state.activeOrder=activeOrder;
+   },
   },
   actions: {
 

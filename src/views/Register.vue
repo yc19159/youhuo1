@@ -54,6 +54,7 @@ export default {
            num: 60,
            codeFlag: false, 
            show:false,
+           timer: null,
        }
    },
    components: {
@@ -76,21 +77,17 @@ export default {
             var username=this.username;
             var phonenumber=this.phonenumber;
             
-            var timer=null;
+          
             var txt="";
              if(reg.test(username)){
               if(regtel.test(phonenumber)){
-                //    this.$axios.post().then(res=>{
-                //        if(res){
-
-                //        }
-                //    })
+               
                     this.$axios.post("/auth/regCaptcha",{
                         mobile: this.phonenumber,
                     }).then(res=>{
                         this.code=res.data.data;
                         console.log(res.data.data)
-            timer = setInterval(()=>{
+               this.timer = setInterval(()=>{
               if(this.num>0){
                 this.num--;
                 txt="还剩 " + this.num + " S";
@@ -101,8 +98,8 @@ export default {
                     this.num=60;
                     txt="获取验证码",
                     document.getElementById('getTestCode').innerHTML=txt;
-                   clearInterval(timer);
                    this.codeFlag=false;
+                  
             }
         },1000);
                         
@@ -182,6 +179,10 @@ export default {
        
        }
    },
+   beforeDestroy() {
+    clearInterval(this.timer);        
+    this.timer = null;
+}
   
 }
 </script>
@@ -241,6 +242,8 @@ input::-webkit-input-placeholder {
    margin-top: 0.2rem;
    color: #666666;
    font-size: 0.15rem;
+   width: 0.56rem;
+   height: 0.56rem;
 }
 .login-content .login{
 

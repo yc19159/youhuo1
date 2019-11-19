@@ -4,13 +4,13 @@
        <p class="title">意见反馈</p>
 
        <div >
-           <textarea name="" id=""  placeholder="请描述您的问题与意见" :style="{background:'#F5F6FA','width':'3.43rem',height:'2rem',
+           <textarea v-model="content" name="" id=""  placeholder="请描述您的问题与意见" :style="{background:'#F5F6FA','width':'3.43rem',height:'2rem',
            'margin-left':'0.16rem','margin-top':'0.2rem','text-indent':'0.12rem','padding-top':'0.1rem',
             border:'none'}">
 
            </textarea>
        </div>
-      <button class="sure">确定</button>
+      <button class="sure" @click="Submission">确定</button>
     </div>
 </template>
 
@@ -21,7 +21,9 @@ import Head from '@/components/Head.vue'
 export default {
     data() {
         return {
-            
+            content:'',//用户评论商品信息
+            mobile:'',
+            feedType:'',
         }
     },
     components:{
@@ -35,6 +37,19 @@ export default {
     },
     methods: {
         ...mapMutations(['changeSearch']),
+        //提交意见反馈
+        Submission(){
+            console.log(111)
+            console.log(this.content)
+            this.$axios.post("http://192.168.0.22:8080/wx/feedback/submit",{
+                content:'this.content',
+                mobile:18271464371,
+                feedType:0
+            })
+            .then(res=>{
+                console.log(res);
+            })
+        }
     },
 }
 </script>

@@ -34,7 +34,7 @@ export default new VueRouter({
       component: ()=> import('./views/Mine.vue')
     },
     {
-      path: '/list/:active?',
+      path: '/list',
       name: 'list',
       component: ()=> import('./views/Alllist.vue')
     },
@@ -50,12 +50,12 @@ export default new VueRouter({
       component: ()=> import('./views/Postal.vue')
     },
     {
-      path: '/jiesuan',
+      path: '/jiesuan/:goodId',
       name: 'jiesuan',
       component: ()=> import('./views/Jiesuan.vue'),
     },
     {
-      path: '/waitforpay',
+      path: '/waitforpay/:orderId',
       name: 'waitforpay',
       component: ()=> import('./views/WaitForPay.vue'),
     },
@@ -65,7 +65,7 @@ export default new VueRouter({
       component: ()=> import('./views/PaySuccess.vue'),
     },
     {
-      path: '/myorder',
+      path: '/myorder/:active?',
       name: 'myorder',
       component: ()=> import('./views/MyOrder.vue'),
     },
@@ -84,11 +84,11 @@ export default new VueRouter({
       name: 'givewarmdetail',
       component: ()=> import('./views/GiveWarmDetail.vue'),
     },
-    // {
-    //   path: '/addressedit',
-    //   name: 'addressedit',
-    //   component: ()=> import('@/views/Addressedit.vue'),
-    // },
+    {
+      path: '/addressedit',
+      name: 'addressedit',
+      component: ()=> import('@/views/Addressedit.vue'),
+    },
     {
      path: '/personaldata',
       name: 'personaldata',
@@ -137,6 +137,12 @@ export default new VueRouter({
       path: '/return/:orderId',
       name: 'return',
       component: ()=> import('@/views/Return.vue'),
-    }
+    },
+      {
+        path: '/comment/:goodId',
+        name: 'comment',
+        component: ()=> import('@/views/Comment.vue'),
+      },
+
   ]
 })

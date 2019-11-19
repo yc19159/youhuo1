@@ -54,6 +54,7 @@ export default {
      .head{
          height: 0.54rem;
          background-color: white;
+         margin-top: 0.2rem;
      }
     .goback{
         width: 0.2rem;
@@ -64,7 +65,7 @@ export default {
     }
     .goback img{
          width: 0.2rem;
-        height: 0.2rem;
+         height: 0.2rem;
     }
      .van-search {
          width: 3rem;

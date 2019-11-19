@@ -54,8 +54,9 @@ export default {
                "username": this.username,
                "password": this.pwd,
            }).then(res=>{
+               console.log(res)
                localStorage.token=res.data.data.token;
-              location.href="/"
+             this.$router.push({path:'/'});
            })
        },
    },

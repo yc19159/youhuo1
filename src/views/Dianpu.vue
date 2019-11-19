@@ -34,11 +34,11 @@
                                  <li v-for="(item,index) in goodsList" :key="index">
                                     <p class="commodity_i"><img :src="item.picUrl" alt="商品照片"></p>
                                     <p class="commodity_name">{{item.name}}</p>
-                                    <p class="size"> 
+                                    <!-- <p class="size"> 
                                          <span>6.26英寸</span>|
                                          <span>超长待机</span>|
                                          <span>128GB</span>
-                                    </p>
+                                    </p> -->
                                     <p class="commodity_price">&yen;<span>{{item.counterPrice}}</span>/天限时价</p>  
                                     <p class="all">
                                          <span class="new">全新</span>
@@ -70,11 +70,11 @@
                             <li>
                                <!-- <p class="commodity_i"><img src="../assets/image/phone.png" alt="商品照片"></p> -->
                                <p class="commodity_name">Apple iPhone X</p>
-                               <p class="size"> 
+                               <!-- <p class="size"> 
                                     <span>6.26英寸</span>|
                                     <span>超长待机</span>|
                                     <span>128GB</span>
-                               </p>
+                               </p> -->
                                <p class="commodity_price">&yen;<span>9.99</span>/天限时价</p>  
                                <p class="all">
                                     <span class="new">全新</span>
@@ -294,7 +294,6 @@ export default {
   .box{
       width: 100%;
       overflow: hidden;
-      padding-right:0.2rem;
   }
   .box li{
       width: 1.6rem;

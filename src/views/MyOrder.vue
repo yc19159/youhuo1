@@ -1,22 +1,24 @@
 <template>
     <div class="myorder">
         <Head></Head>
-         <van-tabs v-model="active">
+         <van-tabs v-model="activeOrder">
           <van-tab title="全部">
 <div :style="{background:'#F5F6FA'}">
     <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
-         <div class="content" >
+         <div class="content" v-if="item.goodsList">
               <div class="store">
-                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].id}}">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
                     <span class="storename">{{item.goodsList[0].shopName}}</span>
                     <img src="../assets/image/more.png" alt="" class="more">
                   </router-link>
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
-             <div class="goods-desc">
+             <div class="goods-desc" >
+                       <!-- <router-link :to="{name:'good',params:{goodId:item.goodList[0].id}}"> -->
                       <img :src="item.goodsList[0].picUrl" alt="">
-                    <router-link :to="{name:'dindan',params:{orderId:item.goodsList[0].id}}">
+                      <!-- </router-link> -->
+                    <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
@@ -37,13 +39,72 @@
                   <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
                   <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
              </div>
-             <div class="operate">  
-                     <button class="buyonce">再次购买</button>
+             <div class="operate" v-if="item.goodsList[0]">  
+                       <router-link v-if="item.orderStatusText=='待付款'" :to="{name: 'waitforpay',params:{orderId:item.id}}" >
+                     <button  class="buyonce">前往付款</button>
+                     </router-link>
+                   <router-link v-else :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
+                     <button class="buyonce"  v-if="item.orderStatusText=='待收货'||item.orderStatusText=='租用中'||
+                    item.orderStatusText=='待结算'|| item.orderStatusText=='已完成'||item.orderStatusText=='已取消'||item.orderStatusText=='已取消(系统)'">再次购买</button>
+                   </router-link>
                      <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
-                     <button v-if="item.orderStatusText=='租用中'" class="return">归还</button>
+                     <button v-if="item.orderStatusText=='租用中'||item.orderStatusText=='待结算'||item.orderStatusText=='已逾期'" class="return">归还</button>
                      </router-link >
-                     <button class="comment">评论</button>
-                     <button class="delete" @click="del(i)">删除</button>
+                     <router-link :to="{name:'comment',params:{goodId:item.goodsList[0].id}}">
+                      <button class="comment" v-if="item.orderStatusText=='已完成'">评论</button>
+                     </router-link >
+                     <button class="delete" v-if="item.orderStatusText=='已完成'||item.orderStatusText=='已取消(系统)'||item.orderStatusText=='已取消'" @click="del(i)">删除</button>
+                     <button class="cancel" v-if="item.orderStatusText=='待付款'"  @click="onCancel(i)">取消</button>
+                      <button class="confirmReceipt" v-if="item.orderStatusText=='待收货'"  @click="onCancel(i)">确认收货</button>
+                     
+               <!-- <button class="pay">去支付</button> -->
+             </div>
+             </div>
+             
+    </div>
+</div>
+    </van-tab>
+    <van-tab title="待付款">
+<div :style="{background:'#F5F6FA'}" >
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="waiforpay" >
+         <div class="content" v-if="item.goodsList">
+              <div class="store">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                  </router-link>
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                    <router-link :to="{name:'dindan',params:{orderId:item.id}}">
+                     <div class="goods-right">
+                         <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
+                         <div class="goods-model">
+                            <span v-bind:color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">{{item.actualPrice.toFixed(2)}}</span> 
+                         </p>
+                         <p class="goods-number">×{{item.goodsList[0].number}}</p>
+                         </div>
+                     </div>
+                    </router-link>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共{{item.goodsList[0].number}}件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
+             </div>
+             <div class="operate" v-if="item.goodsList[0]">  
+                      <router-link :to="{name: 'waitforpay',params:{orderId:item.id}}" >
+                     <button  class="buyonce">前往付款</button>
+                     </router-link>
+                 
+                     <button class="cancel"  @click="onCancel(i)">取消</button>
          
                <!-- <button class="pay">去支付</button> -->
              </div>
@@ -52,142 +113,294 @@
     </div>
 </div>
     </van-tab>
-  <van-tab title="待付款">
-  <div :style="{background:'#F5F6FA'}" >
-    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" v-show="item.orderStatusText=='待结算'">
-         <div class="content" >
+            <van-tab title="待发货">
+<div :style="{background:'#F5F6FA'}">
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
+         <div class="content" v-if="item.goodsList">
               <div class="store">
-                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].id}}">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
                     <span class="storename">{{item.goodsList[0].shopName}}</span>
                     <img src="../assets/image/more.png" alt="" class="more">
-                    </router-link>
+                  </router-link>
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
-                         <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
-                         <div class="goods-model">
-                            <span :color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
-                         </div>
-                         <div>
-                         <p class="goods-price" >
-                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
-                         </p>
-                         <p class="goods-number">×200</p>
-                         </div>
-                     </div>
-             </div> 
-             <div class="total">
-                  <span class="total-number">共200件</span>
-                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
-                  <span :style="{color:'#B3381D','font-size':'0.17rem',}">999.00</span> </span>
-             </div>
-             <div class="operate">
-                 <div>
-                     <button class="buyonce">再次购买</button>
-                     <button v-if="item.orderStatusText=='租用中'" class="return">归还</button>
-                     <button class="comment">评论</button>
-                     <button class="delete">删除</button>
-                </div>
-               <!-- <button class="pay">去支付</button> -->
-             </div>
-             </div>
-             
-    </div>
-  </div>
-  </van-tab>
-  <van-tab title="租用中">
-      <div :style="{background:'#F5F6FA'}" >
-    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" v-show="item.orderStatusText=='租用中'" >
-         <div class="content" >
-              <div class="store">
-                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
-                    <span class="storename">{{item.goodsList[0].shopName}}</span>
-                    <img src="../assets/image/more.png" alt="" class="more">
-                     <span class="state">{{item.orderStatusText}}</span>
-             </div>
-             <div class="goods-desc">
-                      <img :src="item.goodsList[0].picUrl" alt="">
-                     <div class="goods-right">
-                         <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
-                         <div class="goods-model">
-                            <span :color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
-                         </div>
-                         <div>
-                         <p class="goods-price" >
-                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
-                         </p>
-                         <p class="goods-number">×200</p>
-                         </div>
-                     </div>
-             </div> 
-             <div class="total">
-                  <span class="total-number">共200件</span>
-                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
-                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
-             </div>
-             <div class="operate">
-                 <div>
-                     <button class="buyonce">再次购买</button>
-                     <button v-if="item.orderStatusText=='租用中'" class="return">归还</button>
-                     <button class="comment">评论</button>
-                     <button class="delete">删除</button>
-                </div>
-               <!-- <button class="pay">去支付</button> -->
-             </div>
-             </div>
-             
-    </div>
-  </div>
-  </van-tab>
-  <van-tab title="已完成">
-      <div :style="{background:'#F5F6FA'}" >
-    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" v-show="item.orderStatusText=='已完成'" >
-         <div class="content" >
-              <div class="store">
-                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
-                    <span class="storename">{{item.goodsList[0].shopName}}</span>
-                    <img src="../assets/image/more.png" alt="" class="more">
-                     <span class="state">{{item.orderStatusText}}</span>
-             </div>
-             <div class="goods-desc">
-                      <img :src="item.goodsList[0].picUrl" alt="">
-                     <div class="goods-right">
-                         <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
+                         <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
                             <span v-bind:color="color">{{color}} </span>
                             <span>{规格：256GB}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
-                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
+                           ￥<span :style="{'font-size':'0.18rem'}">{{item.actualPrice.toFixed(2)}}</span> 
                          </p>
-                         <p class="goods-number">×200</p>
+                         <p class="goods-number">×{{item.goodsList[0].number}}</p>
                          </div>
                      </div>
+                    </router-link>
              </div> 
              <div class="total">
-                  <span class="total-number">共200件</span>
+                  <span class="total-number">共{{item.goodsList[0].number}}件</span>
                   <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
-                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
-             </div>
-             <div class="operate">
-                 <div>
-                     <button class="buyonce">再次购买</button>
-                     <button v-if="item.orderStatusText=='租用中'" class="return">归还</button>
-                     <button class="comment">评论</button>
-                     <button class="delete">删除</button>
-                </div>
-               <!-- <button class="pay">去支付</button> -->
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
              </div>
              </div>
              
     </div>
-  </div>
+</div>
+    </van-tab>
+    <van-tab title="待收货">
+  <div :style="{background:'#F5F6FA'}">
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="confirmReceipt">
+         <div class="content" v-if="item.goodsList">
+              <div class="store">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                  </router-link>
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                    <router-link :to="{name:'dindan',params:{orderId:item.id}}">
+                     <div class="goods-right">
+                         <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
+                         <div class="goods-model">
+                            <span v-bind:color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">{{item.actualPrice.toFixed(2)}}</span> 
+                         </p>
+                         <p class="goods-number">×{{item.goodsList[0].number}}</p>
+                         </div>
+                     </div>
+                    </router-link>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共{{item.goodsList[0].number}}件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
+             </div>
+              <div class="operate">
+                 <div>
+                      <button class="confirmReceipt" @click="confirmReceipt(i)">确认收货</button>
+                    
+                </div>
+              </div>
+             </div>
+             
+    </div>
+</div>
+  </van-tab>
+  <van-tab title="租用中">
+      <div :style="{background:'#F5F6FA'}">
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
+         <div class="content" v-if="item.goodsList">
+              <div class="store">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                  </router-link>
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                    <router-link :to="{name:'dindan',params:{orderId:item.id}}">
+                     <div class="goods-right">
+                         <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
+                         <div class="goods-model">
+                            <span v-bind:color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">{{item.actualPrice.toFixed(2)}}</span> 
+                         </p>
+                         <p class="goods-number">×{{item.goodsList[0].number}}</p>
+                         </div>
+                     </div>
+                    </router-link>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共{{item.goodsList[0].number}}件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
+             </div>
+              <div class="operate">
+                 <div>
+                <router-link :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
+                       <button class="buyonce">再次购买</button>
+                 </router-link>
+
+                 <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
+                     <button  class="return">归还</button>
+                 </router-link >
+
+                </div>
+              </div>
+             </div>
+             
+    </div>
+</div>
+  </van-tab>
+    <van-tab title="待结算">
+  <div :style="{background:'#F5F6FA'}">
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
+         <div class="content" v-if="item.goodsList">
+              <div class="store">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                  </router-link>
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                    <router-link :to="{name:'dindan',params:{orderId:item.id}}">
+                     <div class="goods-right">
+                         <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
+                         <div class="goods-model">
+                            <span v-bind:color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">{{item.actualPrice.toFixed(2)}}</span> 
+                         </p>
+                         <p class="goods-number">×{{item.goodsList[0].number}}</p>
+                         </div>
+                     </div>
+                    </router-link>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共{{item.goodsList[0].number}}件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
+             </div>
+              <div class="operate">
+                 <div>
+                     <router-link :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
+                       <button class="buyonce">再次购买</button>
+                     </router-link>
+                     <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
+                        <button class="return">修改归还信息</button>
+                     </router-link>
+
+                </div>
+              </div>
+             </div>
+             
+    </div>
+</div>
+  </van-tab>
+  <van-tab title="已完成">
+       <div :style="{background:'#F5F6FA'}">
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="complete">
+         <div class="content" v-if="item.goodsList">
+              <div class="store">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                  </router-link>
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                    <router-link :to="{name:'dindan',params:{orderId:item.id}}">
+                     <div class="goods-right">
+                         <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
+                         <div class="goods-model">
+                            <span v-bind:color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">{{item.actualPrice.toFixed(2)}}</span> 
+                         </p>
+                         <p class="goods-number">×{{item.goodsList[0].number}}</p>
+                         </div>
+                     </div>
+                    </router-link>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共{{item.goodsList[0].number}}件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
+             </div>
+              <div class="operate">
+                 <div>
+                    <router-link :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
+                       <button class="buyonce">再次购买</button>
+                     </router-link>
+                    <router-link :to="{name:'comment',params:{goodId:item.goodsList[0].id}}">
+                      <button class="comment" >评论</button>
+                     </router-link >
+                    <button class="delete" @click="onDel(i)">删除</button>
+
+
+                </div>
+              </div>
+             </div>
+             
+    </div>
+</div>
+  </van-tab>
+  <van-tab title="已逾期">
+      <div :style="{background:'#F5F6FA'}">
+    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
+         <div class="content" v-if="item.goodsList">
+              <div class="store">
+                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
+                    <img src="../assets/image/dianpu.png" alt="" class="store-img">
+                    <span class="storename">{{item.goodsList[0].shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                  </router-link>
+                     <span class="state">{{item.orderStatusText}}</span>
+             </div>
+             <div class="goods-desc">
+                      <img :src="item.goodsList[0].picUrl" alt="">
+                    <router-link :to="{name:'dindan',params:{orderId:item.id}}">
+                     <div class="goods-right">
+                         <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
+                         <div class="goods-model">
+                            <span v-bind:color="color">{{color}} </span>
+                            <span>{规格：256GB}</span>
+                         </div>
+                         <div>
+                         <p class="goods-price" >
+                           ￥<span :style="{'font-size':'0.18rem'}">{{item.actualPrice.toFixed(2)}}</span> 
+                         </p>
+                         <p class="goods-number">×{{item.goodsList[0].number}}</p>
+                         </div>
+                     </div>
+                    </router-link>
+             </div> 
+             <div class="total">
+                  <span class="total-number">共{{item.goodsList[0].number}}件</span>
+                  <span class="xiaoji"> 小计：<span :style="{color:'#B3381D'}">￥</span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(item.actualPrice*item.goodsList[0].number).toFixed(2)}}</span> </span>
+             </div>
+              <div class="operate">
+                 <div>
+                   <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
+                    <button class="delete">归还</button>
+                   </router-link>
+                </div>
+              </div>
+             </div>
+             
+    </div>
+</div>
   </van-tab>
 </van-tabs>
   
@@ -203,31 +416,97 @@ export default {
        
   data(){
         return{
-            active:0,
+            // activeOrder: 0,
             color:'黑色',
             listsearch: [],
+            showType:0,
             
         }
     },
-    created() {
-        
+    created(){
+
     },
      components: {
      Head,
     },
       methods: {
-         ...mapMutations(['changeSearch']),
+         ...mapMutations(['changeSearch','changeActiveOrder']),
            del(index){
-              this.$refs.content[index].remove();
+              
+              console.log(this.listsearch[index])
+              this.$axios.post('order/delete',{
+                  orderId:this.listsearch[index].id,
+              }).then(res=>{
+                this.$refs.content[index].remove();
+              })
           },
+          onCancel(index){
+              this.$axios.post('order/cancel',{
+                  orderId:this.listsearch[index].id,
+              }).then(res=>{
+                this.$refs.waiforpay[index].remove();
+              })
+          },
+          confirmReceipt(index){
+              this.$axios.post('order/confirm',{
+                  orderId:this.listsearch[index].id,
+              }).then(res=>{
+                this.$refs.confirmReceipt[index].remove();
+              })
+          },
+          onDel(index){
+                this.$axios.post('order/delete',{
+                  orderId:this.listsearch[index].id,
+              }).then(res=>{
+              this.$refs.complete[index].remove();
+              })
+          }
+        //   changeActive(){
+        //       this.activeOrder=this.$route.params.active;
+        //   }
     },
     computed: {
-         ...mapState(['searchShow']),
+         ...mapState(['searchShow','activeOrder']),
+
+         activeOrder:{
+             get(){
+                return this.$route.params.active*1;
+             },
+             set(newval){
+                //  if(newval==0){
+                //      this.showType=0
+                //  }
+                // if(newval==1){
+                //     console.log(1)
+                // }
+                //  console.log(newval)
+                this.showType=newval;
+                 this.$axios.post("/order/list",{
+                        showType:this.showType,
+                        page: 1,
+                        limit:100,
+                        sort:"update_time",
+                        order:"desc",
+                    }).then(res=>{
+                        console.log(res)
+                        this.listsearch=res.data.data.list;
+                        //    console.log( this.listsearch[0].goodsList[0])
+                    });
+              
+                 this.$store.commit("changeActiveOrder",newval);
+             }
+         }
+         
     },
     mounted() {
+
+        
+        // console.log(this.activeOrder)
          this.changeSearch(true);
-         this.$axios.post("/order/listSearch",{
-             showType:"",
+         this.changeActiveOrder(this.$route.params.active*1)
+         this.showType=this.$route.params.active;
+         this.$axios.post("/order/list",{
+             showType:this.showType,
              page: 1,
              limit:100,
              sort:"update_time",

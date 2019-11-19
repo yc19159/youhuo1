@@ -28,13 +28,13 @@
     <div class="mainContent">
   <div class="ban-list">
           <ul class="ban-list-ul">
-            <li><img src="../assets/image/home_qiye.png" alt=""> <p>办公</p> </li>
-            <li><img src="../assets/image/home_bangong.png" alt=""><p>数码</p></li>
-            <li><img src="../assets/image/home_jiadian.png" alt=""><p>家电</p></li>
-            <li><img src="../assets/image/home_shuma.png" alt=""><p>游戏</p></li>
+            <li><img src="../assets/image/home_qiye.png" alt="" class="yuan"> <p>办公</p> </li>
+            <li><img src="../assets/image/home_bangong.png" alt=""  class="yuan"><p>数码</p></li>
+            <li><img src="../assets/image/home_jiadian.png" alt=""  class="yuan"><p>家电</p></li>
+            <li><img src="../assets/image/home_shuma.png" alt=""  class="yuan"><p>游戏</p></li>
             <li>
               <router-link to="list">
-                <img src="../assets/image/home_all.png" alt="">
+                <img src="../assets/image/home_all.png" alt="" class="yuan">
               </router-link>
               <p>全部</p></li>
           </ul>
@@ -162,7 +162,7 @@ export default {
 }
 
 .mainContent{
-  
+  width: 100%;
   background: #F5F6FA;
 
 }
@@ -177,19 +177,18 @@ export default {
   height: 1.04rem;
 }
 .ban-list-ul li{
-  
+  width: 20%;
   float: left;
   margin-top: 0.3rem;
-  margin-right: 0.2rem;
+  /* margin-right: 0.2rem; */
   text-align: center;
   font-size: 0.13rem;
 }
 .ban-list-ul li .yuan{
-  width: 0.44rem;
-  height: 0.44rem;
-  background: #D0D0D0;
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 50%;
-  
+  margin: auto;
 }
 .ban-list-ul li:last-child{
   margin-right: 0rem;
@@ -229,6 +228,8 @@ export default {
    position: relative;
 }
 .content-bottom .content-bottom-ul li .hot{
+  width: 0.6rem;
+  height: 0.22rem;
  position: absolute;
  top: 0;
  right: 0;
@@ -236,11 +237,15 @@ export default {
 .content-bottom .content-bottom-ul li .remen{
   margin-top: 0.15rem;
   margin-left: 0.3rem;
+  width: 1.09rem;
+  height: 1.09rem;
 }
 .content-bottom .content-bottom-ul li .youxuan,.content-bottom .content-bottom-ul li .song{
   float: right;
   margin-top: -0.3rem;
   margin-right: 0.15rem;
+  width: 0.6rem;
+  height: 0.6rem;
 }
 .content-bottom .content-bottom-ul li:nth-child(2){
   background: #CFEBFF;

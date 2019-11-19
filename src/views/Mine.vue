@@ -13,13 +13,14 @@
                <div class="consume">
                   
      <div v-if="isLogin" class="login">
-           <Uploadavatar :username="isLogin"/>
-          <!-- <img src="" alt="" class="userImg" > -->
+           <!-- <Uploadavatar :username="isLogin"/> -->
+          <img :src="userinfo.avatarUrl" alt="" class="userImg" >
           <div class="login-right">
                 <p class="userName">{{userinfo.nickName}}</p>
-                <img src="../assets/image/mine_kthuiyuan.png" class="clubber" alt="">
-               
+                <img src="../assets/image/mine_kthuiyuan.png" class="clubber" alt="" @click="toVipMember">
+                <router-link to="personaldata">
                 <img src="../assets/image/more.png" class="more" alt="">
+                </router-link>
           </div>
 
            
@@ -76,20 +77,28 @@
                      </router-link>
                </div>
                <ul>
-                   <li>
+                   <li> 
+                       <router-link :to="{name:'myorder',params:{active:1}}">
                        <img src="../assets/image/mine_daifukuan.png" alt="">
+                       </router-link>
                        <p>待付款</p>
                    </li>
                      <li>
+                        <router-link :to="{name:'myorder',params:{active:2}}">
                        <img src="../assets/image/mine_daifahuo.png" alt="">
-                       <p>待发货</p>
+                        </router-link>
+                       <p>租用中</p>
                    </li>
                      <li>
+                         <router-link :to="{name:'myorder',params:{active:3}}">
                        <img src="../assets/image/mine_daishouhuo.png" alt="">
-                       <p>待收货</p>
+                        </router-link>
+                       <p>待结算</p>
                    </li>
                      <li>
+                    <router-link :to="{name:'myorder',params:{active:4}}">
                        <img src="../assets/image/mine_yiwancheng.png" alt="">
+                     </router-link>
                        <p>已完成</p>
                    </li>
                </ul>
@@ -175,7 +184,10 @@ export default {
         leave(){
             sessionStorage.removeItem('username') 
             this.isLogin=false
-        } 
+        },
+        toVipMember(){
+            this.$router.push({name: 'vipmember'})
+        }
     },
       computed: {
           ...mapState(['searchShow'])
@@ -192,8 +204,10 @@ export default {
         };
        
         this.$axios.post("/user/info").then(res=>{
-            this.userinfo=res.data.data
             console.log(res)
+            this.userinfo=res.data.data;
+            localStorage.info=JSON.stringify({"avatar":this.userinfo.avatarUrl,"username":this.userinfo.nickName});
+            console.log(this.userinfo)
         })
          
     },
@@ -510,7 +524,6 @@ margin-top: 0.2rem;
      width: 0.8rem;
      height: 0.8rem;
      border-radius: 50%;
-     background: grey;
  }
  .login .login-right{
      float: left;

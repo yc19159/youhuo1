@@ -20,6 +20,9 @@
              <img src="../assets/image/more.png" class="more" alt="">
             
        </div>
+       <div v-for="(item,i) in array" :key="i">
+                {{item}}
+       </div>
     </div>
 </template>
 
@@ -30,7 +33,7 @@ import Head from '@/components/Head.vue'
 export default {
     data() {
         return {
-            
+            array:['小明','xiaohong','xiaofang']
         }
     },
     components:{

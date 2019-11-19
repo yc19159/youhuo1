@@ -39,7 +39,9 @@
      <div class="price">
         <ul class="glist">
            <li class="glist-item" v-for="(item , i) in listxiaoliang" :key="i">
+           <router-link :to="{name:'good',params:{goodId:item.id}}">
           <img :src="item.picUrl" class="glist-img"/>
+          </router-link>
           <p class="phont-type">{{item.name}}</p>
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
@@ -54,7 +56,9 @@
           'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
           <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
           <p class="shop">荣耀京东自营旗舰店</p>
-          <p class="toshop">进店</p>
+            <router-link :to="{name:'dianpu',params:{shopId:item.id}}">
+             <p class="toshop">进店</p>
+           </router-link>
           <img src="../assets/image/more.png" alt="" class="more">
 
         </li>
@@ -65,7 +69,9 @@
     <div class="price">
         <ul class="glist">
            <li class="glist-item" v-for="(item , i) in listselect" :key="i">
+          <router-link :to="{name:'good',params:{goodId:item.id}}">
           <img :src="item.picUrl" class="glist-img"/>
+          </router-link>
           <p class="phont-type">{{item.name}}</p>
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
@@ -80,7 +86,9 @@
           'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
           <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
           <p class="shop">荣耀京东自营旗舰店</p>
-          <p class="toshop">进店</p>
+            <router-link :to="{name:'dianpu',params:{shopId:item.id}}">
+              <p class="toshop">进店</p>
+            </router-link>
           <img src="../assets/image/more.png" alt="" class="more">
 
         </li>

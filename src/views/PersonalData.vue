@@ -5,12 +5,13 @@
        <div class="touxiang">
            <p class="tx-p">头像</p>
            <img src="../assets/image/more.png" class="more" alt="">
-           <img src="" alt="" class="tx-img">
+           <Uploadavatar></Uploadavatar>
+            <!-- <img src="" class="tx-img" alt=""> -->
        </div>
        <div class="nickname">
            <p class="nick">昵称</p>
             <img src="../assets/image/more.png" class="more" alt="">
-           <span class="name">大魔王</span>
+           <span class="name">{{username}}</span>
        </div>
        <div class="level">
              <p class="hy-title">会员等级</p>
@@ -23,21 +24,24 @@
 <script>
 import  {mapState,mapMutations} from 'vuex';
 import Head from '@/components/Head.vue'
+import Uploadavatar from "@/components/Uploadavatar.vue";
 
 export default {
     data() {
         return {
-            
+            username: JSON.parse(localStorage.info).username
         }
     },
     components:{
      Head,
+     Uploadavatar,
     },
    computed: {
        ...mapState(['searchShow']),
    },
     mounted() {
         this.changeSearch(false);
+        console.log()
     },
     methods: {
         ...mapMutations(['changeSearch']),
@@ -81,7 +85,6 @@ export default {
   height: 0.54rem;
   border-radius: 50%;
   float: right;
-  background: grey;
   margin-right: 0.12rem;
  }
  .nickname{

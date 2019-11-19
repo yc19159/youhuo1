@@ -126,7 +126,7 @@ export default{
         // this.getMessage();
        //商品id
        this.id= this.$route.params.orderId;
-       this.$axios.post("http://192.168.0.22:8080/wx/order/logisticsInfo",{orderId:this.$route.params.orderId})
+       this.$axios.post("/order/logisticsInfo",{orderId:this.$route.params.orderId})
                 .then(res=>{
                     this.messageList=res.data.data.Traces;
                 })
@@ -135,7 +135,7 @@ export default{
         console.log(this.$route.params.orderId);
         this.id= this.$route.params.orderId;
          //根据订单号请求快递信息
-            this.$axios.post("http://192.168.0.22:8080/wx/order/logisticsInfo",{orderId:this.$route.params.orderId})
+            this.$axios.post("/order/logisticsInfo",{orderId:this.$route.params.orderId})
                 .then(res=>{   
                     this.messageList=res.data.data.Traces;
                     console.log(this.messageList)

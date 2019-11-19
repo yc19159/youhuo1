@@ -11,8 +11,9 @@
          <span class="username">小橙子</span> 
         <span class="usertel">18834568888</span>
     </div>
-    <div class="address-d" @click="gotoAddaddress">
-        <p class="address-detail">请编辑地址</p>
+    <div class="address-d" @click="gotoAddressManage">
+        <p class="address-detail" v-if="dizhi">{{dizhi.address+dizhi.addressDetail}}</p>
+        <p class="address-detail" v-else>请编辑地址</p>
         <img src="../assets/image/more.png" alt="" class="more">
     </div>
      <span class="sp1">收货不便时，可免费选择暂存服务</span>
@@ -21,53 +22,56 @@
  </div>
      <div class="bg-content">
          <div class="content">
-              <div class="store">
+              <div class="store" v-if="detail.info">
+                   <router-link :to="{name:'dianpu',params:{shopId:detail.info.shopId}}">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
-                    <span class="storename">{佳佳手机专营店}</span>
+                    <span class="storename" >{{detail.info.shopName}}</span>
                      <img src="../assets/image/more.png" alt="" class="more">
+                     </router-link>
              </div>
-             <div class="goods-desc">
-                      <img src="" alt="">
-                     <div class="goods-right">
-                         <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
+             <div class="goods-desc" v-if="detail.info">
+                 <!-- v-if="detail.info.picUrl" :src="detail.info.picUrl"  detail.info.name -->
+                      <img  alt="" :src="detail.info.picUrl">
+                     <div class="goods-right" >
+                         <p class="goods-name">{{detail.info.name}}</p>
                          <div class="goods-model">
-                            <span>{颜色：黑色} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{color}} </span>
+                            <span>{{size}}</span>
                             
                          </div>
                          <div>
                          <p class="goods-price" >
-                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
+                           ￥<span :style="{'font-size':'0.18rem'}">{{(price*1).toFixed(2)}}</span> 
                          </p>
-                         <p class="goods-number">×200</p>
+                         <p class="goods-number">×{{count}}</p>
                          </div>
                      </div>
              </div>
              <div class="carrier">
                  <span class="carrier-p">运费</span>
-                 <span class="carrier-arrive">到付</span>
+                 <span class="carrier-arrive" :style="{color:''}">包邮</span>
              </div>
               <div class="daoqimd">
-                 <span class="carrier-p maiduan">到期买断金额</span>
-                 <span class="carrier-arrive">￥{19.00}</span>
+                 <span class="carrier-p maiduan">到期买断服务</span>
+                 <span class="carrier-arrive">暂时不支持此服务</span>
              </div>
-              <div class="yunxian">
+              <!-- <div class="yunxian">
                   <img src="../assets/image/jiesuan_wenhao.png" class="wenhao" alt="">
                  <span class="carrier-p sp3">运险费</span>
                  <span class="return">退换货可赔付</span>
                  <img src="../assets/image/jiesuan_choose.png" class="choose" alt="" ref="img"
                   @click="changeChoose">
                  <span class="carrier-arrive">￥10.00</span>
-             </div>
+             </div> -->
               <div class="liuyan">
                  <span class="carrier-p sp4">订单留言</span>
-                <input type="text" class="dd-liuyan" placeholder="选填，建议请先和商家协商一致"> 
+                <input type="text" class="dd-liuyan" placeholder="选填，建议请先和商家协商一致" ref="liuyan"> 
              </div>
              <div class="total">
-                  <span class="total-number">共200件 </span>
+                  <span class="total-number">共{{count}}件 </span>
                   <span class="xiaoji"> 小计：<span 
                   :style="{color:'#B3381D'}">￥</span>
-                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(totalPrice*1).toFixed(2)}}</span> </span>
              </div>
          </div>
      </div>
@@ -75,7 +79,7 @@
             <div class="foot">
                  <span class="heji"> 合计：<span 
                   :style="{color:'#B3381D'}">￥</span>
-                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{(totalPrice*1).toFixed(2)}}</span> </span>
                   <button class="submit" @click="submit">提交订单</button>
             </div>
        </div>
@@ -86,8 +90,7 @@
                 <span class="close" @click="close">×</span>
                 <span class="payfor">确认付款</span>
              </div>
-             <p class="paynum" >￥<span :style="{'font-size':'0.38rem'}">
-                 999.<span :style="{'font-size':'0.22rem'}">00</span> </span> </p>
+             <p class="paynum" >￥<span :style="{'font-size':'0.38rem'}">{{ (totalPrice*1).toFixed(2)}} </span> </p>
                  <div class="zifubao">
                       <img src="../assets/image/zhifubao.png" alt="" class="zhifubaoImg">
                       <span class="zfb-text">支付宝支付</span>
@@ -113,15 +116,21 @@ import {mapState,mapMutations} from "vuex";
 import Head from "@/components/Head.vue";
 import ChooseImg from "@/assets/image/jiesuan_choose.png";
 import UnChooseImg from "@/assets/image/jiesuan_unchoose.png";
+import "@/utils/api.js"
 
 export default {
     data(){
         return{
             chosenAddressId: '1',
-           count: sessionStorage.count,
-            good:{},
-            dizhi:[],
-   
+            count: sessionStorage.count,
+            dizhi:"",
+            detail:{},
+            totalPrice:"",
+            color:"",
+            size:"",
+            check:"zfb",
+            dinDanId:"",
+            price:'',
         }
     },
    components:{
@@ -130,13 +139,42 @@ export default {
    computed: {
         
    },
+   created() {
+   
+   },
      methods: {
          ...mapMutations(['changeSearch']),
-         gotoAddaddress(){
-             this.$router.push({name:"addaddress"})
+         gotoAddressManage(){
+             this.$router.push({name:"addressmanage"})
          },
          submit(){
- document.getElementsByClassName('pay')[0].style.display="block";
+            // 
+           document.getElementsByClassName('pay')[0].style.display="block";
+             this.$axios.post('order/submitOrder',{
+                    rentId:sessionStorage.rentId,
+                    id: this.$route.params.goodId,
+                    productId:sessionStorage.stockId,
+                    number:sessionStorage.count,
+                    message: this.$refs.liuyan.value,
+                    addressId:this.dizhi.id,
+               }
+            
+               ).then(res=>{
+               console.log(res)
+               this.dinDanId=res.data.data.orderId;
+               console.log(this.dinDanId)
+               })
+          
+              document.onclick=function(e){
+              var event=e||window.event;
+              var target=event.target || event.srcElement;
+              if(target.className=="pay"&&target.className!="bg-paycontent"){
+                   document.getElementsByClassName('pay')[0].style.display="none";
+              }
+           }
+  
+            
+           
          },
          close(){
     document.getElementsByClassName('pay')[0].style.display="none";
@@ -144,30 +182,104 @@ export default {
          },
          paySure(){
         document.getElementsByClassName('pay')[0].style.display="none";
-        this.$router.push({name:"paysuccess"})
+        var token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGlzIGlzIGxpdGVtYWxsIHRva2VuIiwiYXVkIjoiTUlOSUFQUCIsImlzcyI6IkxJVEVNQUxMIiwidXNlcklkIjoxOCwiaWF0IjoxNTczNzE5MTAwfQ.Si0y8IXc_sqtDahLlMPNjG6xeQEG-nmxVoLl2lSl9RA';
+        var dinDanId=this.dinDanId;
+        console.log(dinDanId)
+       console.log(token)
+        console.log(this.check);
+        console.log(dinDanId);
+        if(this.check=='zfb'){
+             api.ajax({
+                url: 'http://114.116.230.27:8080/wx/pay/alipayVip',  //url+模块
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Litemall-Token': token
+                    },
+                data: {
+                    body: {
+                        vipPriceId:1
+                    }
+                }
+            },function(ret, err){
+
+                  //开发者通过 payOrder 方法来进行支付，自己处理订单信息以及签名过程
+                  console.log(JSON.stringify(ret));
+                  var aliPayPlus = api.require('aliPayPlus');
+                  aliPayPlus.payOrder({
+                      orderInfo:ret.data.info.orderInfo
+                  }, function(ret, err) {
+                      api.alert({
+                          title: '支付结果',
+                          msg: ret.code,
+                          buttons: ['确定']
+                      });
+                  });
+
+                });
+        }else if(this.check=='wx'){
+            api.ajax({
+            url: 'http://114.116.230.27:8080/wx/pay/wxpayVip',
+            method: 'post',
+            headers: {
+                    'Content-Type': 'application/json',
+                    'X-Litemall-Token': token
+                    },
+            data:{
+                    body:{
+                        vipPriceId:1
+                    }
+                
+            }
+        },function(ret, err){
+                    //   alert(ret.sign);
+            var wxPayPlus = api.require('wxPayPlus');
+          wxPayPlus.payOrder({
+            apiKey: ret.data.info.appid,
+            orderId: ret.data.info.prepayid,
+            mchId: ret.data.info.partnerid,
+            nonceStr: ret.data.info.noncestr,
+            timeStamp: ret.data.info.timestamp,
+            package: ret.data.info.package,
+            sign: ret.data.info.sign}), function(ret, err) {
+              console.log(JSON.stringify(ret));
+              if (ret.status) {
+                  //支付成功
+              } else {
+                  alert(err.code);
+              }
+          }
+        });
+
+        }
+        
+          
+        // this.$router.push({name:"paysuccess"})
          },
          onEdit(){
         //   addaddress
           this.location.href="addaddress"
               },
-        changeChoose(){
-             if(this.$refs.img.className=="choose"){
+        // changeChoose(){
+        //      if(this.$refs.img.className=="choose"){
                  
-                 this.$refs.img.src=UnChooseImg;
-                 this.$refs.img.className="unchoose"
+        //          this.$refs.img.src=UnChooseImg;
+        //          this.$refs.img.className="unchoose"
                 
-             }else{
+        //      }else{
     
-                 this.$refs.img.src=ChooseImg;
-                 this.$refs.img.className="choose"
-             }
-        },
+        //          this.$refs.img.src=ChooseImg;
+        //          this.$refs.img.className="choose"
+        //      }
+        // },
         changePay(){
              if(this.$refs.weixinImg.id=="chooseImg"){
                  this.$refs.zhifubaoImg.src=ChooseImg;
-                 this.$refs.zhifubaoImg.id="chooseImg"
+                 this.$refs.zhifubaoImg.id="chooseImg";
                  this.$refs.weixinImg.src=UnChooseImg;
-                 this.$refs.weixinImg.id="unChooseImg"
+                 this.$refs.weixinImg.id="unChooseImg";
+                 this.check='zfb';
+                 console.log(this.check)
              }
         },
         changePaySec(){
@@ -175,34 +287,12 @@ export default {
                  this.$refs.zhifubaoImg.src=UnChooseImg;
                  this.$refs.zhifubaoImg.id="unChooseImg"
                  this.$refs.weixinImg.src=ChooseImg;
-                  this.$refs.weixinImg.id="chooseImg"
+                 this.$refs.weixinImg.id="chooseImg";
+                 this.check='wx';
+                 console.log(this.check)
              }
         },
-
-        onSubmit(){
-            var username=sessionStorage.username;
-            var goodId=this.good.goodId
-           if(goodId){
-        this.$axios.post('/vue/delete',{
-          username,
-          goodId,
-        }).then(res=>{
-      
-        })
-           }
-               
-              },
-         deladdres(){
-             var target=event.target;
-             console.log(target.parentElement.parentElement)
-            var ele=target.parentElement.parentElement
-               var id=event.target.getAttribute('id')
-              this.$axios.post('/vue/deladdress',{
-                    id,
-            }).then(res=>{
-           ele.remove()
-           })
-              },
+       
         onAdd(){
           this.$router.push({name:"addaddress"})
         }
@@ -213,11 +303,37 @@ export default {
      },
      mounted() {
          this.changeSearch(false);
-         this.$axios.get('/address/listDfault',{
-             params:{
-                 
-             }
-         })
+         this.totalPrice=sessionStorage.totalPrice;
+         this.price=sessionStorage.price;
+         this.color=sessionStorage.size;
+         this.size=sessionStorage.color;
+         console.log(this.$refs.liuyan.value)
+       
+          this.$axios.get('/goods/detail',{
+        params:{id:this.$route.params.goodId,
+               userId: localStorage.token}
+        }).then(res=>{
+            console.log(res)
+            setTimeout(()=>{
+             this.detail=res.data.data;
+             console.log( this.detail);
+             console.log(this.detail.info.shopName)
+            },300)
+        
+       
+        })
+
+        this.$axios.get('address/listDfault',{
+              params:{
+                  userId:localStorage.token,
+                  isDefault: 1,
+              }
+         }
+           ).then(res=>{
+            console.log(res)
+            this.dizhi=res.data.data.list[0]
+            console.log(this.dizhi)
+          })
        
      },
 }
@@ -234,14 +350,14 @@ export default {
   line-height: 0.2rem;
   font-weight: bold;
   position: absolute;
-  top: 0.18rem;
+  top: 0.38rem;
   left: 0.5rem;
  }
  .main-content{
    background: #F5F6FA;
    width: 100%;
    height: 100%;
-
+   overflow: hidden;
  }
   .address{
       width: 3.43rem;
@@ -325,9 +441,8 @@ export default {
        margin-top: 0.24rem;
    }
    .content .goods-desc img{
-       width: 0.63rem;
+       width: 0.7rem;
        height: 0.88rem;
-       border: 1px solid;
        float: left;
    }
    .content .goods-desc .goods-right{
@@ -395,7 +510,7 @@ export default {
       }
       .carrier-arrive{
          font-size: 0.12rem;
-         color: #2F3031;
+         color: grey;
          float: right; 
          line-height: 0.15rem;
          margin-right: 0.05rem;
@@ -435,12 +550,12 @@ export default {
         margin-top:  0.16rem;
     }
     .total .total-number{
-        margin-left: 1.72rem;
+        margin-left: 1.6rem;
         color: #C7C7C7;
         font-size: 0.12rem;
     }
     .total .xiaoji{
-        margin-left: 0.14rem;
+        float: right;
         font-size: 0.13rem;
         font-weight: bold;
     }
@@ -518,8 +633,8 @@ export default {
       }
       }
       .paynum{
-          width: 1.51rem;
-          margin: auto;
+        //   width: 1.51rem;
+          margin-left: 30%;
           margin-top: 0.7rem;
           font-size: 0.22rem;
           font-weight: bold;
@@ -601,9 +716,10 @@ export default {
             float: left;
             font-size: 0.13rem;
             margin-left: 0.1rem;
+            color: #2F3031;
         }
         .more{
-            margin-top: 0.08rem;
+            margin-top: 0.04rem;
             margin-left: 0.05rem;
             float: left;
         }

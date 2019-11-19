@@ -1,7 +1,7 @@
 <template>
     <!-- <div id="photo"> -->
-        <div>
-        <img :src="touxiang" alt="上传头像" @click="uploadImg"  class="userImg" ref="touxiang">
+        <div class="tx-img">
+        <img :src="touxiang" alt="" @click="uploadImg"  class="userImg" ref="touxiang">
         <input @change="shangchuan" type="file" ref="upload" accept="image/*" class="hiddenInput">
         
     </div>
@@ -48,7 +48,6 @@ export default {
             console.log(file);
             // 表单  Form    name 
             let data = new FormData() ;  // 新建 表单对象  
-           
            
             data.append('file',file);
             console.log(data)
@@ -103,25 +102,7 @@ export default {
                       this.touxiang = require("@/assets/image/touxiang.jpg");
                   }
             })
-        //  let username = "";
-        // if(sessionStorage.username){
-        //     username = sessionStorage.username;
-        // }
-        // if(username){
-        //     this.$axios.post("/vue/getAvatar",{
-        //         username
-        //     }).then(res=>{
-        //           if(!!res.data.type){
-        //             //   this.touxiang = res.data.avatar.replace(/public/,'http://182.92.4.245:1906');
-                    
-        //               console.log(this.touxiang);
-        //           }else{
-        //               this.touxiang = require("@/assets/image/touxiang.jpg");
-        //           }
-        //     })
-        // }else{
-        //     this.touxiang = require("@/assets/image/touxiang.jpg");
-        // }
+        
     }
 }
 </script>
@@ -131,11 +112,11 @@ export default {
     height: 2rem;
 } */
 .userImg{
-     float: left;
-     width: 0.8rem;
-     height: 0.8rem;
+     width: 0.54rem;
+     height: 0.54rem;
      border-radius: 50%;
-     background: grey;
+     float: right;
+     margin-right: 0.12rem;
  }
 .touxiang{
     width:0.8rem;

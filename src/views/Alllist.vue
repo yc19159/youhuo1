@@ -2,8 +2,8 @@
     <div>
         <Head ></Head>
       <div class="content">
-         <el-tabs :tab-position="tabPosition" style="height: 200px;">
-    <el-tab-pane label="超值套餐">
+         <el-tabs :tab-position="tabPosition" v-model="activeName" style="height: 200px;">
+    <el-tab-pane label="超值套餐" name="超值套餐">
       <ul class="listUl">
          <li  v-for="(item , i) in firstList" :key="i">
            <p><router-link
@@ -12,24 +12,24 @@
         <span class="phoneType">{{item.name}}</span></li>
         </ul>
       </el-tab-pane>
-    <el-tab-pane label="智能手机">
+    <el-tab-pane label="智能手机" name="智能手机">
       <ul class="listUl">
          <li ><p></p>
         <span class="phoneType">苹果</span></li>
       </ul></el-tab-pane>
-    <el-tab-pane label="电脑/平板"><ul class="listUl">
+    <el-tab-pane label="电脑/平板" name="电脑/平板"><ul class="listUl">
          <li ><p></p>
         <span class="phoneType">苹果</span></li>
       </ul></el-tab-pane>
-    <el-tab-pane label="摄影航拍"><ul class="listUl">
+    <el-tab-pane label="摄影航拍" name="摄影航拍"><ul class="listUl">
          <li ><p></p>
-        <span class="phoneType">苹果</span></li>
+        <span class="phoneType" >苹果</span></li>
       </ul></el-tab-pane>
-    <el-tab-pane label="游戏设备"><ul class="listUl">
+    <el-tab-pane label="游戏设备" name="游戏设备"><ul class="listUl">
          <li ><p></p>
-        <span class="phoneType">苹果</span></li>
+        <span class="phoneType" >苹果</span></li>
       </ul></el-tab-pane>
-    <el-tab-pane label="家居家电" class="jiadian">
+    <el-tab-pane label="家居家电" name="家居家电" class="jiadian">
       <ul class="listUl">
          <li  v-for="(item , i) in list" :key="i">
             <router-link :to="{name:'search',params:{typeId:item.id}}">  
@@ -38,11 +38,11 @@
             <span class="phoneType">{{item.name}}</span>
         </li>
       </ul></el-tab-pane>
-    <el-tab-pane label="办公设备"><ul class="listUl">
+    <el-tab-pane label="办公设备" name="办公设备"><ul class="listUl">
          <li ><p></p>
         <span class="phoneType">苹果</span></li>
       </ul></el-tab-pane>
-    <el-tab-pane label="旅游户外"><ul class="listUl">
+    <el-tab-pane label="旅游户外" name="旅游户外"><ul class="listUl">
          <li ><p></p>
         <span class="phoneType">苹果</span></li>
       </ul></el-tab-pane>
@@ -59,6 +59,7 @@ import Head from "@/components/Head.vue"
 export default {
       data() {
     return {
+      activeName:"超值套餐",
       active: 2,
       tabPosition: 'left',
       firstList: [],

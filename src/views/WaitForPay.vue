@@ -126,6 +126,7 @@ export default {
     background-size: 100% 100%;
     height: 2.2rem;
     color: white;
+    overflow: hidden;
 }
 .wait-pay{
     width: 1.2rem;
@@ -287,6 +288,8 @@ margin-left: 0.43rem;
      .yunxian .chooseImg{
          float: right;
          margin-left: 0.08rem;
+         width: 0.15rem;
+         height: 0.15rem;
      }
       .carrier-arrive{
          font-size: 0.12rem;

@@ -85,7 +85,7 @@
                  </p>
                  <p :style="{width:'2.9rem',float:'right',height:'0.53rem',
                   'box-sizing':'border-box','border-bottom':'1px solid #F5F6FA',
-                  'font-size':'0.13rem',color:'#2F3031'}">网络类型，品牌...
+                  'font-size':'0.13rem',color:'#2F3031'}"  @click="choose">网络类型，品牌...
                    <img src="../assets/image/more.png" class="more" alt=""></p>
                  </div>
            </div>
@@ -102,9 +102,9 @@
        </div>
  
         <van-goods-action >
-  <van-goods-action-icon icon="shop-o" text="店铺" @click="getShopId"/>
+  <van-goods-action-icon icon="shop-o" text="店铺" @click="toShop"/>
   <van-goods-action-icon icon="chat-o" text="客服"  />
-  <van-goods-action-icon icon="star-o" text="收藏"  />
+  <van-goods-action-icon icon="star-o" text="收藏"  @click="collectGoods"/>
 
   <van-goods-action-button type="danger" text="立即租"   @click="paynow" />
 </van-goods-action>
@@ -114,8 +114,12 @@
        <div class="detail">
           <div class="detail-content">
             <div class="d-content-top">
-                  <img src="" alt="">
-                    <span class="price-span">￥<span :style="{'font-size':'0.2rem'}">{9.99}</span>/天</span>   
+                  <img :src="detail.info.picUrl" alt="">
+                    <span class="price-span">￥
+                      <span v-if="price" :style="{'font-size':'0.2rem'}">{{price}}</span>
+                       <span v-else :style="{'font-size':'0.2rem'}">{{morenPrice}}</span>
+
+                      /天</span>   
                  <span class="quanxin" :style="{color:'white','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
           'text-align':'center','margin-top':'0.05rem','font-weight':'normal',display:'block',float:'left'
@@ -140,9 +144,8 @@
               <div class="d-content-day">
                 <p>租用天数</p>
                 <ul>
-                  <li class="day-li">半年</li> 
-                  <li class="day-li">一年</li>
-                  <li class="day-li">两年</li>
+                  <li class="day-li" v-for="(item , i) in this.detail.rentAndPrice" :key="i"
+                  @click="chooseDay(i)" :class="{active: isActiveIndexDay === i}">{{item.rentTime}}天</li> 
                
                 </ul>
             </div>
@@ -175,10 +178,16 @@ export default {
             detail:{},
             isActiveIndex: -1,
             isActiveIndexSize:-1,
+            isActiveIndexDay:-1,
             color:"",
             size: "",
             goodsStock:[],
             stockId:"",
+            daysId: "",
+            price:"",
+            morenPrice:"",
+            totalPrice:"",
+            rentAndPrice:[],
         }
     },
     components:{
@@ -198,35 +207,92 @@ export default {
         },
          confirm(){
               // var count=this.value
+              sessionStorage.count=this.value;
               this.goodsStock=this.detail.productList
               console.log(this.goodsStock)
-               
-              for(var i=0; i<this.goodsStock.length;i++){
-                this.goodsStock[i].specifications.join('');
-                if((this.goodsStock[i].specifications.join('')).indexOf(this.size+this.color)!="-1"){
-                  console.log(this.goodsStock[i].indexOf(""))
-                }
-              }
-              // document.getElementsByClassName('goods-right-picker')[0].style.display="none"; 
-         
+              document.getElementsByClassName('goods-right-picker')[0].style.display="none";
+              sessionStorage.stockId=this.stockId;
+              sessionStorage.size=this.size;
+              sessionStorage.color=this.color;
+       
+        
+         if(this.detail.specificationList[1]){
+            if(!this.color||!this.size){
+               Dialog({message:'请选择颜色或规格'})
+            
+            }else{
+               this.$axios.get('/order/goPay',{params:{
+                 userId:localStorage.token,
+                 id:this.$route.params.goodId,
+                 productId:this.stockId,
+                 rentId:this.daysId,
+                 number:this.value,
+               }}).then(res=>{
+                 console.log(res)
+                 this.totalPrice=res.data.data.totalPrice;
+                 sessionStorage.totalPrice=this.totalPrice;
+                 sessionStorage.price=res.data.data.price;
+                 this.$router.push({name:'jiesuan',params:{goodId:this.$route.params.goodId}})
+               })
+              // location.href="/#/jiesuan/"+this.$route.params.goodId
+              
+            }
+         }else{
+           if(!this.size){
+              Dialog({message:'请选择规格'})
+           }else{
+              this.$axios.get('/order/goPay',{params:{
+                 userId:localStorage.token,
+                 id:this.$route.params.goodId,
+                 productId:this.stockId,
+                 rentId:this.daysId,
+                 number:this.value,
+               }}).then(res=>{
+                 console.log(res)
+                 this.totalPrice=res.data.data.totalPrice;
+                 sessionStorage.totalPrice=this.totalPrice;
+                 sessionStorage.price=res.data.data.price;
+                this.$router.push({name:'jiesuan',params:{goodId:this.$route.params.goodId}})
+               })
+                
+           }
+         }
           },
+          // 选择尺寸的同时判断是否存在库存
        chooseColor(index){
-          this.isActiveIndex = index;  
+           
          this.color=this.$refs.chooseColor[index].innerHTML;
           this.goodsStock=this.detail.productList
           // console.log( this.color)
           // console.log(this.goodsStock)
-           console.log(this.goodsStock[i].indexOf(""))
           for(var i=0; i<this.goodsStock.length;i++){
             this.goodsStock[i].specifications.join('');
             console.log(this.goodsStock[i].specifications.join('').indexOf(this.color))
             if(this.goodsStock[i].specifications.join('').indexOf(this.color)!="-1"){
-              console.log(this.goodsStock[i])
+             
+                if(this.size){
+                  if(this.goodsStock[i].specifications.join('').indexOf(this.size+this.color)!="-1"){
+                     console.log(this.goodsStock[i])
+                      if(this.goodsStock[i].number>0){
+                         this.isActiveIndex = index;
+                        console.log('有库存');
+                        this.stockId=this.goodsStock[i].id
+                        console.log(this.stockId);
+                      }else{
+                         Dialog({message:'此商品已没有库存'})
+                      }
+                  }
+                }else{
+                   console.log(this.goodsStock[i])
+                  this.isActiveIndex = index;
+                   this.stockId=this.goodsStock[i].id
+                }
             }
           }
        },
+      //  判断库存
        chooseSize(index){
-        this.isActiveIndexSize = index;  
+          
         this.size=this.$refs.size[index].innerHTML;
          console.log( this.size)
           this.goodsStock=this.detail.productList
@@ -234,48 +300,59 @@ export default {
           for(var i=0; i<this.goodsStock.length;i++){
             this.goodsStock[i].specifications.join('');
             console.log(this.goodsStock[i].specifications.join('').indexOf(this.color))
-            if(this.goodsStock[i].specifications.join('').indexOf(this.color)!="-1"){
-              console.log(this.goodsStock[i])
+            if(this.goodsStock[i].specifications.join('').indexOf(this.size)!="-1"){
+              // console.log(this.goodsStock[i])
               if(this.color){
+                if(this.goodsStock[i].specifications.join('').indexOf(this.size+this.color)!="-1"){
+                     
+                        console.log(this.goodsStock[i])
+                        if(this.goodsStock[i].number>0){
+                          this.isActiveIndexSize = index;
+                          console.log('有库存');
+                          this.stockId=this.goodsStock[i].id;
+                          console.log(this.stockId);
+                        }else{
+                           Dialog({message:'此商品已没有库存'})
+                        }
+                }
 
               }else{
                 if(this.goodsStock[i].number>0){
+                  this.isActiveIndexSize = index;
                    this.stockId=this.goodsStock[i].id;
                 }else{
-                   Dialog({message:'此商品以没有库存'})
+                   Dialog({message:'此商品已没有库存'})
                 }
                  console.log(this.stockId)
               }
             }
           }
        },
+       chooseDay(index){
+         this.isActiveIndexDay=index;
+         this.daysId=this.detail.rentAndPrice[index].id;
+         sessionStorage.rentId=this.daysId;
+         this.price=this.detail.rentAndPrice[index].rentMoney;
+         console.log(this.daysId);
+       },
         paynow(){
-         if(this.detail.specificationList[1]){
-            if(!this.color){
-               Dialog({message:'q请选择颜色'})
-              console.log("q请选择颜色")
-            }else{
-              this.$axios.get("",{
-
-              })
-            }
-         }
-      console.log(this.$route.params)
-
+      //判断是否有颜色及规格
      
- 
+       document.getElementsByClassName('goods-right-picker')[0].style.display="block";
         },
-        getShopId(){
-              this.$axios.get('/shop/listproductsbyshop',{
-                 
-              })
+        collectGoods(){
+           this.$axios.post('/collect/addordelete',{
+             userId: localStorage.token,
+             valueId: this.$route.params.goodId,
+             type:0,
+           }).then(res=>{
+             console.log(res)
+           })
         },
-        confirmbuy(){
-          sessionStorage.count=this.value;
-            sessionStorage.goodId=this.$route.params.goodId;
-         this.$router.push({name:"jiesuan"})
-        
+        toShop(){
+          this.$router.push({name: 'dianpu',params:{shopId:this.detail.info.shopId} })
         }
+      
     },
     mounted(){
 //        this.changeSearch(false);
@@ -289,10 +366,13 @@ export default {
      console.log(this.$route.params.goodId)
         this.$axios.get('/goods/detail',{
         params:{id:this.$route.params.goodId,
-               userId:"123"}
+               userId: localStorage.token}
         }).then(res=>{
           this.detail=res.data.data
-        console.log(this.detail)
+          console.log(res.data.data.rentAndPrice)
+          this.morenPrice=this.detail.rentAndPrice[0].rentMoney;
+          
+          
         })
   //       this.$axios.post("/vue/getShopcarInfo",{
   //     username:sessionStorage.username,
@@ -559,9 +639,8 @@ overflow: hidden;
       margin-top: 0.2rem;
       height: 1rem;
          img{
-           width: 0.72rem;
+           width: 0.9rem;
            height: 1rem;
-           border: 1px solid;
            float: left;
          }
          .quanxin{
@@ -641,6 +720,7 @@ overflow: hidden;
           .activeSize{
             background: #FD9828;
           }
+          
         }
       }
       .d-content-spec::after{
@@ -668,8 +748,12 @@ overflow: hidden;
               padding-right: 0.24rem;
               border-radius: 0.155rem;
               font-size: 0.13rem;
+              margin-left: 0.1rem;
               margin-right: 0.15rem;
               margin-top: 0.15rem;
+          }
+          .active{
+             background: #FD9828;
           }
         }
       }
