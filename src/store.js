@@ -8,6 +8,8 @@ export default new Vuex.Store({
     searchShow:true,
     active:0,
     activeOrder:0,
+    activeName:'超值套餐',
+    value:"",
     list:[
       {img:"",content:"首页",isActive:true,luyou:'/'},
       {img:"",content:"送温暖",isActive:false,luyou:'givewarm'},
@@ -25,6 +27,12 @@ export default new Vuex.Store({
    changeActiveOrder(state,activeOrder){
     state.activeOrder=activeOrder;
    },
+   changeActiveName(state,activeName){
+     state.activeName=activeName;
+   },
+   changeValue(state,value){
+     state.value=value;
+   }
   },
   actions: {
 

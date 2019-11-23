@@ -47,7 +47,7 @@
                      <button class="buyonce"  v-if="item.orderStatusText=='待收货'||item.orderStatusText=='租用中'||
                     item.orderStatusText=='待结算'|| item.orderStatusText=='已完成'||item.orderStatusText=='已取消'||item.orderStatusText=='已取消(系统)'">再次购买</button>
                    </router-link>
-                     <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
+                     <router-link :to="{name:'return',params:{orderId:item.id}}">
                      <button v-if="item.orderStatusText=='租用中'||item.orderStatusText=='待结算'||item.orderStatusText=='已逾期'" class="return">归还</button>
                      </router-link >
                      <router-link :to="{name:'comment',params:{goodId:item.goodsList[0].id}}">
@@ -240,7 +240,7 @@
                        <button class="buyonce">再次购买</button>
                  </router-link>
 
-                 <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
+                 <router-link :to="{name:'return',params:{orderId:item.id}}">
                      <button  class="return">归还</button>
                  </router-link >
 
@@ -291,7 +291,7 @@
                      <router-link :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                        <button class="buyonce">再次购买</button>
                      </router-link>
-                     <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
+                     <router-link :to="{name:'return',params:{orderId:item.id}}">
                         <button class="return">修改归还信息</button>
                      </router-link>
 
@@ -392,7 +392,7 @@
              </div>
               <div class="operate">
                  <div>
-                   <router-link :to="{name:'return',params:{orderId:item.orderSn}}">
+                   <router-link :to="{name:'return',params:{orderId:item.id}}">
                     <button class="delete">归还</button>
                    </router-link>
                 </div>

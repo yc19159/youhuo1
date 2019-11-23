@@ -3,7 +3,7 @@
          <Head></Head>
          <div class="item">
            <van-swipe  indicator-color="white">
-             <van-swipe-item><img :src="detail.info.gallery[0]" alt="" class="item-img"></van-swipe-item>
+             <van-swipe-item ><img :src="detail.info.gallery[0]" alt="" class="item-img"></van-swipe-item>
              <van-swipe-item><img :src="detail.info.gallery[1]" alt="" class="item-img"></van-swipe-item>
              <van-swipe-item><img :src="detail.info.gallery[2]" alt="" class="item-img"></van-swipe-item>
             
@@ -113,11 +113,11 @@
     <div class="goods-right-picker">
        <div class="detail">
           <div class="detail-content">
+            <span class="close" @click="close">×</span>
             <div class="d-content-top">
                   <img :src="detail.info.picUrl" alt="">
                     <span class="price-span">￥
-                      <span v-if="price" :style="{'font-size':'0.2rem'}">{{price}}</span>
-                       <span v-else :style="{'font-size':'0.2rem'}">{{morenPrice}}</span>
+                      <span  :style="{'font-size':'0.2rem'}">{{this.checkedSpecPrice}}</span>
 
                       /天</span>   
                  <span class="quanxin" :style="{color:'white','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
@@ -125,31 +125,16 @@
           'text-align':'center','margin-top':'0.05rem','font-weight':'normal',display:'block',float:'left'
         ,'margin-top':'0.75rem'}">全新</span>
             </div>
-            <div class="d-content-color" v-if="this.detail.specificationList[1]">
-                <p>颜色</p>
+            <div class="d-content-color" v-for="(list , index) in this.specificationList" :key="index">
+                <p>{{list.name}}</p>
                 <ul>
-                  <li class="color-li" v-for="(item , i) in this.detail.specificationList[1].valueList" 
-                  :key="i" @click="chooseColor(i)" :class="{active: isActiveIndex === i}" ref="chooseColor">{{item.value}}</li> 
+                  <li class="color-li" v-for="(item , i) in list.valueList" 
+                  :key="i" @click="clickSkuValue(index,i)" :class="{active: item.checked == true}" ref="chooseColor"
+                  :valueId="item.id" :name="item.specification">{{item.value}}</li> 
                   
                 </ul>
-            </div>
-              <div class="d-content-spec">
-                <p>规格</p>
-                <ul>
-                  <li class="spec-li" v-for="(item , i) in this.detail.specificationList[0].valueList" 
-                  :key="i"  @click="chooseSize(i)" :class="{activeSize: isActiveIndexSize === i}" ref="size" >{{item.value}}</li> 
-                  
-                </ul>
-            </div>
-              <div class="d-content-day">
-                <p>租用天数</p>
-                <ul>
-                  <li class="day-li" v-for="(item , i) in this.detail.rentAndPrice" :key="i"
-                  @click="chooseDay(i)" :class="{active: isActiveIndexDay === i}">{{item.rentTime}}天</li> 
-               
-                </ul>
-            </div>
-           
+            </div >  
+
              <div class="d-content-num">
                 <p>数量</p>
                 <van-stepper v-model="value" />
@@ -170,6 +155,7 @@
 import Head from '@/components/Head.vue'
 import {mapState,mapMutations} from "vuex"
 import { Dialog } from 'vant';
+import { log } from 'util';
 var username=sessionStorage.username;
 export default {
     data(){
@@ -188,6 +174,13 @@ export default {
             morenPrice:"",
             totalPrice:"",
             rentAndPrice:[],
+            specificationList:[],
+            checkedSpecText: '规格数量选择',
+            tmpSpecText: '请选择规格数量',
+            soldout: false,
+            checkedSpecPrice: 0,
+            goods:{},
+            productList: [],
         }
     },
     components:{
@@ -205,47 +198,69 @@ export default {
         close(){
    document.getElementsByClassName('goods-right-picker')[0].style.display="none";
         },
-         confirm(){
-              // var count=this.value
-              sessionStorage.count=this.value;
-              this.goodsStock=this.detail.productList
-              console.log(this.goodsStock)
-              document.getElementsByClassName('goods-right-picker')[0].style.display="none";
-              sessionStorage.stockId=this.stockId;
-              sessionStorage.size=this.size;
-              sessionStorage.color=this.color;
+        //  confirm(){
+        //       // var count=this.value
+        //       sessionStorage.count=this.value;
+        //       this.goodsStock=this.detail.productList
+        //       console.log(this.goodsStock)
+        //       document.getElementsByClassName('goods-right-picker')[0].style.display="none";
+        //       sessionStorage.stockId=this.stockId;
+        //       sessionStorage.size=this.size;
+        //       sessionStorage.color=this.color;
        
         
-         if(this.detail.specificationList[1]){
-            if(!this.color||!this.size){
-               Dialog({message:'请选择颜色或规格'})
+        //  if(this.detail.specificationList[1]){
+        //     if(!this.color||!this.size){
+        //        Dialog({message:'请选择颜色或规格'})
             
-            }else{
-               this.$axios.get('/order/goPay',{params:{
-                 userId:localStorage.token,
-                 id:this.$route.params.goodId,
-                 productId:this.stockId,
-                 rentId:this.daysId,
-                 number:this.value,
-               }}).then(res=>{
-                 console.log(res)
-                 this.totalPrice=res.data.data.totalPrice;
-                 sessionStorage.totalPrice=this.totalPrice;
-                 sessionStorage.price=res.data.data.price;
-                 this.$router.push({name:'jiesuan',params:{goodId:this.$route.params.goodId}})
-               })
-              // location.href="/#/jiesuan/"+this.$route.params.goodId
+        //     }else{
+        //        this.$axios.get('/order/goPay',{params:{
+        //          userId:localStorage.token,
+        //          id:this.$route.params.goodId,
+        //          productId:this.stockId,
+        //          rentId:this.daysId,
+        //          number:this.value,
+        //        }}).then(res=>{
+        //          console.log(res)
+        //          this.totalPrice=res.data.data.totalPrice;
+        //          sessionStorage.totalPrice=this.totalPrice;
+        //          sessionStorage.price=res.data.data.price;
+        //          this.$router.push({name:'jiesuan',params:{goodId:this.$route.params.goodId}})
+        //        })
+        //       // location.href="/#/jiesuan/"+this.$route.params.goodId
               
-            }
-         }else{
-           if(!this.size){
-              Dialog({message:'请选择规格'})
-           }else{
-              this.$axios.get('/order/goPay',{params:{
-                 userId:localStorage.token,
+        //     }
+        //  }else{
+        //    if(!this.size){
+        //       Dialog({message:'请选择规格'})
+        //    }else{
+        //       this.$axios.get('/order/goPay',{params:{
+        //          userId:localStorage.token,
+        //          id:this.$route.params.goodId,
+        //          productId:this.stockId,
+        //          rentId:this.daysId,
+        //          number:this.value,
+        //        }}).then(res=>{
+        //          console.log(res)
+        //          this.totalPrice=res.data.data.totalPrice;
+        //          sessionStorage.totalPrice=this.totalPrice;
+        //          sessionStorage.price=res.data.data.price;
+        //         this.$router.push({name:'jiesuan',params:{goodId:this.$route.params.goodId}})
+        //        })
+                
+        //    }
+        //  }
+        //   },
+       
+       confirm(){
+           sessionStorage.count=this.value;
+
+             if (!this.isCheckedAllSpec()){
+                Dialog({message:'请选择规格'})
+             }else{
+                  this.$axios.get('/order/goPay',{params:{
                  id:this.$route.params.goodId,
                  productId:this.stockId,
-                 rentId:this.daysId,
                  number:this.value,
                }}).then(res=>{
                  console.log(res)
@@ -254,86 +269,7 @@ export default {
                  sessionStorage.price=res.data.data.price;
                 this.$router.push({name:'jiesuan',params:{goodId:this.$route.params.goodId}})
                })
-                
-           }
-         }
-          },
-          // 选择尺寸的同时判断是否存在库存
-       chooseColor(index){
-           
-         this.color=this.$refs.chooseColor[index].innerHTML;
-          this.goodsStock=this.detail.productList
-          // console.log( this.color)
-          // console.log(this.goodsStock)
-          for(var i=0; i<this.goodsStock.length;i++){
-            this.goodsStock[i].specifications.join('');
-            console.log(this.goodsStock[i].specifications.join('').indexOf(this.color))
-            if(this.goodsStock[i].specifications.join('').indexOf(this.color)!="-1"){
-             
-                if(this.size){
-                  if(this.goodsStock[i].specifications.join('').indexOf(this.size+this.color)!="-1"){
-                     console.log(this.goodsStock[i])
-                      if(this.goodsStock[i].number>0){
-                         this.isActiveIndex = index;
-                        console.log('有库存');
-                        this.stockId=this.goodsStock[i].id
-                        console.log(this.stockId);
-                      }else{
-                         Dialog({message:'此商品已没有库存'})
-                      }
-                  }
-                }else{
-                   console.log(this.goodsStock[i])
-                  this.isActiveIndex = index;
-                   this.stockId=this.goodsStock[i].id
-                }
-            }
-          }
-       },
-      //  判断库存
-       chooseSize(index){
-          
-        this.size=this.$refs.size[index].innerHTML;
-         console.log( this.size)
-          this.goodsStock=this.detail.productList
-          // console.log(this.goodsStock)
-          for(var i=0; i<this.goodsStock.length;i++){
-            this.goodsStock[i].specifications.join('');
-            console.log(this.goodsStock[i].specifications.join('').indexOf(this.color))
-            if(this.goodsStock[i].specifications.join('').indexOf(this.size)!="-1"){
-              // console.log(this.goodsStock[i])
-              if(this.color){
-                if(this.goodsStock[i].specifications.join('').indexOf(this.size+this.color)!="-1"){
-                     
-                        console.log(this.goodsStock[i])
-                        if(this.goodsStock[i].number>0){
-                          this.isActiveIndexSize = index;
-                          console.log('有库存');
-                          this.stockId=this.goodsStock[i].id;
-                          console.log(this.stockId);
-                        }else{
-                           Dialog({message:'此商品已没有库存'})
-                        }
-                }
-
-              }else{
-                if(this.goodsStock[i].number>0){
-                  this.isActiveIndexSize = index;
-                   this.stockId=this.goodsStock[i].id;
-                }else{
-                   Dialog({message:'此商品已没有库存'})
-                }
-                 console.log(this.stockId)
-              }
-            }
-          }
-       },
-       chooseDay(index){
-         this.isActiveIndexDay=index;
-         this.daysId=this.detail.rentAndPrice[index].id;
-         sessionStorage.rentId=this.daysId;
-         this.price=this.detail.rentAndPrice[index].rentMoney;
-         console.log(this.daysId);
+             }
        },
         paynow(){
       //判断是否有颜色及规格
@@ -351,7 +287,214 @@ export default {
         },
         toShop(){
           this.$router.push({name: 'dianpu',params:{shopId:this.detail.info.shopId} })
+        },
+        // 规格选择
+  clickSkuValue: function(index,i) {
+    let that = this;
+    let specName = event.currentTarget.getAttribute("name");
+    let specValueId = event.currentTarget.getAttribute("valueId");
+
+    //判断是否可以点击
+
+    //TODO 性能优化，可在wx:for中添加index，可以直接获取点击的属性名和属性值，不用循环
+    let _specificationList = this.specificationList;
+    for (let i = 0; i < _specificationList.length; i++) {
+      if (_specificationList[i].name === specName) {
+        for (let j = 0; j < _specificationList[i].valueList.length; j++) {
+          if (_specificationList[i].valueList[j].id == specValueId) {
+            //如果已经选中，则反选
+            if (_specificationList[i].valueList[j].checked) {
+              _specificationList[i].valueList[j].checked = false;
+              console.log(_specificationList[i].valueList[j]);
+            } else {
+              _specificationList[i].valueList[j].checked = true;
+              console.log(_specificationList[i].valueList[j]);
+            }
+          } else {
+            _specificationList[i].valueList[j].checked = false;
+            console.log(_specificationList[i].valueList[j]);
+          }
         }
+      }
+    }
+      this.specificationList= _specificationList,
+
+      this.detail.specificationList = _specificationList;
+      this.$forceUpdate();
+      console.log(this.specificationList);
+      
+    //重新计算spec改变后的信息
+    this.changeSpecInfo(index,i);
+
+    //重新计算哪些值不可以点击
+  },
+
+  //获取选中的团购信息
+  getCheckedGrouponValue: function() {
+    let checkedValues = {};
+    let _grouponList = this.data.groupon;
+    for (let i = 0; i < _grouponList.length; i++) {
+      if (_grouponList[i].checked) {
+        checkedValues = _grouponList[i];
+      }
+    }
+
+    return checkedValues;
+  },
+
+  //获取选中的规格信息
+  getCheckedSpecValue: function() {
+    let checkedValues = [];
+    let _specificationList = this.specificationList;
+    for (let i = 0; i < _specificationList.length; i++) {
+      let _checkedObj = {
+        name: _specificationList[i].name,
+        valueId: 0,
+        valueText: ''
+      };
+      for (let j = 0; j < _specificationList[i].valueList.length; j++) {
+        if (_specificationList[i].valueList[j].checked) {
+          _checkedObj.valueId = _specificationList[i].valueList[j].id;
+          _checkedObj.valueText = _specificationList[i].valueList[j].value;
+        }
+      }
+      checkedValues.push(_checkedObj);
+    }
+
+    return checkedValues;
+  },
+
+  //判断规格是否选择完整
+  isCheckedAllSpec: function() {
+    return !this.getCheckedSpecValue().some(function(v) {
+      if (v.valueId == 0) {
+        return true;
+      }
+    });
+  },
+
+  getCheckedSpecKey: function() {
+    let checkedValue = this.getCheckedSpecValue().map(function(v) {
+      return v.valueText;
+    });
+    return checkedValue;
+  },
+
+  // 规格改变时，重新计算价格及显示信息
+  changeSpecInfo: function(index,i) {
+    let checkedNameValue = this.getCheckedSpecValue();
+
+    //设置选择的信息
+    let checkedValue = checkedNameValue.filter(function(v) {
+      if (v.valueId != 0) {
+        return true;
+      } else {
+        return false;
+      }
+    }).map(function(v) {
+      return v.valueText;
+    });
+    if (checkedValue.length > 0) {
+      this.tmpSpecText=checkedValue.join('　')
+    } else {
+      this.tmpSpecText= '请选择规格数量'
+    }
+
+    if (this.isCheckedAllSpec()) {
+      this.checkedSpecText=this.tmpSpecText;
+
+      // 规格所对应的货品选择以后
+      let checkedProductArray = this.getCheckedProductItem(this.getCheckedSpecKey());
+      if (!checkedProductArray || checkedProductArray.length <= 0) {
+        this.soldout= true;
+        console.error('规格所对应货品不存在');
+        return;
+      }
+
+      let checkedProduct = checkedProductArray[0];
+      if (checkedProduct.number > 0) {
+        this.checkedSpecPrice= checkedProduct.price,
+        this.stockId=checkedProduct.id,
+        sessionStorage.stockId=checkedProduct.id,
+        this.soldout= false
+      } else {
+        // console.log( this.specificationList[index])
+        this.specificationList[index].valueList[i].checked= false;
+        Dialog({message:'此商品已没有库存'});
+      }
+
+    } else {
+      this.checkedSpecText= '规格数量选择',
+
+      this.soldout= false;
+    }
+    this.$forceUpdate();
+  },
+
+  // 获取选中的产品（根据规格）
+  getCheckedProductItem: function(key) {
+    return this.productList.filter(function(v) {
+      if (v.specifications.toString() == key.toString()) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+  },
+
+  onLoad: function(options) {
+    // 页面初始化 options为页面跳转所带来的参数
+    if (options.id) {
+      this.setData({
+        id: parseInt(options.id)
+      });
+      this.getGoodsInfo();
+    }
+
+    if (options.grouponId) {
+      this.setData({
+        isGroupon: true,
+      });
+      this.getGrouponInfo(options.grouponId);
+    }
+    let that = this;
+    wx.getSetting({
+        success: function (res) {
+            console.log(res)
+            //不存在相册授权
+            if (!res.authSetting['scope.writePhotosAlbum']) {
+                wx.authorize({
+                    scope: 'scope.writePhotosAlbum',
+                    success: function () {
+                        that.setData({
+                            canWrite: true
+                        })
+                    },
+                    fail: function (err) {
+                        that.setData({
+                            canWrite: false
+                        })
+                    }
+                })
+            } else {
+                that.setData({
+                    canWrite: true
+                });
+            }
+        }
+    })
+  },
+  onShow: function() {
+    // 页面显示
+    var that = this;
+    util.request(api.CartGoodsCount).then(function(res) {
+      if (res.errno === 0) {
+        that.setData({
+          cartGoodsCount: res.data
+        });
+      }
+    });
+  },
       
     },
     mounted(){
@@ -369,7 +512,10 @@ export default {
                userId: localStorage.token}
         }).then(res=>{
           this.detail=res.data.data
-          console.log(res.data.data.rentAndPrice)
+          console.log(res.data.data)
+          this.specificationList = res.data.data.specificationList
+          this.goods = res.data.data.info
+          this.productList = res.data.data.productList
           this.morenPrice=this.detail.rentAndPrice[0].rentMoney;
           
           
@@ -407,9 +553,9 @@ export default {
 }
 .item-img {
  width: 3.5rem;
- height: 2.64rem;
+ height: 2.94rem;
  margin: auto;
-margin-top: 0.43rem
+margin-top: 0.23rem
 }
 .descript{
 width: 100%;
@@ -502,6 +648,11 @@ overflow: hidden;
     
    }
  }
+  .close{
+      font-size: 0.2rem;
+      font-weight: bold;
+      float: right;
+      }
  .descript-bottom{
    height: 0.12rem;
    margin-top: 0.1rem;

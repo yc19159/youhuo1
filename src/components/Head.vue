@@ -8,7 +8,7 @@
           
         </div> 
          
-         <van-search placeholder="请输入搜索关键词" @change="onSearch" v-model="value" v-if="searchShow"/>
+         <van-search placeholder="请输入搜索关键词" @change="onSearch" v-model="text" v-if="searchShow"/>
    
     </div>
     
@@ -19,34 +19,34 @@ import {mapState,mapMutations} from "vuex";
 export default {
     data() {
         return {
-            value:"",
+            text: '',
         }
        
+    },
+    props: {
+        type: String,
+    },
+    computed:{
+        
     },
      methods: {
            goback(){
                  this.$router.go(-1);
            } ,
-           onSearch(){
-                console.log(this.value);
-            this.$axios.post("/order/listSearch",{
-             showType:"",
-             page: 1,
-             limit:100,
-             sort:"update_time",
-             order:"desc",
-             keywords:this.value,
-         }).then(res=>{
-             console.log(res)
-            //  this.listsearch=res.data.data.list;
-            //    console.log( this.listsearch)
-            //    console.log( this.listsearch[0].goodsList[0])
-         })
-           }
+            onSearch(){
+                console.log(this.text , this.type)
+                this.$axios.get("/goods/list",{params:{
+                 keyword:this.text,
+                 }}).then(res=>{
+                    console.log(res.data.data.list);
+                    this.goodsList=res.data.data.list;
+ 
+                })
+             },
         },
         computed: {
-     ...mapState(['searchShow']),
-  },
+     ...mapState(['searchShow','value']),
+     },
 }
 </script>
 

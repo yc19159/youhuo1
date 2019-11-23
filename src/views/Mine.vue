@@ -1,6 +1,6 @@
 <template>
   <div class="mine">
-      <div :style="{height:'2.72rem',background:'white',overflow:'hidden'}">
+      <div :style="{height:'2.37rem',background:'white',overflow:'hidden'}">
      <div class="top">
           <router-link to="register">
          <!-- <img src="" alt="" class="news"> -->
@@ -17,7 +17,9 @@
           <img :src="userinfo.avatarUrl" alt="" class="userImg" >
           <div class="login-right">
                 <p class="userName">{{userinfo.nickName}}</p>
-                <img src="../assets/image/mine_kthuiyuan.png" class="clubber" alt="" @click="toVipMember">
+                <img v-if="userinfo.userLevel==0" src="../assets/image/mine_kthuiyuan.png" class="clubber" alt="" @click="toVipMember">
+                <img v-else src="../assets/image/mine_vip.png" class="isClubber" alt="">
+                <p class="vipLevel">{{userinfo.vipName}}</p>
                 <router-link to="personaldata">
                 <img src="../assets/image/more.png" class="more" alt="">
                 </router-link>
@@ -32,7 +34,7 @@
             <button class="login" @click="gotoLogin">登录</button>
             
        </div>
-       <div class="some-fun">
+       <!-- <div class="some-fun">
            <ul>
                <li>
                    <p>0</p>
@@ -45,13 +47,13 @@
                <li>
                    <p>0</p>
                    <p>余额</p>
-               </li>
+               </li> 
                <li>
                    <p>0</p>
                    <p>收藏夹</p>
                </li>
            </ul>
-       </div>
+       </div> -->
 
       <div class="vipdiv">
        <div class="vipdiv-left">
@@ -84,19 +86,19 @@
                        <p>待付款</p>
                    </li>
                      <li>
-                        <router-link :to="{name:'myorder',params:{active:2}}">
+                        <router-link :to="{name:'myorder',params:{active:4}}">
                        <img src="../assets/image/mine_daifahuo.png" alt="">
                         </router-link>
                        <p>租用中</p>
                    </li>
                      <li>
-                         <router-link :to="{name:'myorder',params:{active:3}}">
+                         <router-link :to="{name:'myorder',params:{active:5}}">
                        <img src="../assets/image/mine_daishouhuo.png" alt="">
                         </router-link>
                        <p>待结算</p>
                    </li>
                      <li>
-                    <router-link :to="{name:'myorder',params:{active:4}}">
+                    <router-link :to="{name:'myorder',params:{active:6}}">
                        <img src="../assets/image/mine_yiwancheng.png" alt="">
                      </router-link>
                        <p>已完成</p>
@@ -115,14 +117,18 @@
                <ul>
                    <li>
                        <img src="../assets/image/mine_youhuiquan.png" alt="">
-                       <p>优惠券</p>
+                        <p>收藏夹</p>
                    </li>
                      <li>
+                         <router-link :to="{name:'list',params:{activeDescript:'超值套餐'}}">
                        <img src="../assets/image/mine_qyzulin.png" alt="">
+                       </router-link>
                        <p>企业租赁</p>
                    </li>
                      <li>
+                         <router-link to='suggested'>
                        <img src="../assets/image/mine_yjfankui.png" alt="">
+                        </router-link>
                        <p>意见反馈</p>
                    </li>
                      <li>
@@ -137,21 +143,35 @@
          <img src="../assets/image/mine_tuijian.png" alt="" class="tuijian-img">
          <p class="recommendForYou">为你推荐</p>
      </div>
-     <div class="price">
+      <div class="price">
       <ul class="glist">
-        <li class="glist-item" @click="drawer = true">
-          <img src="" class="glist-img"/>
-          <p class="phont-type">AAAAA Ipone   X</p>
-          <p :style="{color:'#3BAD38','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
-          'margin-left':'0.12rem',border:'1px solid #25A721','border-radius':'0.02rem',width:'0.32rem',
-          'text-align':'center',float:'left','margin-top':'0.05rem'}">全新</p>
-              <p :style="{color:'#FB9F00','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
-          'margin-left':'0.12rem',border:'1px solid #FCAC39','border-radius':'0.02rem',width:'0.44rem',
-          'text-align':'center',float:'left','margin-top':'0.05rem'}">免押金</p>
-          <p class="glist-price">￥9.99/天</p>
+       <li class="glist-item"  v-for="(item , i) in goodsList" :key="i">
+         <router-link :to="{name:'good',params:{goodId:item.id}}">
+          <img :src="item.picUrl" class="glist-img"/>
+        </router-link>
+          <p class="phont-type">{{item.name}}</p>
+          <div :style="{width:'100%','margin-top':'0.15rem'}">
+           <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
+           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+          </div>
+          <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
+              <p :style="{color:'#269CF0','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem',border:'1px solid #269CF0','border-radius':'0.02rem',width:'0.44rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}">免押金</p>
+          <p :style="{color:'#FB9F00','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+          'margin-left':'0.12rem',border:'1px solid #FCAC39','border-radius':'0.02rem',width:'0.2rem',
+          'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
+          <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
+          <p class="shop">荣耀京东自营旗舰店</p>
+          <router-link :to="{name:'dianpu',params:{shopId:item.id}}">
+          <p class="toshop">进店</p>
+          </router-link>
+          <img src="../assets/image/more.png" alt="" class="more">
+
         </li>
-         <li class="glist-item"></li>
-          <li class="glist-item"></li>
+        
       </ul>
     </div> 
        <Foot/>
@@ -168,6 +188,7 @@ export default {
             isLogin:false,
             userinfo:[],
             username:"",
+            goodsList:[],
         }
     },
     components:{
@@ -206,8 +227,12 @@ export default {
         this.$axios.post("/user/info").then(res=>{
             console.log(res)
             this.userinfo=res.data.data;
-            localStorage.info=JSON.stringify({"avatar":this.userinfo.avatarUrl,"username":this.userinfo.nickName});
+            localStorage.info=JSON.stringify({"avatar":this.userinfo.avatarUrl,"username":this.userinfo.nickName,"vipLevel":this.userinfo.userLevel});
             console.log(this.userinfo)
+        });
+        this.$axios.post('/goods/related').then(res=>{
+            this.goodsList=res.data.data.list
+            console.log(this.goodsList)
         })
          
     },
@@ -243,13 +268,13 @@ export default {
 }
 .bg-consume{
     width: 100%;
-    height: 2.2rem;
+    height: 1.85rem;
     margin-top: 0.15rem;
     background: white;
 }
 .consume{
     width: 3.43rem;
-    height: 2.2rem;
+    height: 1.85rem;
     margin: auto;
 }
 .unlogin{
@@ -331,6 +356,7 @@ export default {
 .vipdiv .vipdiv-left .vipdiv-save{
     font-size: 0.12rem;
     margin-top: 0.05rem;
+    color: #C7C7C7;
 }
 .vipdiv .vipdiv-right{
     float: right;
@@ -468,10 +494,10 @@ margin-top: 0.2rem;
     background: #F5F6FA;
     border-radius: 0.2rem;
     margin-top: 0.15rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.8rem;
   }
   .glist{
-    width: 3.43rem;
+    width: 100%;
     margin: auto;
     height: 100%;
   }
@@ -483,37 +509,81 @@ margin-top: 0.2rem;
     overflow:hidden; visibility:hidden; 
   }
   .glist .glist-item{
-     width: 1.6rem;
-     height: 2.53rem;
+     width: 1.825rem;
+     height: 3.53rem;
      background: white;
      border-radius: 0.16rem;
      float: left;
      margin-top: 0.25rem;
-     /* margin-bottom: 0.2rem; */
      overflow: hidden;
   }
   .glist .glist-item:nth-child(2n){
-    margin-left: 0.23rem;
+    margin-left: 0.1rem;
+  }
+  .glist .glist-item .new{
+    color: white;
+    background: -webkit-linear-gradient(to left, #F06726, #D6242C) !important;
+    background: -o-linear-gradient(to left, #F06726, #D6242C) !important;
+    background: -moz-linear-gradient(to left, #F06726, #D6242C) !important;
+    background: linear-gradient(to left, #F06726, #D6242C) !important;
+  }
+  .glist .glist-item .pay{
+    float: left;
+    font-size: 0.12rem;
+    color: #C7C7C7;
+    line-height: 0.3rem;
+    margin-left: 0.16rem;
+  }
+  .glist .glist-item .shop{
+    float: left;
+    font-size: 0.12rem;
+    color: #C7C7C7;
+    margin-left: 0.16rem;
+    width: 0.9rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .glist .glist-item .toshop{
+    color: black;
+    font-size: 0.12rem;
+    font-weight: bold;
+    float: left;
+  }
+  .glist .glist-item .more{
+    /* width: 0.08rem;
+    height: 0.12rem; */
+
+    float: left;
+    margin-left: 0.05rem;
+    margin-top: 0.05rem;
+  }
+  .glist .glist-item .haoping{
+    float: left;
+    font-size: 0.12rem;
+    color: #C7C7C7;
+    line-height: 0.3rem;
+    margin-left: 0.1rem;
   }
   .glist-img{
-       border: 1px solid;
+       /* border: 1px solid; */
        /* display: block; */
-       width: 0.9rem;
-       height: 1.2rem;
+       width: 1.5rem;
+       height: 1.7rem;
        margin: auto;
-        margin-top: 0.22rem;
+       margin-top: 0.17rem;
   }
  .phont-type{
    margin-left: 0.12rem;
-   margin-top: 0.25rem;
+   margin-top: 0.1rem;
    font-size: 0.14rem;
    font-family: "PingFangSC-Semibold";
    font-weight: bold;
+  
  }
  .glist-price{
     margin-top: 0.28rem;
-    font-size: 0.15rem;
-    font-family: 'DIN-Bold';
+    font-size: 0.18rem;
     color: #B3381D;
     font-weight: bold;
     margin-left: 0.12rem;
@@ -545,5 +615,17 @@ margin-top: 0.2rem;
  .login .login-right .more{
      float: right;
      margin-top: -0.3rem;
+ }
+ .login .login-right .isClubber{
+  width: 0.88rem;
+  height: 0.25rem;
+  margin-top: 0.15rem;
+ }
+ .login .login-right .vipLevel{
+    position: absolute;
+    font-size: 0.13rem;
+    top: 0.63rem;
+    left: 1.33rem;
+    color: #5E6165;
  }
 </style>

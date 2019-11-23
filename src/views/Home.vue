@@ -33,7 +33,7 @@
             <li><img src="../assets/image/home_jiadian.png" alt=""  class="yuan"><p>家电</p></li>
             <li><img src="../assets/image/home_shuma.png" alt=""  class="yuan"><p>游戏</p></li>
             <li>
-              <router-link to="list">
+              <router-link :to="{name:'list',params:{activeDescript:'超值套餐'}}">
                 <img src="../assets/image/home_all.png" alt="" class="yuan">
               </router-link>
               <p>全部</p></li>
@@ -95,6 +95,7 @@ export default {
   methods: {
      ...mapMutations(['changeSearch']),
      onSearch(){
+       this.$router.push({name:'tosearch',params:{keyWords:this.value}})
           console.log(this.value)
      },
       

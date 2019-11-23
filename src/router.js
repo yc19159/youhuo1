@@ -19,6 +19,11 @@ export default new VueRouter({
       component: Search,
     },
     {
+      path: '/tosearch/:keyWords?',
+      name: 'tosearch',
+      component: ()=> import('./views/ToSearch.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       component: ()=> import('./views/Login.vue')
@@ -34,7 +39,7 @@ export default new VueRouter({
       component: ()=> import('./views/Mine.vue')
     },
     {
-      path: '/list',
+      path: '/list/:activeDescript?',
       name: 'list',
       component: ()=> import('./views/Alllist.vue')
     },

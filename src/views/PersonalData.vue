@@ -16,7 +16,7 @@
        <div class="level">
              <p class="hy-title">会员等级</p>
             <img src="../assets/image/more.png" class="more" alt="">
-           <span class="hy-level">lv1</span>
+           <span class="hy-level">lv{{vipLevel}}</span>
        </div>
     </div>
 </template>
@@ -29,7 +29,8 @@ import Uploadavatar from "@/components/Uploadavatar.vue";
 export default {
     data() {
         return {
-            username: JSON.parse(localStorage.info).username
+            username: JSON.parse(localStorage.info).username,
+            vipLevel: JSON.parse(localStorage.info).vipLevel,
         }
     },
     components:{
@@ -58,7 +59,7 @@ export default {
   line-height: 0.2rem;
   font-weight: bold;
   position: absolute;
-  top: 0.18rem;
+  top: 0.38rem;
   left: 0.6rem;
  }
  .more{

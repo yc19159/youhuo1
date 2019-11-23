@@ -3,12 +3,16 @@
          <Head ></Head> 
        <p class="title">设置</p>
        <div class="modify">
+        <router-link to="resetpwd">
            <p class="tx-p">修改密码</p>
            <img src="../assets/image/more.png" class="more" alt="">
+        </router-link>
        </div>
        <div class="address">
+        <router-link to="addressmanage">
            <p class="nick">地址管理</p>
             <img src="../assets/image/more.png" class="more" alt="">
+        </router-link>
        </div>
        <div class="aboutUs">
              <p class="hy-title">关于我们</p>
@@ -17,7 +21,7 @@
        </div>
         <div class="loginOut">
              <p class="loginOut-title" @click="loginOut">退出登录</p>
-             <img src="../assets/image/more.png" class="more" alt="">
+             <img src="../assets/image/more.png" class="more" alt="" @click="loginOut">
             
        </div>
        <div v-for="(item,i) in array" :key="i">
@@ -33,7 +37,7 @@ import Head from '@/components/Head.vue'
 export default {
     data() {
         return {
-            array:['小明','xiaohong','xiaofang']
+            
         }
     },
     components:{
@@ -49,7 +53,8 @@ export default {
         ...mapMutations(['changeSearch']),
         loginOut(){
              localStorage.removeItem('token');
-             this.$router.push('login')
+             this.$router.push('login');
+             
         }
     },
 }
@@ -64,7 +69,7 @@ export default {
   line-height: 0.2rem;
   font-weight: bold;
   position: absolute;
-  top: 0.18rem;
+  top: 0.38rem;
   left: 0.6rem;
  }
  .more{
@@ -85,6 +90,7 @@ export default {
    float: left;
    font-size:0.15rem;
    font-weight: bold;
+   color: black;
  }
  .modify .tx-img{
   width: 0.54rem;
@@ -101,6 +107,7 @@ export default {
    float: left;
    font-size:0.15rem;
    font-weight: bold;
+   color: black;
  }
  .address .name{
      float: right;

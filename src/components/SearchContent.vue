@@ -1,6 +1,5 @@
 <template>
-  <div class="search">
-       <Head></Head>
+  <div >
        <!-- <input type="text" class=" searchInput" > -->
        <van-tabs v-model="active">
   <van-tab title="价格">
@@ -12,10 +11,10 @@
           <img :src="item.picUrl" class="glist-img"/>
         </router-link>
           <p class="phont-type">{{item.name}}</p>
-          <div :style="{width:'100%','margin-top':'0.15rem'}">
+           <div :style="{width:'100%','margin-top':'0.15rem'}">
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
-           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
-          </div>
+          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+           </div>
           <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
           'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
@@ -47,7 +46,7 @@
           <p class="phont-type">{{item.name}}</p>
           <div :style="{width:'100%','margin-top':'0.15rem'}">
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
-           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
           </div>
           <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
@@ -68,106 +67,21 @@
         </li>
        
       </ul>
-    </div> </van-tab>
-  <van-tab title="筛选">
-    <div class="price">
-        <ul class="glist">
-           <li class="glist-item" v-for="(item , i) in listselect" :key="i">
-          <router-link :to="{name:'good',params:{goodId:item.id}}">
-          <img :src="item.picUrl" class="glist-img"/>
-          </router-link>
-          <p class="phont-type">{{item.name}}</p>
-          <div :style="{width:'100%','margin-top':'0.15rem'}">
-           <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
-           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
-          </div>
-         <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
-          'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
-          'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
-              <p :style="{color:'#269CF0','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
-          'margin-left':'0.12rem',border:'1px solid #269CF0','border-radius':'0.02rem',width:'0.44rem',
-          'text-align':'center',float:'left','margin-top':'0.1rem'}">免押金</p>
-          <p :style="{color:'#FB9F00','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
-          'margin-left':'0.12rem',border:'1px solid #FCAC39','border-radius':'0.02rem',width:'0.2rem',
-          'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
-          <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
-          <p class="shop">荣耀京东自营旗舰店</p>
-            <router-link :to="{name:'dianpu',params:{shopId:item.id}}">
-              <p class="toshop">进店</p>
-            </router-link>
-          <img src="../assets/image/more.png" alt="" class="more">
-
-        </li>
-       
-      </ul>
-    </div>
-     </van-tab>
+    </div> 
+    </van-tab>
+  
+  
  
 </van-tabs>
 <img src="../assets/image/retail_price.png" class="retail_price" alt="" @click="orderByPrice">
 <div class="xiaoliang" @click="orderByNumber"></div>
-<div class="bolting" @click="drawer = true">
-  <img src="../assets/image/search_select.png" class="selectImg" alt="">
-</div>
-  <el-drawer
-  title=""
-  :visible.sync="drawer"
-  :direction="direction" 
-  >
-  <div class="alert-content">
-      <div class="zujin ">
-        <span class="strong-t">租金</span>
-        <span class="normal-c">(元/天)</span>
-        <div class="between-price ">
-              <input class="l-price" placeholder="最低价" v-model="lowerprice">
-              <p class="crossing"></p>
-               <input class="m-price" placeholder="最高价" v-model="highprice">
-        </div>
-      </div>
-        <div class="days ">
-        <span class="strong-t">租用天数</span>
-        <span class="normal-c">(元/天)</span>
-        <div class="between-price ">
-              <p class="small-day">半年</p>
-              <p class="middle-day">一年</p>
-              <p class="large-day">两年</p>
-        </div>
-      </div>
 
-       <div class="sendfrom">
-        <span class="strong-t">发货地</span>
-        <span class="normal-c">(元/天)</span>
-        <div class="between-price ">
-              <p class="l-price">上海</p>
-               <p class="m-price">武汉</p>
-        </div>
-      </div>
-      <div class="makesure">
-        <button class="reset">重置</button>
-        <button class="sure " @click="chooseGoods">确定</button>
-      </div>
-  </div>
-</el-drawer>
- <!-- <ul>
-           <li class="glist-item" v-for="(list,keys) in goods " :key="keys">
-                <router-link
-            :to="{name:'good',params:{goodId:list.goods_id}}">
-        
-               <img :src="list.thumb_url" alt="">
-               <p>{{list.goods_name}}</p>
-               <span class="goods-price">￥<span>{{list.group_price/100}}</span></span>
-               <span class="goods-mprice">￥<span>{{list.market_price/100}}</span></span>
-                </router-link>
-            </li>
-
-           
-       </ul> -->
   </div>
 </template>
 
 <script>
 import {mapState,mapMutations} from "vuex";
-import Head from "@/components/Head.vue";
+// import Head from "@/components/Head.vue";
 export default {
   data(){
     return{
@@ -185,105 +99,44 @@ export default {
     }
   },
   components:{
-  Head,
+
   },
+    computed:{
+        
+      ...mapState(['searchShow','value']),
+      value:{
+          get(){
+             return this.value;
+          },
+          set(newval){
+          this.changeValue(newval)
+              console.log(this.value)
+          }
+      }
+    },
   methods: {
-     ...mapMutations(['changeSearch']),
+     ...mapMutations(['changeValue','changeSearch']),
      orderByPrice(){
       this.sort="retail_price";
       this.active=0;
-      if(!this.order){
-            this.order="asc"
-      }else if(this.order=="asc"){
-        this.order="desc"
-      }else if(this.order=="desc"){
-        this.order="asc"
-      }
-       if(this.$route.params.typeId==1){
-        this.$axios.get("/goods/listGoods",{
-        params:{
-        isHot:this.$route.params.typeId,
-        limit:100,
-        sort: this.sort,
-        order:this.order,
-      }
-    }).then(res=>{
-     console.log(res)
-      this.goodsList=res.data.data.list
-    })
-    }else{
-     this.$axios.get("/goods/listGoods",{
-       params:{
-        categoryId:this.$route.params.typeId,
-        limit:100,
-        sort: this.sort,
-        order:this.order,
-      }
-    }).then(res=>{
-     console.log(res)
-      this.goodsList=res.data.data.list
-    })
-    }
+    
      
     },
     orderByNumber(){
       this.active=1;
       this.sort="number";
       this.order="desc";
-      if(this.$route.params.typeId==1){
-        this.$axios.get("/goods/listGoods",{
-       params:{
-        isHot:this.$route.params.typeId,
-        limit:100,
-        sort: this.sort,
-        order:this.order,
-      }
-    }).then(res=>{
-      this.listxiaoliang=res.data.data.list;
-    })
-      }else{
-         this.$axios.get("/goods/listGoods",{
-      params:{
-        categoryId:this.$route.params.typeId,
-        limit:100,
-        sort: this.sort,
-        order:this.order,
-      }
-    }).then(res=>{
-      this.listxiaoliang=res.data.data.list;
-    })
-      }
-     
+
+        this.$axios.get("/goods/list",{params:{
+             keyword:this.$route.params.keyWords,
+             sort:'number',
+            }}).then(res=>{
+              console.log(res);
+              this.listxiaoliang=res.data.data.list;
+              console.log(this.goodsList);
+            })
     },
-    chooseGoods(){
-       this.active=2;
-       this.drawer=false;
-      //  console.log(this.$route.params.typeId)
-       if(this.$route.params.typeId==1){
-         this.$axios.get("goods/selectHot",{
-        params:{
-        minPrice: this.lowerprice,
-        maxPrice: this.highprice,
-        isHot: this.$route.params.typeId,
-      }
-    }).then(res=>{
-      console.log(res)
-      this.listselect=res.data.data.list;
-    })
-       }else{
-        this.$axios.get("/goods/select",{
-       params:{
-        minPrice: this.lowerprice,
-        maxPrice: this.highprice,
-        categoryId: this.$route.params.typeId,
-      }
-    }).then(res=>{
-      console.log(res)
-      this.listselect=res.data.data.list;
-    })
-       }
-      
-    },
+ 
     onSearch(){
      this.$axios.get('/vue/getGoods',{
        params:{value:this.value}
@@ -292,73 +145,19 @@ export default {
      })
     }
   },
-  computed: {
-     ...mapState(['searchShow']),
-  },
+
   mounted() {
     this.changeSearch(true);
-    document.onclick=function(e){
-      var smallDay=document.querySelector('.small-day');
-      var middleDay=document.querySelector('.middle-day');
-      var largeDay=document.querySelector('.large-day');
-      var event=e||event;
-      var target=event.targrt||event.srcElement;
-      if(target.className==='small-day'){
-        target.style.backgroundColor="#C7E8FF";
-        target.style.color="#1385FF";
-        middleDay.style.backgroundColor="#F5F6FA";
-        middleDay.style.color='black';
-        largeDay.style.backgroundColor="#F5F6FA";
-        largeDay.style.color='black';
-      }
-       if(target.className==='middle-day'){
-        target.style.backgroundColor="#C7E8FF";
-        target.style.color="#1385FF";
-        smallDay.style.backgroundColor="#F5F6FA";
-        smallDay.style.color='black';
-        largeDay.style.backgroundColor="#F5F6FA";
-        largeDay.style.color='black';
-      }
-       if(target.className==='large-day'){
-        target.style.backgroundColor="#C7E8FF";
-        target.style.color="#1385FF";
-        middleDay.style.backgroundColor="#F5F6FA";
-        middleDay.style.color='black';
-        smallDay.style.backgroundColor="#F5F6FA";
-        smallDay.style.color='black';
-      }
-   
-    },
-    console.log(this.$route.params.typeId)
-        //  type: "categoryId",
-      if(this.$route.params.typeId==1){
-    this.$axios.get("/goods/listGoods",{
-      params:{
-        isHot:this.$route.params.typeId,
-        limit:100,
-        sort: this.sort,
-        order:this.order,
-      }
-    }).then(res=>{
+
+       this.$axios.get("/goods/list",{params:{
+                 keyword:this.$route.params.keyWords,
+            }}).then(res=>{
+                    console.log(res.data.data.list);
+                    this.goodsList=res.data.data.list;
+                    console.log(this.goodsList);
+                })
+    console.log(this.$route.params.keyWord)
      
-      this.goodsList=res.data.data.list
-       console.log(this.goodsList)
-      // 
-    })
-    }else{
-      this.$axios.get("/goods/listGoods",{
-      params:{
-        categoryId:this.$route.params.typeId,
-        limit:100,
-        sort: this.sort,
-        order:this.order,
-      }
-    }).then(res=>{
-      
-       this.goodsList=res.data.data.list
-        console.log(this.goodsList)
-    })
-    }
   },
 }
 </script>
@@ -368,16 +167,17 @@ export default {
   position: absolute;
   width: 0.1rem;
   height: 0.08rem;
-  top: 0.96rem;
+  top: 0.70rem;
   left: 0.82rem;
 }
 .xiaoliang{
   position: absolute;
-  width: 1.15rem;
+  box-sizing: border-box;
+  width: 1.70rem;
   height: 0.44rem;
   opacity: 0;
-  top: 0.75rem;
-  left: 1.2rem;
+  top: 0.76rem;
+  left: 1.90rem;
 }
 .bolting{
   position: absolute;
@@ -386,9 +186,6 @@ export default {
   opacity: 0;
   top: 0.75rem;
   left: 2.5rem;
-}
-.bolting .selectImg{
-  color:yellow;
 }
 .searchInput{
   width: 3.02rem;
@@ -503,7 +300,7 @@ export default {
   }
  .phont-type{
    margin-left: 0.12rem;
-   margin-top: 0.25rem;
+   margin-top: 0.1rem;
    font-size: 0.14rem;
    font-family: "PingFangSC-Semibold";
    font-weight: bold;

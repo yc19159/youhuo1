@@ -22,10 +22,9 @@
   <span>{{item.content}}</span>
 
    </li>
-
             </ul>
         </div>
-    <div class="bottomLine"></div>
+    <!-- <div class="bottomLine"></div> -->
     </div>
 </template>
 <script>

@@ -116,6 +116,7 @@ import {mapState,mapMutations} from "vuex";
 import Head from "@/components/Head.vue";
 import ChooseImg from "@/assets/image/jiesuan_choose.png";
 import UnChooseImg from "@/assets/image/jiesuan_unchoose.png";
+import { Dialog } from 'vant';
 import "@/utils/api.js"
 
 export default {
@@ -131,6 +132,7 @@ export default {
             check:"zfb",
             dinDanId:"",
             price:'',
+            orderId:'',
         }
     },
    components:{
@@ -149,7 +151,8 @@ export default {
          },
          submit(){
             // 
-           document.getElementsByClassName('pay')[0].style.display="block";
+            var that=this;
+          
              this.$axios.post('order/submitOrder',{
                     rentId:sessionStorage.rentId,
                     id: this.$route.params.goodId,
@@ -160,17 +163,27 @@ export default {
                }
             
                ).then(res=>{
-               console.log(res)
-               this.dinDanId=res.data.data.orderId;
-               console.log(this.dinDanId)
+                   if(res.data.errno == 0){
+                        console.log(res)
+                        this.dinDanId=res.data.data.orderId;
+                        console.log(this.dinDanId);
+                        this.orderId=res.data.data.orderId;
+                         document.getElementsByClassName('pay')[0].style.display="block";
+                         
+                   }else{
+                       Dialog({message:'订单提交失败'})
+                   }
+              
                })
           
               document.onclick=function(e){
               var event=e||window.event;
               var target=event.target || event.srcElement;
               if(target.className=="pay"&&target.className!="bg-paycontent"){
+                   that.$router.push({name:"waitforpay",params:{orderId: that.orderId}})
                    document.getElementsByClassName('pay')[0].style.display="none";
-              }
+        
+        }
            }
   
             
@@ -178,7 +191,7 @@ export default {
          },
          close(){
     document.getElementsByClassName('pay')[0].style.display="none";
-    this.$router.push({name:"waitforpay"})
+    this.$router.push({name:"waitforpay",params:{orderId: this.orderId}})
          },
          paySure(){
         document.getElementsByClassName('pay')[0].style.display="none";
@@ -190,7 +203,7 @@ export default {
         console.log(dinDanId);
         if(this.check=='zfb'){
              api.ajax({
-                url: 'http://114.116.230.27:8080/wx/pay/alipayVip',  //url+模块
+                url: 'http://114.116.230.27:8080/wx/pay/alipayOrder',  //url+模块
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
@@ -219,29 +232,30 @@ export default {
                 });
         }else if(this.check=='wx'){
             api.ajax({
-            url: 'http://114.116.230.27:8080/wx/pay/wxpayVip',
+            url: 'http://114.116.230.27:8080/wx/pay/wxpayOrder',
             method: 'post',
             headers: {
                     'Content-Type': 'application/json',
                     'X-Litemall-Token': token
                     },
             data:{
-                    body:{
-                        vipPriceId:1
-                    }
-                
-            }
+                body:{
+                    orderId:dinDanId,   
+                }
+                                     
+              }
         },function(ret, err){
-                    //   alert(ret.sign);
+            if(ret.errno == 0){
+                       //   alert(ret.sign);
             var wxPayPlus = api.require('wxPayPlus');
           wxPayPlus.payOrder({
-            apiKey: ret.data.info.appid,
-            orderId: ret.data.info.prepayid,
-            mchId: ret.data.info.partnerid,
-            nonceStr: ret.data.info.noncestr,
-            timeStamp: ret.data.info.timestamp,
-            package: ret.data.info.package,
-            sign: ret.data.info.sign}), function(ret, err) {
+            apiKey: ret.data.appid,
+            orderId: ret.data.prepayid,
+            mchId: ret.data.partnerid,
+            nonceStr: ret.data.noncestr,
+            timeStamp: ret.data.timestamp,
+            package: ret.data.package,
+            sign: ret.data.sign}), function(ret, err) {
               console.log(JSON.stringify(ret));
               if (ret.status) {
                   //支付成功
@@ -249,6 +263,10 @@ export default {
                   alert(err.code);
               }
           }
+            }else{
+
+            }
+             
         });
 
         }
@@ -602,7 +620,7 @@ export default {
   z-index: 100;
   max-width: 3.75rem;
 //   background-color: hsla(0, 0%, 80%, 0.39);
- background:rgba(0,0,0,0.6);;
+ background:rgba(0,0,0,0.6);
 
   .bg-paycontent{
       opacity: 1 !important;
