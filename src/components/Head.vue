@@ -20,11 +20,13 @@ export default {
     data() {
         return {
             text: '',
+            childValue: '',
         }
        
     },
     props: {
         type: String,
+        categoryId: String,
     },
     computed:{
         
@@ -35,33 +37,60 @@ export default {
            } ,
             onSearch(){
                 console.log(this.text , this.type)
-                this.$axios.get("/goods/list",{params:{
+                if(this.type=='goodslist'){
+                this.$axios.get("/goods/listGoods",{params:{
                  keyword:this.text,
                  }}).then(res=>{
                     console.log(res.data.data.list);
-                    this.goodsList=res.data.data.list;
- 
+                    this.childValue=res.data.data.list;
+                    this.$emit('searchText',this.childValue);
+                    this.$emit('changeKeyWords',this.text);
                 })
+                }
+                if(this.type=='searchlist'){
+                     console.log(2)
+                     this.$axios.get("/goods/listGoods",{params:{
+                     categoryId:this.categoryId,
+                     keyword:this.text,
+                 }}).then(res=>{
+                    console.log(res.data.data.list);
+                    this.childValue=res.data.data.list;
+                    this.$emit('searchText',this.childValue);
+                    this.$emit('changeKeyWords',this.text);        
+                })
+                }
+                if(this.type=='order'){
+                     this.$axios.post("/order/listSearch",{
+                     page:1,
+                     limit: 100,
+                     keywords:this.text,
+                 }).then(res=>{
+                    console.log(res);
+                    this.childValue=res.data.data.list;
+                    this.$emit('searchText',this.childValue);
+                    this.$emit('changeKeyWords',this.text);        
+                })
+                }
              },
         },
         computed: {
-     ...mapState(['searchShow','value']),
+     ...mapState(['searchShow']),
      },
 }
 </script>
 
 <style  scoped>
      .head{
-         height: 0.54rem;
+         height: 0.74rem;
          background-color: white;
-         margin-top: 0.2rem;
+
      }
     .goback{
         width: 0.2rem;
         height: 0.2rem;
         margin-left: 0.16rem;
         float: left;
-         margin-top: 0.16rem;  
+         margin-top: 0.36rem;  
     }
     .goback img{
          width: 0.2rem;
@@ -71,6 +100,7 @@ export default {
          width: 3rem;
          float: left;
          margin-left: 0.26rem;
+         margin-top: 0.2rem;
      }
     .van-search .van-search__content {
 

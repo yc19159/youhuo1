@@ -1,13 +1,13 @@
 <template>
     <div class="myorder">
-        <Head></Head>
+        <Head :type="'order'" @searchText='searchText' ></Head>
          <van-tabs v-model="activeOrder">
           <van-tab title="全部">
 <div :style="{background:'#F5F6FA'}">
     <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
          <div class="content" v-if="item.goodsList">
               <div class="store">
-                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
+                  <router-link :to="{name:'dianpu', params:{shopId:item.goodsList[0].shopId}}">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
                     <span class="storename">{{item.goodsList[0].shopName}}</span>
                     <img src="../assets/image/more.png" alt="" class="more">
@@ -457,9 +457,12 @@ export default {
           onDel(index){
                 this.$axios.post('order/delete',{
                   orderId:this.listsearch[index].id,
-              }).then(res=>{
-              this.$refs.complete[index].remove();
-              })
+                }).then(res=>{
+                this.$refs.complete[index].remove();
+                })
+          },
+          searchText(value){
+            this.listsearch=value;
           }
         //   changeActive(){
         //       this.activeOrder=this.$route.params.active;
@@ -527,6 +530,7 @@ export default {
     width: 100%;
     height: 100%;
     background: #F5F6FA;
+    overflow: hidden;
 }
 
 .van-tabs {

@@ -197,10 +197,12 @@ export default {
         document.getElementsByClassName('pay')[0].style.display="none";
         var token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGlzIGlzIGxpdGVtYWxsIHRva2VuIiwiYXVkIjoiTUlOSUFQUCIsImlzcyI6IkxJVEVNQUxMIiwidXNlcklkIjoxOCwiaWF0IjoxNTczNzE5MTAwfQ.Si0y8IXc_sqtDahLlMPNjG6xeQEG-nmxVoLl2lSl9RA';
         var dinDanId=this.dinDanId;
+        var that=this;
         console.log(dinDanId)
        console.log(token)
         console.log(this.check);
         console.log(dinDanId);
+        that.$router.push({name:'paysuccess',params:{orderId: this.orderId}})
         if(this.check=='zfb'){
              api.ajax({
                 url: 'http://114.116.230.27:8080/wx/pay/alipayOrder',  //url+模块
@@ -211,7 +213,7 @@ export default {
                     },
                 data: {
                     body: {
-                        vipPriceId:1
+                        orderId:dinDanId,
                     }
                 }
             },function(ret, err){
@@ -220,13 +222,16 @@ export default {
                   console.log(JSON.stringify(ret));
                   var aliPayPlus = api.require('aliPayPlus');
                   aliPayPlus.payOrder({
-                      orderInfo:ret.data.info.orderInfo
+                      orderInfo:ret.data.orderInfo
                   }, function(ret, err) {
-                      api.alert({
+                      if(ret.code==9000){
+                        api.alert({
                           title: '支付结果',
                           msg: ret.code,
                           buttons: ['确定']
                       });
+                      }
+                      
                   });
 
                 });

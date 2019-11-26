@@ -19,7 +19,7 @@
                 <p class="userName">{{userinfo.nickName}}</p>
                 <img v-if="userinfo.userLevel==0" src="../assets/image/mine_kthuiyuan.png" class="clubber" alt="" @click="toVipMember">
                 <img v-else src="../assets/image/mine_vip.png" class="isClubber" alt="">
-                <p class="vipLevel">{{userinfo.vipName}}</p>
+                <p class="vipLevel" v-if="userinfo.userLevel!=0">{{userinfo.vipName}}</p>
                 <router-link to="personaldata">
                 <img src="../assets/image/more.png" class="more" alt="">
                 </router-link>
@@ -230,7 +230,7 @@ export default {
             localStorage.info=JSON.stringify({"avatar":this.userinfo.avatarUrl,"username":this.userinfo.nickName,"vipLevel":this.userinfo.userLevel});
             console.log(this.userinfo)
         });
-        this.$axios.post('/goods/related').then(res=>{
+        this.$axios.post('/goods/recommend').then(res=>{
             this.goodsList=res.data.data.list
             console.log(this.goodsList)
         })

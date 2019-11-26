@@ -34,6 +34,7 @@
              </div>
              <div class="goods-desc">
                       <img src="" alt="">
+                      <router-link :to="{name:'good',params:{goodId:1}}"></router-link>
                      <div class="goods-right">
                          <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
                          <div class="goods-model">
@@ -78,7 +79,7 @@
          </div>
      </div>
      <div class="foot">
-         <button class="cancel">申请退款</button>
+         <button class="cancel">返回首页</button>
        
      </div>
     </div>
@@ -92,7 +93,9 @@ export default {
     
   data(){
         return{
-            
+            orderGoods:[],
+            orderInfo:{},
+            specification: '',
         }
     },
     components: {
@@ -107,6 +110,14 @@ export default {
     mounted() {
         
          this.changeSearch(false);
+         this.$axios.post('/order/detail',{
+             orderId: this.$route.params.orderId,
+         }).then(res=>{
+             this.orderGoods=res.data.data.orderGoods[0];
+             console.log(this.orderGoods)
+             this.orderInfo=res.data.data.orderInfo
+             this.specification=res.data.data.orderGoods[0].specifications
+         })
     },
 }
 </script>
@@ -323,12 +334,13 @@ margin-left: 0.43rem;
         margin-top:  0.16rem;
     }
     .total .total-number{
-        margin-left: 1.7rem;
+        margin-left: 1.6rem;
         color: #C7C7C7;
         font-size: 0.12rem;
     }
     .total .xiaoji{
-        margin-left: 0.12rem;
+        // margin-left: 0.12rem;
+        float: right;
         font-size: 0.13rem;
         font-weight: bold;
     }

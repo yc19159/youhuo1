@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-       <Head></Head>
+       <Head :type="'searchlist'" :categoryId='categoryId' @searchText='searchText' @changeKeyWords='changeKeyWords'></Head>
        <!-- <input type="text" class=" searchInput" > -->
        <van-tabs v-model="active">
   <van-tab title="价格">
@@ -182,6 +182,8 @@ export default {
      goodsList:[],
      listxiaoliang:[],
      listselect:[],
+     categoryId:this.$route.params.typeId,
+     keyWords: "",
     }
   },
   components:{
@@ -202,6 +204,7 @@ export default {
        if(this.$route.params.typeId==1){
         this.$axios.get("/goods/listGoods",{
         params:{
+        keyword: this.keyWords,
         isHot:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -214,6 +217,7 @@ export default {
     }else{
      this.$axios.get("/goods/listGoods",{
        params:{
+        keyword: this.keyWords,
         categoryId:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -233,6 +237,7 @@ export default {
       if(this.$route.params.typeId==1){
         this.$axios.get("/goods/listGoods",{
        params:{
+        keyword: this.keyWords,
         isHot:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -244,6 +249,7 @@ export default {
       }else{
          this.$axios.get("/goods/listGoods",{
       params:{
+        keyword: this.keyWords,
         categoryId:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -284,13 +290,14 @@ export default {
        }
       
     },
-    onSearch(){
-     this.$axios.get('/vue/getGoods',{
-       params:{value:this.value}
-     }).then(res=>{
-      this.goods=res.data.result;
-     })
+    searchText(childValue){
+      this.active=0;
+      this.goodsList=childValue;
+    },
+    changeKeyWords(text){
+      this.keyWords=text;
     }
+
   },
   computed: {
      ...mapState(['searchShow']),
@@ -364,6 +371,11 @@ export default {
 </script>
 
 <style  scoped>
+.search{
+  background: #F5F6FA;
+  width: 100vw;
+  height: 100vh;
+}
 .retail_price{
   position: absolute;
   width: 0.1rem;
@@ -496,7 +508,7 @@ export default {
   .glist-img{
        /* border: 1px solid; */
        /* display: block; */
-       width: 1.3rem;
+       width: 1.5rem;
        height: 1.7rem;
        margin: auto;
        margin-top: 0.17rem;

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Head ></Head>
+        <Head :type="'goodslist'"></Head>
       <div class="content">
          <el-tabs :tab-position="tabPosition" v-model="activeName" style="height: 200px;">
     <el-tab-pane label="超值套餐" name="超值套餐">

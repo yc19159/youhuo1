@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    
+    <Advertise></Advertise>
  <van-search
   v-model="value"
   placeholder="请输入搜索关键词"
@@ -28,10 +28,10 @@
     <div class="mainContent">
   <div class="ban-list">
           <ul class="ban-list-ul">
-            <li><img src="../assets/image/home_qiye.png" alt="" class="yuan"> <p>办公</p> </li>
-            <li><img src="../assets/image/home_bangong.png" alt=""  class="yuan"><p>数码</p></li>
-            <li><img src="../assets/image/home_jiadian.png" alt=""  class="yuan"><p>家电</p></li>
-            <li><img src="../assets/image/home_shuma.png" alt=""  class="yuan"><p>游戏</p></li>
+            <li><img src="../assets/image/home_qiye.png" alt="" class="yuan"> <p>企业专区</p> </li>
+            <li><img src="../assets/image/home_sendFlowers.png" alt=""  class="yuan"><p>送花</p></li>
+            <li><img src="../assets/image/home_profess.png" alt=""  class="yuan"><p>表白</p></li>
+            <li><img src="../assets/image/home_appointment.png" alt=""  class="yuan"><p>约会</p></li>
             <li>
               <router-link :to="{name:'list',params:{activeDescript:'超值套餐'}}">
                 <img src="../assets/image/home_all.png" alt="" class="yuan">
@@ -40,29 +40,66 @@
           </ul>
      </div>
      <div class="advertise">
-       <img src="../assets/image/home_haibao.png"/>
+       <img src="../assets/image/home_zxtuijian.png"/>
      </div>
      <div class="content-bottom">
          <ul class="content-bottom-ul">
            <router-link :to="{name: 'search',params:{typeId:1}}">
-           <li>
-             <p class="strong">热门排行</p>
+           <li class="li-first">
+             <p class="strong">热租榜单</p>
              <p class="small">热租爆品</p>
-             <img src="../assets/image/home_hot.png" class="hot" alt="">
-             <img src="../assets/image/home_remen.png" class="remen" alt="">
            </li>
             </router-link>
-           <li>
-              <p class="strong">优选租品</p>
-              <p class="small">推荐租品</p>
-              <img src="../assets/image/home_youxuan.png" class="youxuan" alt="">
+           <li class="li-second">
+              <p class="strong">特价短租</p>
+              <p class="small">限时优惠</p>
            </li>
-           <li>
-              <p class="strong">租就送</p>
-               <p class="small">白租不用还</p>
-             <img src="../assets/image/home_song.png" class="song" alt="">
+           <li class="li-third">
+              <p class="strong">鲜花排行</p>
+               <p class="small">热卖爆品</p>
            </li>
           
+         </ul>
+     </div>
+       <div class="hhtuijian">
+        <img src="../assets/image/home_hhtuijian.png"/>
+       </div>
+         <div class="tuijian-flower">
+         <ul class="flower-ul">
+           <li v-for="(item , i) in homeList" :key="i">
+             <img :src="item.picUrl" alt="">
+             <p class="strong">{{item.name}}</p>
+             <div :style="{'margin-top':'0.1rem'}">
+               <p class="retail_price"> ￥{{item.retailPrice}}</p>
+               <p class="past_price">￥{{item.counterPrice}}</p>
+             </div>
+             <button class="buyButton">立即购买</button>
+             <p class="showNumber">{{item.number}}人已付款</p>
+           </li>
+           <!-- <li >
+             <img src="" alt="">
+             <p class="strong">留住好时光，粉玫瑰10支，白色吉梗8支</p>
+             <div>
+               <p class="retail_price"> ￥188</p>
+               <p class="past_price">￥288</p>
+             </div>
+           </li>
+           <li >
+             <img src="" alt="">
+             <p class="strong">留住好时光，粉玫瑰10支，白色吉梗8支</p>
+             <div>
+               <p class="retail_price"> ￥188</p>
+               <p class="past_price">￥288</p>
+             </div>
+           </li>
+           <li >
+             <img src="" alt="">
+             <p class="strong">留住好时光，粉玫瑰10支，白色吉梗8支</p>
+             <div>
+               <p class="retail_price"> ￥188</p>
+               <p class="past_price">￥288</p>
+             </div>
+           </li> -->
          </ul>
      </div>
     </div>
@@ -75,6 +112,7 @@
 // @ is an alias to /src
 import {mapMutations,mapState} from "vuex";
 import Foot from "@/components/Foot.vue"
+import Advertise from "@/components/Advertise.vue"
 
 
 
@@ -84,10 +122,12 @@ export default {
         return{
            value:"",
            tabPosition: 'left',
+           homeList:[],
         }
     },
   components: {
   Foot,
+  Advertise,
   }, 
   computed: {
           ...mapState(['searchShow'])
@@ -101,8 +141,15 @@ export default {
       
   },
   mounted() {
-    this.changeSearch(true);
-
+      this.changeSearch(true);
+     this.$axios.get('/goods/recommendFlower',{params:{
+        shopType: 2,
+        sort: 'number',
+     }}).then(res=>{
+        console.log(res)
+        this.homeList=res.data.data.list;
+        // console.log(this.homeList)
+     })
   },
 }
 </script>
@@ -164,12 +211,11 @@ export default {
 
 .mainContent{
   width: 100%;
-  background: #F5F6FA;
-
+  background: #ffffff;
 }
 .ban-list{
   width:  3.43rem;
-   height: 1.04rem;
+   height: 1.1rem;
   overflow: hidden;
   margin: auto;
 }
@@ -180,16 +226,20 @@ export default {
 .ban-list-ul li{
   width: 20%;
   float: left;
-  margin-top: 0.3rem;
+  margin-top: 0.15rem;
   /* margin-right: 0.2rem; */
   text-align: center;
   font-size: 0.13rem;
+  /* overflow: hidden; */
 }
 .ban-list-ul li .yuan{
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 50%;
   margin: auto;
+}
+.ban-list-ul li p{
+  margin-top: 0.1rem;
 }
 .ban-list-ul li:last-child{
   margin-right: 0rem;
@@ -201,59 +251,40 @@ export default {
 }
 .advertise img{
  margin: auto;
- width:  3.43rem;
- height: 1.2rem;
+ width:  1.3rem;
+ height: 0.17rem;
 }
 .content-bottom{
  width:  3.43rem;
- height: 2.7rem;
+ height: auto;
  margin: auto;
- margin-bottom: 0.83rem;
+ margin-bottom: 0.2rem;
 }
 .content-bottom .content-bottom-ul li{
-  width: 1.66rem;
-  height: 0.9rem;
+  width: 1.09rem;
+  height: 1.4rem;
   float: left;
   box-sizing: border-box;
-  margin-top: 0.05rem;
+  margin-top: 0.13rem;
   border-radius: 0.1rem;
   background: white;
-  margin-left: 0.11rem;
 }
-.content-bottom .content-bottom-ul li:first-child{
-   width: 1.66rem;
-  height: 1.85rem;
-   margin-left: 0rem;
-   background: #FFE3CE;
-   border-radius: 0.12rem;
-   position: relative;
+.content-bottom .content-bottom-ul .li-first{
+  background: url("../assets/image/home_remen.png") no-repeat;
+  background-size: 100% 100%;
+  
 }
-.content-bottom .content-bottom-ul li .hot{
-  width: 0.6rem;
-  height: 0.22rem;
- position: absolute;
- top: 0;
- right: 0;
+.content-bottom .content-bottom-ul .li-second{
+background: url("../assets/image/home_tejia.png") no-repeat;
+background-size: 100% 100%;
+margin-left: 0.08rem;
 }
-.content-bottom .content-bottom-ul li .remen{
-  margin-top: 0.15rem;
-  margin-left: 0.3rem;
-  width: 1.09rem;
-  height: 1.09rem;
+.content-bottom .content-bottom-ul .li-third{
+ background: url("../assets/image/home_xianhua.png") no-repeat;
+ background-size: 100% 100%;
+ margin-left: 0.08rem;
 }
-.content-bottom .content-bottom-ul li .youxuan,.content-bottom .content-bottom-ul li .song{
-  float: right;
-  margin-top: -0.3rem;
-  margin-right: 0.15rem;
-  width: 0.6rem;
-  height: 0.6rem;
-}
-.content-bottom .content-bottom-ul li:nth-child(2){
-  background: #CFEBFF;
-}
-.content-bottom .content-bottom-ul li:nth-child(3){
-  background:#FFD7EC;
-}
+
 .content-bottom-ul::after{
     content:" ";
     display:block;
@@ -262,56 +293,117 @@ export default {
     overflow:hidden; visibility:hidden; 
 }
 .content-bottom .content-bottom-ul li .strong{
-  /* width:0.6rem; */
-  height: 0.15rem;
-   margin-left: 0.115rem;
-   font-weight: bold;
-   font-size: 14px;
-   /* font-family:"宋体"; */
-   font-family: "PingFangSC-Semibold";
-   color: #323334;
+   width:0.65rem;
+   height: 0.15rem;
+   font-size: 0.14rem;
+   color: #ffffff;
    line-height: 0.15rem;
-   margin-top: 0.21rem;
+   margin: auto;
+   margin-top: 0.08rem; 
+  
 }
 .content-bottom .content-bottom-ul li .small{
-  margin-left: 0.115rem;
-  margin-top: 0.05rem;
-  height: 0.1rem;
-  font-size: 0.09rem;
-  color: grey;
-  font-family: "PingFangSC-Regular";
+  width:0.56rem;
+   height: 0.15rem;
+   font-size: 0.13rem;
+   color: #ffffff;
+   line-height: 0.15rem;
+   margin: auto;
+   margin-top: 0.95rem;
 }
-
-.content-bottom .content-bottom-ul li .look{
-  border: 0;
-  outline: 0;
-  display: block;
-  /* height: 0.2rem; */
-  margin-top: 0.2rem;
+.hhtuijian{
+margin: auto;
+}
+.hhtuijian img{
+ margin: auto;
+ width:  1.3rem;
+ height: 0.17rem;
+}
+.tuijian-flower{
+ width:  3.43rem;
+ height: auto;
+ margin: auto;
+ margin-bottom: 0.85rem;
+}
+.flower-ul::after{
+    content:" ";
+    display:block;
+    clear:both;
+    height:0; 
+    overflow:hidden; visibility:hidden; 
+}
+.tuijian-flower .flower-ul li{
+  width: 1.09rem;
+  /* height: 1.4rem; */
+  float: left;
+  box-sizing: border-box;
+  margin-top: 0.13rem;
+  border-radius: 0.1rem;
+  background: white;
+  margin-left: 0.08rem;
+  position: relative;
+}
+.tuijian-flower .flower-ul li:nth-child(3n){
+  margin-left: 0;
+}
+.tuijian-flower .flower-ul li img{
+  width: 1.09rem;
+  height: 0.99rem;
+}
+.tuijian-flower .flower-ul .strong{
+  width: 1rem;
+  font-size: 0.12rem;
+  color: black;
+  line-height: 0.18rem;
+  margin: auto;
+  margin-top: 0.03rem;
+   word-break: break-all;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-box-orient: vertical; 
+   -webkit-line-clamp: 2; 
+   overflow: hidden; 
+}
+.tuijian-flower .flower-ul .retail_price{
+  color: #B3381D;
+  font-size: 0.13rem;
+  font-weight: bold;
+  float: left;
+}
+.tuijian-flower .flower-ul .past_price{
+  color: #B3381D;
+  font-size: 0.12rem;
+  margin-left: 0.1rem;
+  float: left;
+  text-decoration: line-through;
+}
+.tuijian-flower .flower-ul .buyButton{
+     width: 0.9rem;
+     height: 0.24rem;
+     background: #FF8B08;
+     text-align: center;
+     line-height: 0.24rem;
+     border-radius: 0.11rem;
+     border: none;
+     font-size: 0.13rem;
+     margin-top: 0.05rem;
+}
+.tuijian-flower .flower-ul .showNumber{
+  position: absolute;
+  /* width: 0.75rem; */
+  height: 0.2rem;
+  font-size: 0.12rem;
+  color: white;
   line-height: 0.2rem;
-  border-radius: 0.06rem;
-  /* width: 0.5rem; */
-  font-size: 0.08rem;
--webkit-text-size-adjust:none;
--webkit-transform: scale(0.80);
- margin-left: 0.06rem;
+  background: -webkit-linear-gradient(to left, #9A37EE, #F284F9) !important;
+  background: -o-linear-gradient(to left, #9A37EE, #F284F9) !important;
+  background: -moz-linear-gradient(to left, #9A37EE, #F284F9) !important;
+  background: linear-gradient(to left, #9A37EE, #F284F9) !important;
+  border-radius: 0 0.13rem 0 0;
+  padding-left: 0.08rem;
+  padding-right: 0.08rem;
+  left: 0;
+  top: 0.79rem;
 }
-.content-bottom .content-bottom-ul li .look-first{
-background-color: #20C8B6;
-color: #0DD6C2;
 
-
-}
-.content-bottom .content-bottom-ul li .look-second{
-  background-color: #FC5451;
-  color: #D5221E;
-}
-.content-bottom .content-bottom-ul li .look-third{
-  background-color: #20C8B6;
-  color: #23C478;
-}
-.content-bottom .content-bottom-ul li .look-fourth{
-  background-color: #FDD130;
-  color: #E4BA1C;
-}
 </style>

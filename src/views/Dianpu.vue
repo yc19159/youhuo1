@@ -104,7 +104,8 @@ export default {
         return{
             goodsList:[],
             // search:'',
-            keywords:''
+            keywords:'',
+            active:1,
         }
     },
     methods:{

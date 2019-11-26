@@ -16,10 +16,11 @@
                     <img src="" alt="">
                     <span>我的</span></li> -->
             <li :class="{'footerBarli':!item.isActive,'active':item.isActive }"  
-            @click='changeActive(index)' v-for="(item,index) in list" :key="index">
+            @click='changeActive(index)' v-for="(item,index) in list" :key="index" ref="activeli">
       
-     <img src="" alt="">
-  <span>{{item.content}}</span>
+         <img v-if="!item.isActive" :src="item.img" alt="" class="iconfont">
+         <img v-else :src="item.activeImg" alt="" class="iconfont">
+           <p>{{item.content}}</p>
 
    </li>
             </ul>
@@ -29,6 +30,10 @@
 </template>
 <script>
 import {mapState,mapMutations} from 'vuex'
+// import iconhome from '@/assets/image/home_activehome.png';
+// import iconwarm from '../assets/image/wait_bg.png';
+// import iconchat from '../assets/image/wait_bg.png';
+// import iconmine from '../assets/image/wait_bg.png';
 
 export default {
 
@@ -46,16 +51,21 @@ export default {
     
        for(var i=0;i<this.list.length;i++){
           this.list[i].isActive=false;
+         
        }
       this.list[index].isActive = true; 
       
         if(index==0){
         this.$router.push({name:"home"})
-     };
+       
+      };
      if(index==1){
          this.$router.push({name:'givewarm'})
      };
      if(index==2){
+         this.$router.push({name:'chatbook'})
+     };
+     if(index==3){
          this.$router.push({name:'mine'})
      }
       console.log( this.list[index].isActive)
@@ -88,42 +98,51 @@ export default {
 .footerBar ul li{
     float: left;
     box-sizing: border-box;
-    width: 1.1rem;
-    height: 0.36rem;
-    margin-right: 0.04rem;
+    width: 25%;
+    /* height: 0.36rem; */
+    /* margin-right: 0.04rem; */
     color: #000000;
+    text-align: center;
+    /* background: url('../assets/image/home_iconhome.png') 45% 0.04rem no-repeat; */
+    background-size: 0.2rem 0.2rem;
 }
-
+/* .footerBar ul li:nth-child(2){
+    background: url('../assets/image/home_givewarm.png') 45% 0.04rem no-repeat;
+    background-size: 0.2rem 0.2rem;
+}
+.footerBar ul li:nth-child(3){
+    background: url('../assets/image/home_chatbook.png') 45% 0.04rem no-repeat;
+    background-size: 0.2rem 0.2rem;
+}
+.footerBar ul li:nth-child(4){
+    background: url('../assets/image/home_mine.png') 45% 0.04rem no-repeat;
+    background-size: 0.2rem 0.2rem;
+} */
 .footerBar .active{
     border: 0;
-    border-radius: 0.16rem;
-    background: -webkit-linear-gradient(to left, #D50000, #FD9A28) !important;
+    /* border-radius: 0.16rem; */
+    /* background: -webkit-linear-gradient(to left, #D50000, #FD9A28) !important;
     background: -o-linear-gradient(to left, #D50000, #FD9A28) !important;
     background: -moz-linear-gradient(to left, #D50000, #FD9A28) !important;
-    background: linear-gradient(to left, #D50000, #FD9A28) !important;
+    background: linear-gradient(to left, #D50000, #FD9A28) !important; */
 }
 .footerBar ul li img{
  margin-top: 0.08rem;
- margin-left: 0.25rem;
-  width: 0.19rem;
-  height: 0.2rem;
-  color: grey;
-  float: left;
+ margin-left: 40%;
+ width: 0.19rem;
+ height: 0.2rem;
+ /* color: grey; */
+ /* float: left; */
+ /* background: grey; */
+ color: red;
 }
-.footerBar ul li span{
+
+.footerBar ul li p{
     font-size: 0.14rem;
-    font-family: "PingFangSC-Semibold";
     font-weight: 510;
     line-height: 0.36rem;
-    margin-left: 0.07rem;
+    margin-top: 0.04rem;
 }
-.footer .bottomLine{
-     width: 1.33rem;
-     height: 0.05rem;
-     border-radius: 0.02rem;
-     background: #000000;
-     margin: auto;
-     margin-top: 0.19rem;
-}
+
 
 </style>

@@ -65,7 +65,7 @@ export default new VueRouter({
       component: ()=> import('./views/WaitForPay.vue'),
     },
     {
-      path: '/paysuccess',
+      path: '/paysuccess/:orderId',
       name: 'paysuccess',
       component: ()=> import('./views/PaySuccess.vue'),
     },
@@ -148,6 +148,15 @@ export default new VueRouter({
         name: 'comment',
         component: ()=> import('@/views/Comment.vue'),
       },
-
+   {
+        path: '/chatbook',
+        name: 'chatbook',
+        component: ()=> import('@/views/ChatBook.vue'),
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: ()=> import('@/views/Test.vue'),
+},
   ]
 })

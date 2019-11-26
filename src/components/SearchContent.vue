@@ -1,6 +1,6 @@
 <template>
   <div >
-       <!-- <input type="text" class=" searchInput" > -->
+       <Head :type="'goodslist'" @searchText='searchText' @changeKeyWords='changeKeyWords'></Head>
        <van-tabs v-model="active">
   <van-tab title="价格">
     
@@ -26,7 +26,7 @@
           'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
           <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
           <p class="shop">荣耀京东自营旗舰店</p>
-          <router-link :to="{name:'dianpu',params:{shopId:item.id}}">
+          <router-link :to="{name:'dianpu',params:{shopId:item.shopId}}">
           <p class="toshop">进店</p>
           </router-link>
           <img src="../assets/image/more.png" alt="" class="more">
@@ -59,7 +59,7 @@
           'text-align':'center',float:'left','margin-top':'0.1rem'}">赠</p> <br/>
           <span class="pay">万人已付款</span> <span class="haoping">99%好评</span>
           <p class="shop">荣耀京东自营旗舰店</p>
-            <router-link :to="{name:'dianpu',params:{shopId:item.id}}">
+            <router-link :to="{name:'dianpu',params:{shopId:item.shopId}}">
              <p class="toshop">进店</p>
            </router-link>
           <img src="../assets/image/more.png" alt="" class="more">
@@ -81,7 +81,7 @@
 
 <script>
 import {mapState,mapMutations} from "vuex";
-// import Head from "@/components/Head.vue";
+import Head from "@/components/Head.vue";
 export default {
   data(){
     return{
@@ -96,10 +96,11 @@ export default {
      goodsList:[],
      listxiaoliang:[],
      listselect:[],
+     keyWords:this.$route.params.keyWords,
     }
   },
   components:{
-
+       Head,
   },
     computed:{
         
@@ -118,38 +119,44 @@ export default {
      ...mapMutations(['changeValue','changeSearch']),
      orderByPrice(){
       this.sort="retail_price";
-      this.active=0;
-    
-     
+      this.active=0; 
+         this.$axios.get("/goods/listGoods",{params:{
+            keyword:this.keyWords,
+            sort:this.sort,
+          }}).then(res=>{
+            console.log(res);
+            this.goodsList=res.data.data.list;
+            console.log(this.goodsList);
+          })
     },
     orderByNumber(){
       this.active=1;
       this.sort="number";
       this.order="desc";
 
-        this.$axios.get("/goods/list",{params:{
-             keyword:this.$route.params.keyWords,
+        this.$axios.get("/goods/listGoods",{params:{
+             keyword:this.keyWords,
              sort:'number',
             }}).then(res=>{
               console.log(res);
               this.listxiaoliang=res.data.data.list;
               console.log(this.goodsList);
             })
-    },
- 
-    onSearch(){
-     this.$axios.get('/vue/getGoods',{
-       params:{value:this.value}
-     }).then(res=>{
-      this.goods=res.data.result;
-     })
-    }
+        },
+      searchText(childValue){
+       this.goodsList=childValue;
+       console.log(this.goodsList)
+       },
+       changeKeyWords(text){
+        this.keyWords=text;
+       },
+   
   },
 
   mounted() {
     this.changeSearch(true);
 
-       this.$axios.get("/goods/list",{params:{
+       this.$axios.get("/goods/listGoods",{params:{
                  keyword:this.$route.params.keyWords,
             }}).then(res=>{
                     console.log(res.data.data.list);
@@ -167,8 +174,8 @@ export default {
   position: absolute;
   width: 0.1rem;
   height: 0.08rem;
-  top: 0.70rem;
-  left: 0.82rem;
+  top: 0.93rem;
+  left: 1.25rem;
 }
 .xiaoliang{
   position: absolute;
@@ -293,7 +300,7 @@ export default {
   .glist-img{
        /* border: 1px solid; */
        /* display: block; */
-       width: 1.3rem;
+       width: 1.5rem;
        height: 1.7rem;
        margin: auto;
        margin-top: 0.17rem;
