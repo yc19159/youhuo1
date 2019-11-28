@@ -13,11 +13,11 @@
        <div class="descript">
           <div class="descript-content">
                <div class="item-price">
-                 <span class="price-span">￥<span :style="{'font-size':'0.2rem'}">{{detail.info.retailPrice.toFixed(2)}}</span>/天</span>   
+                 <span class="price-span">￥<span :style="{'font-size':'0.2rem'}">{{morenPrice.toFixed(2)}}</span>/天</span>   
                  <span class="quanxin" :style="{color:'white','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
           'text-align':'center','margin-top':'0.05rem','font-weight':'normal',display:'block',float:'left'}" >全新</span>
-           <span class="halfyear"> 半年起租</span>
+           <!-- <span class="halfyear"> 半年起租</span> -->
                </div>
                <p class="item-phone">{{detail.info.name}}</p>
                <div class="sell">
@@ -25,7 +25,7 @@
                    销量：{{detail.info.number}}件
                  </p>
                  <p class="heiger-yajin">
-                   最高押金：￥5000
+                   免押金
                  </p>
                </div>
                <div class="openMember">
@@ -92,6 +92,13 @@
        </div>
        <div class="bg_bottom">
           <div class="bottom">
+            <div>
+              <router-link :to="{name:'comment',params:{goodId:goodsId}}">
+            <p class="bottom-comment">商品评价</p>
+            <img src="../assets/image/zongse_more.png" alt="" class="zongse-more">
+            <p class="screen-comment"> 点击查看评价</p>
+            </router-link>
+            </div>
             <p class="bottom-title">商品详情</p>
             <img src="../assets/image/good_zhouqi.png" alt="">
              <img src="../assets/image/good_liucheng.png" alt="">
@@ -104,7 +111,7 @@
         <van-goods-action >
   <van-goods-action-icon icon="shop-o" text="店铺" @click="toShop"/>
   <van-goods-action-icon icon="chat-o" text="客服"  />
-  <van-goods-action-icon icon="star-o" text="收藏"  @click="collectGoods"/>
+  <van-goods-action-icon icon="star-o" text="收藏"  @click="collectGoods" />
 
   <van-goods-action-button type="danger" text="立即租"   @click="paynow" />
 </van-goods-action>
@@ -181,6 +188,8 @@ export default {
             checkedSpecPrice: 0,
             goods:{},
             productList: [],
+            goodsId: this.$route.params.goodId,
+            collected: '',
         }
     },
     components:{
@@ -282,7 +291,21 @@ export default {
              valueId: this.$route.params.goodId,
              type:0,
            }).then(res=>{
-             console.log(res)
+
+             var collect=document.getElementsByClassName('van-icon-star-o')[0];
+             var collectText=document.getElementsByClassName('van-goods-action-icon')[2];
+             console.log(this.collected)
+             if(this.collected!=1){
+                this.collected=1;
+                // collect.style.color='red';
+                collectText.innerHTML=`<div class="van-icon van-icon-star van-goods-action-icon__icon" style="color: red;">
+                <!----></div> 已收藏`
+                }else{
+                  this.collected=0;
+                  collectText.innerHTML=`<div class="van-icon van-icon-star-o van-goods-action-icon__icon" >
+                <!----></div> 收藏`
+                }
+            //  this.$refs.collect.style.color='red'
            })
         },
         toShop(){
@@ -442,63 +465,63 @@ export default {
     });
   },
 
-  onLoad: function(options) {
-    // 页面初始化 options为页面跳转所带来的参数
-    if (options.id) {
-      this.setData({
-        id: parseInt(options.id)
-      });
-      this.getGoodsInfo();
-    }
+  // onLoad: function(options) {
+  //   // 页面初始化 options为页面跳转所带来的参数
+  //   if (options.id) {
+  //     this.setData({
+  //       id: parseInt(options.id)
+  //     });
+  //     this.getGoodsInfo();
+  //   }
 
-    if (options.grouponId) {
-      this.setData({
-        isGroupon: true,
-      });
-      this.getGrouponInfo(options.grouponId);
-    }
-    let that = this;
-    wx.getSetting({
-        success: function (res) {
-            console.log(res)
-            //不存在相册授权
-            if (!res.authSetting['scope.writePhotosAlbum']) {
-                wx.authorize({
-                    scope: 'scope.writePhotosAlbum',
-                    success: function () {
-                        that.setData({
-                            canWrite: true
-                        })
-                    },
-                    fail: function (err) {
-                        that.setData({
-                            canWrite: false
-                        })
-                    }
-                })
-            } else {
-                that.setData({
-                    canWrite: true
-                });
-            }
-        }
-    })
-  },
-  onShow: function() {
-    // 页面显示
-    var that = this;
-    util.request(api.CartGoodsCount).then(function(res) {
-      if (res.errno === 0) {
-        that.setData({
-          cartGoodsCount: res.data
-        });
-      }
-    });
-  },
+  //   if (options.grouponId) {
+  //     this.setData({
+  //       isGroupon: true,
+  //     });
+  //     this.getGrouponInfo(options.grouponId);
+  //   }
+  //   let that = this;
+  //   wx.getSetting({
+  //       success: function (res) {
+  //           console.log(res)
+  //           //不存在相册授权
+  //           if (!res.authSetting['scope.writePhotosAlbum']) {
+  //               wx.authorize({
+  //                   scope: 'scope.writePhotosAlbum',
+  //                   success: function () {
+  //                       that.setData({
+  //                           canWrite: true
+  //                       })
+  //                   },
+  //                   fail: function (err) {
+  //                       that.setData({
+  //                           canWrite: false
+  //                       })
+  //                   }
+  //               })
+  //           } else {
+  //               that.setData({
+  //                   canWrite: true
+  //               });
+  //           }
+  //       }
+  //   })
+  // },
+  // onShow: function() {
+  //   // 页面显示
+  //   var that = this;
+  //   util.request(api.CartGoodsCount).then(function(res) {
+  //     if (res.errno === 0) {
+  //       that.setData({
+  //         cartGoodsCount: res.data
+  //       });
+  //     }
+  //   });
+  // },
       
     },
     mounted(){
-//        this.changeSearch(false);
+       this.changeSearch(false);
 //        document.onclick=function(e){
 //        var event=e||event;
 //        var target=event.targrt||event.srcElement;
@@ -512,11 +535,26 @@ export default {
                userId: localStorage.token}
         }).then(res=>{
           this.detail=res.data.data
-          console.log(res.data.data)
+          console.log(res.data)
+          this.collected=this.detail.collect;
+
           this.specificationList = res.data.data.specificationList
           this.goods = res.data.data.info
           this.productList = res.data.data.productList
-          this.morenPrice=this.detail.rentAndPrice[0].rentMoney;
+          this.morenPrice=this.detail.productList[0].price;
+          
+         
+          if(this.collected==1){
+           //收藏状态
+           setTimeout(()=>{
+            var collectText=document.getElementsByClassName('van-goods-action-icon')[2];
+             collectText.innerHTML=`<div class="van-icon van-icon-star van-goods-action-icon__icon" style="color: red;">
+                <!----></div> 已收藏`
+           },0)
+            
+           console.log(1)
+         
+          }
           
           
         })
@@ -532,7 +570,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-
+.goback {
+  margin-top: 0.23rem;
+}
 .main{
   width: 100%;
   height:auto;
@@ -541,6 +581,16 @@ export default {
 .van-search {
   display: none !important;
   box-sizing: border-box;
+}
+.van-swipe .van-swipe__indicators {
+    position: absolute;
+    top: 3.14rem;
+    left: 50%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
 }
 .item{
   width: 100%;
@@ -552,10 +602,11 @@ export default {
     background: linear-gradient(to bottom, white, #F5F6FA) !important;
 }
 .item-img {
- width: 3.5rem;
- height: 2.94rem;
+ width: 3.4rem;
+ height: 3.14rem;
  margin: auto;
-margin-top: 0.23rem
+ border-radius: 0.2rem;
+// margin-top: 0.23rem
 }
 .descript{
 width: 100%;
@@ -1012,12 +1063,41 @@ overflow: hidden;
     font-size: 0.13rem;
     color: #EB5516;
     font-weight: bold;
-    margin-top: 0.2rem;
+    margin-top: 0.6rem;
     height: 0.14rem;
     line-height: 0.14rem;
     border-left: 3px solid #EB5516;
     padding-left: 0.05rem;
   }
+  .bottom .zongse-more{
+    float: right;
+    width: 0.08rem;
+    height: 0.12rem;
+    padding-left: 0.05rem;
+    padding: 0.08rem;
+  }
+  .bottom .bottom-comment{
+    // width: 40%;
+    font-size: 0.13rem;
+    color: #EB5516;
+    font-weight: bold;
+    margin-top: 0.2rem;
+    height: 0.14rem;
+    line-height: 0.14rem;
+    border-left: 3px solid #EB5516;
+    padding-left: 0.05rem;
+    float: left;
+  }
+   .bottom .screen-comment{
+    font-size: 0.13rem;
+    color: #EB5516;
+    font-weight: bold;
+    margin-top: 0.2rem;
+    height: 0.14rem;
+    line-height: 0.14rem;
+    padding-left: 0.05rem;
+    float: right;
+   }
   .bottom img{
     width: 100%;
     margin-top: 0.12rem;

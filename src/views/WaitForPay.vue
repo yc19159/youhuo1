@@ -37,8 +37,9 @@
                 </router-link>
              </div>
              <div class="goods-desc">
+                 <router-link :to="{name:'good',params:{goodId:orderGoods.goodsId}}">
                       <img :src="orderGoods.picUrl" alt="">
-                      <router-link :to="{name:'good',params:{goodId:orderGoods.goodsId}}">
+                 </router-link>    
                      <div class="goods-right">
                          <p class="goods-name">{{orderGoods.goodsName}}</p>
                          <div class="goods-model">
@@ -52,8 +53,7 @@
                          </p>
                          <p class="goods-number">×{{orderGoods.number}}</p>
                          </div>
-                     </div>
-                   </router-link>
+                     </div> 
              </div>
             <div class="carrier">
                  <span class="carrier-p">运费</span>
@@ -82,16 +82,17 @@
          </div>
      </div>
      <div class="foot">
-         <button class="cancel">取消订单</button>
-         <button class="tijiao">提交订单</button>
+         <button class="cancel" @click="cancel">取消订单</button>
+         <button class="tijiao" @click="paryRightaway">立即付款</button>
      </div>
+     
     </div>
 </template>
 
 <script>
 import {mapState,mapMutations} from "vuex";
 import Head from "@/components/Head.vue";
-
+import { Dialog } from 'vant';
 
 export default {
     
@@ -107,6 +108,31 @@ export default {
     },
     methods: {
          ...mapMutations(['changeSearch']),
+         cancel(){
+             Dialog.confirm({
+       
+              message: '确认取消？'
+              }).then(() => {
+            this.$axios.post('order/cancel',{
+                orderId:this.$route.params.orderId,
+            }).then(res=>{
+                console.log(res)
+                if(res.data.errno==0){
+                this.$router.push({name:'good',params:{goodId:this.orderGoods.goodsId}})
+                }else{
+                     Dialog({message:'删除失败'})
+                }
+            })
+             console.log(confirm)
+             }).catch(() => {
+             // on cancel
+             console.log('cancel')
+             });
+            
+         },
+         paryRightaway(){
+             
+         }
     },
     computed: {
          ...mapState(['searchShow']),

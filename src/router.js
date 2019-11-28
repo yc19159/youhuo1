@@ -158,5 +158,7 @@ export default new VueRouter({
     name: 'test',
     component: ()=> import('@/views/Test.vue'),
 },
+
+
   ]
 })

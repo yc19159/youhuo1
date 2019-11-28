@@ -17,7 +17,10 @@ import { Card } from 'vant';
 import { Swipe, SwipeItem } from 'vant';
 import { Notify } from 'vant';
 import { Area } from 'vant';
-import VueTouch from 'vue-touch'
+import VueTouch from 'vue-touch';
+import { List } from 'vant';
+
+Vue.use(List);
 Vue.use(VueTouch, {name: 'v-touch'})
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {

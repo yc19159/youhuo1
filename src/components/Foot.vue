@@ -1,5 +1,5 @@
 <template>
-    <div class="footer">
+    <div class="footer" v-show="hideshow">
         <div class="footerBar">
             <ul>
                 <!-- <router-link to="/">
@@ -39,7 +39,9 @@ export default {
 
   data(){
     return{
-    
+    docmHeight: document.documentElement.clientHeight,  //默认屏幕高度
+	showHeight: document.documentElement.clientHeight,   //实时屏幕高度
+	hideshow:true,  //显示或者隐藏footer
     }
   },
   computed: {
@@ -72,8 +74,22 @@ export default {
      }
   },
     mounted(){
-    
+    // window.onresize监听页面高度的变化
+  window.onresize = ()=>{
+    return(()=>{
+      this.showHeight = document.body.clientHeight;
+    })()
+    }
     },
+    watch:{
+  showHeight:function() {
+    if(this.docmHeight > this.showHeight){
+      this.hidshow=false
+    }else{
+      this.hidshow=true
+    }
+  }
+},
     
 }
 </script>

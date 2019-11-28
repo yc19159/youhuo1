@@ -17,9 +17,12 @@
           <img :src="userinfo.avatarUrl" alt="" class="userImg" >
           <div class="login-right">
                 <p class="userName">{{userinfo.nickName}}</p>
-                <img v-if="userinfo.userLevel==0" src="../assets/image/mine_kthuiyuan.png" class="clubber" alt="" @click="toVipMember">
+                <!-- //v-if="userinfo.userLevel==0" -->
+                <p class="vipLevel" v-if="userinfo.userLevel!=0">开通会员</p>
+                <img  v-if="true" src="../assets/image/mine_kthuiyuan.png" class="clubber" alt="" @click="toVipMember">
+                
                 <img v-else src="../assets/image/mine_vip.png" class="isClubber" alt="">
-                <p class="vipLevel" v-if="userinfo.userLevel!=0">{{userinfo.vipName}}</p>
+                <!-- <p class="vipLevel" v-if="userinfo.userLevel!=0">{{userinfo.vipName}}</p> -->
                 <router-link to="personaldata">
                 <img src="../assets/image/more.png" class="more" alt="">
                 </router-link>
@@ -579,7 +582,9 @@ margin-top: 0.2rem;
    font-size: 0.14rem;
    font-family: "PingFangSC-Semibold";
    font-weight: bold;
-  
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
  }
  .glist-price{
     margin-top: 0.28rem;

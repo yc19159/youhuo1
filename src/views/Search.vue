@@ -380,8 +380,8 @@ export default {
   position: absolute;
   width: 0.1rem;
   height: 0.08rem;
-  top: 0.96rem;
-  left: 0.82rem;
+  top: 0.92rem;
+  left: 0.8rem;
 }
 .xiaoliang{
   position: absolute;
@@ -519,7 +519,9 @@ export default {
    font-size: 0.14rem;
    font-family: "PingFangSC-Semibold";
    font-weight: bold;
-  
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
  }
  .glist-price{
     margin-top: 0.28rem;

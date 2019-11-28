@@ -311,7 +311,9 @@ export default {
    font-size: 0.14rem;
    font-family: "PingFangSC-Semibold";
    font-weight: bold;
-  
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
  }
  .glist-price{
     margin-top: 0.28rem;

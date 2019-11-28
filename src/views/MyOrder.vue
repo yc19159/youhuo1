@@ -15,9 +15,9 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc" >
-                       <!-- <router-link :to="{name:'good',params:{goodId:item.goodList[0].id}}"> -->
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
-                      <!-- </router-link> -->
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
@@ -77,7 +77,9 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
@@ -126,7 +128,9 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                   <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
@@ -166,7 +170,9 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
@@ -212,7 +218,9 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
@@ -264,7 +272,9 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
@@ -315,7 +325,9 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
@@ -368,7 +380,9 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
@@ -410,6 +424,7 @@
 </template>
 
 <script>
+import { Dialog } from 'vant';
 import {mapState,mapMutations} from "vuex";
 import Head from "@/components/Head.vue";
 export default {
@@ -432,20 +447,33 @@ export default {
       methods: {
          ...mapMutations(['changeSearch','changeActiveOrder']),
            del(index){
-              
-              console.log(this.listsearch[index])
-              this.$axios.post('order/delete',{
+
+               Dialog.confirm({
+              message: '确认取消？'
+              }).then(() => {
+            this.$axios.post('order/delete',{
                   orderId:this.listsearch[index].id,
               }).then(res=>{
                 this.$refs.content[index].remove();
               })
+             }).catch(() => {
+
+             });
+              
           },
           onCancel(index){
-              this.$axios.post('order/cancel',{
+              Dialog.confirm({
+              message: '确认取消？'
+              }).then(() => {
+             this.$axios.post('order/cancel',{
                   orderId:this.listsearch[index].id,
               }).then(res=>{
                 this.$refs.waiforpay[index].remove();
               })
+             }).catch(() => {
+ 
+             });
+             
           },
           confirmReceipt(index){
               this.$axios.post('order/confirm',{
@@ -455,11 +483,18 @@ export default {
               })
           },
           onDel(index){
-                this.$axios.post('order/delete',{
+              Dialog.confirm({
+              message: '确认取消？'
+              }).then(() => {
+             this.$axios.post('order/delete',{
                   orderId:this.listsearch[index].id,
                 }).then(res=>{
                 this.$refs.complete[index].remove();
                 })
+             }).catch(() => {
+
+             });
+                
           },
           searchText(value){
             this.listsearch=value;
@@ -518,7 +553,6 @@ export default {
              console.log(res)
              this.listsearch=res.data.data.list;
                console.log( res.data.data.list[0].goodsList) 
-            //    console.log( this.listsearch[0].goodsList[0])
          });
         
     },
@@ -530,7 +564,6 @@ export default {
     width: 100%;
     height: 100%;
     background: #F5F6FA;
-    overflow: hidden;
 }
 
 .van-tabs {

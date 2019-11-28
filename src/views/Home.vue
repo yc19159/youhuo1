@@ -66,7 +66,7 @@
        </div>
          <div class="tuijian-flower">
          <ul class="flower-ul">
-           <li v-for="(item , i) in homeList" :key="i">
+           <li class="flower-li" v-for="(item , i) in homeList" :key="i">
              <img :src="item.picUrl" alt="">
              <p class="strong">{{item.name}}</p>
              <div :style="{'margin-top':'0.1rem'}">
@@ -332,7 +332,7 @@ margin: auto;
     height:0; 
     overflow:hidden; visibility:hidden; 
 }
-.tuijian-flower .flower-ul li{
+.tuijian-flower .flower-ul .flower-li{
   width: 1.09rem;
   /* height: 1.4rem; */
   float: left;
@@ -387,6 +387,7 @@ margin: auto;
      border: none;
      font-size: 0.13rem;
      margin-top: 0.05rem;
+     color: white;
 }
 .tuijian-flower .flower-ul .showNumber{
   position: absolute;

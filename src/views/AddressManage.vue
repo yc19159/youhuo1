@@ -66,6 +66,7 @@ export default {
                 tel:this.list[index].tel,
                 address:this.list[index].address,
                 addressDetail:this.list[index].addressDetail,
+                isDefault:this.list[index].isDefault,
                 })
             console.log(this.list[index]);
             this.$router.push({name:"addressedit"})
@@ -107,7 +108,7 @@ export default {
   line-height: 0.2rem;
   font-weight: bold;
   position: absolute;
-  top: 0.18rem;
+  top: 0.38rem;
   left: 0.6rem;
  }
  .bg-addressManage{
@@ -179,7 +180,8 @@ export default {
      height: 0.44rem;
      border: 0;
      border-radius: 0.22rem;
-     margin-top: 0.8rem;
+     margin: 0.8rem;
+     margin-left: 0.16rem;
     background: -webkit-linear-gradient(to left, #F43441, #FB6C0C) !important;
     background: -o-linear-gradient(to left, #F43441, #FB6C0C) !important;
     background: -moz-linear-gradient(to left, #F43441, #FB6C0C) !important;
