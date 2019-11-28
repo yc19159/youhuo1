@@ -49,13 +49,15 @@ export default {
   },
   methods: {  
      changeActive(index){  
-        
-    
+        setTimeout(()=>{
+         console.log(this.$route)
+        },0)
+         
        for(var i=0;i<this.list.length;i++){
           this.list[i].isActive=false;
          
        }
-      this.list[index].isActive = true; 
+       this.list[index].isActive = true; 
       
         if(index==0){
         this.$router.push({name:"home"})
@@ -74,19 +76,38 @@ export default {
      }
   },
     mounted(){
+      for(var i=0;i<this.list.length;i++){
+          this.list[i].isActive=false;
+       }
+       if(this.$route.name=='home'){
+        this.list[0].isActive=true;
+       }
+        if(this.$route.name=='givewarm'){
+        this.list[1].isActive=true;
+       }
+        if(this.$route.name=='chatbook'){
+        this.list[2].isActive=true;
+       }
+        if(this.$route.name=='mine'){
+        this.list[3].isActive=true;
+       }
     // window.onresize监听页面高度的变化
-  window.onresize = ()=>{
+   
+     window.onresize = ()=>{
     return(()=>{
+      //  console.log(this.docmHeight);
+      //  console.log(this.showHeight);
       this.showHeight = document.body.clientHeight;
     })()
     }
     },
     watch:{
   showHeight:function() {
+    
     if(this.docmHeight > this.showHeight){
-      this.hidshow=false
+      this.hideshow=false
     }else{
-      this.hidshow=true
+      this.hideshow=true
     }
   }
 },

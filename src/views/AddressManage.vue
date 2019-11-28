@@ -5,14 +5,15 @@
        <div class="addressManage">
            <v-touch v-on:swipeleft="swiperleft(i)" v-on:swiperight="swiperright(i)" v-for="(item, i) in list" :key="i"  class="wrapper">
              <div class="address"  ref="address">
+ <div class="address-left" @click="chooseAddress(i)">
                  <div class="address-default">
                    <span class="username">{{item.name}}</span> 
                    <span class="usertel">{{item.tel}}</span>
                 </div>
      <div class="address-d" >
-        <p class="address-detail">12{{item.address+item.addressDetail}}</p>
+        <p class="address-detail">{{item.address+item.addressDetail}}</p>
     </div>
-
+ </div>
     <button class="edit" @click="gotoAddaddress(i)">编辑</button>
       <div id="delete" ref="delete" @click="del(i)">删除</div>
              </div>
@@ -80,6 +81,17 @@ export default {
                  this.$refs.delete[index].parentNode.remove();
              })
         },
+        chooseAddress(index){
+            sessionStorage.addressInfo=JSON.stringify({
+            id:this.list[index].id,
+            name:this.list[index].name,
+            tel:this.list[index].tel,
+            address:this.list[index].address,
+            addressDetail:this.list[index].addressDetail,
+            isDefault:this.list[index].isDefault,
+            })
+            this.$router.push({path:sessionStorage.lastUrl});
+        },
         addaddress(){
             this.$router.push({name:"addaddress"})
         }
@@ -92,7 +104,10 @@ export default {
     position: absolute;
     left: 3.75rem;
     top: 0;
-    background: skyblue;
+    background: -webkit-linear-gradient(to left, #F43441, #FB6C0C) !important;
+    background: -o-linear-gradient(to left, #F43441, #FB6C0C) !important;
+    background: -moz-linear-gradient(to left, #F43441, #FB6C0C) !important;
+    background: linear-gradient(to left, #F43441, #FB6C0C) !important;
     transition: 1s;
     width: 0.55rem;
     height: 0.5rem;
@@ -114,6 +129,7 @@ export default {
  .bg-addressManage{
      width: 100%;
      height: auto;
+     margin-top: 0.1rem;
  }
  .addressManage{
      width: 100%;
@@ -124,10 +140,29 @@ export default {
      width: 3.43rem;
      height: auto;
      margin: auto;
-    /* overflow: hidden; */
-    margin-top: 0.3rem;
+    margin-top: 0.15rem;
     position: relative;
     transition: 1s;
+ }
+ .address::after{
+content:" ";
+display:block;
+clear:both;
+height:0; 
+overflow:hidden; 
+visibility:hidden;
+ }
+ .address-left{
+     float: left;
+     width: 2.64rem;
+ }
+.address-left::after{
+content:" ";
+display:block;
+clear:both;
+height:0; 
+overflow:hidden; 
+visibility:hidden; 
  }
  .address-default{
      float: left;
@@ -151,11 +186,13 @@ export default {
      float: left;
      font-size: 0.14rem;
      color: #5E6165;
-     height: 0.28rem;
+     /* height: 0.28rem; */
  }
  .address .address-d .address-detail{
      width: 2.64rem;
+     height: auto;
      line-height: 0.22rem;
+     margin-top: 0.08rem;
  }
  .address .edit{
     border: none;
@@ -180,7 +217,7 @@ export default {
      height: 0.44rem;
      border: 0;
      border-radius: 0.22rem;
-     margin: 0.8rem;
+     margin-top: 0.4rem;
      margin-left: 0.16rem;
     background: -webkit-linear-gradient(to left, #F43441, #FB6C0C) !important;
     background: -o-linear-gradient(to left, #F43441, #FB6C0C) !important;

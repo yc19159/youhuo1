@@ -7,7 +7,7 @@
   @load="onLoad"
    >
         <div :style="{background:'#F5F6FA'}">
-    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
+    <div class="bg-content" v-for="(item , i) in allSearch" :key="i" ref="content">
          <div class="content" v-if="item.goodsList">
               <div class="store">
                   <router-link :to="{name:'dianpu', params:{shopId:item.goodsList[0].shopId}}">
@@ -80,52 +80,45 @@ export default {
             loading: false,
             finished: false,
             count:0,
-            text:[],
+            pages:0,
         }
     },
     methods: {
            onLoad() {
       // 异步更新数据
-     
-      console.log(this.count)
-      setTimeout(() => {
-          if(this.allSearch.length<10){
-           for (let i = 0; i < this.allSearch.length; i++) {
-            this.listsearch.push(this.allSearch[i])
-        //   this.list.push(this.list.length + 1);
-        }
-          }else{
-              for (let i = 0; i < 10; i++) {
-            this.listsearch.push(this.allSearch[i+this.count*10])
-        //   this.list.push(this.list.length + 1);
-        }
-          }
-        
-         this.count=this.count+1;
-        console.log(this.listsearch)
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.listsearch.length >= this.allSearch.length) {
-          this.finished = true;
-        }
-      }, 500);
-    }
-    },
-    mounted() {
          this.$axios.post("/order/list",{
              showType:this.showType,
-             page: 1,
-             limit:100,
+             page: this.count+1,
+             limit:10,
              sort:"update_time",
              order:"desc",
          }).then(res=>{
              console.log(res)
-            // this.allSearch=res.data.data.list
-             this.allSearch=res.data.data.list.slice(0,2);
-    
+             this.pages=res.data.data.pages;
+            this.allSearch=this.allSearch.concat(res.data.data.list)
+            //  this.allSearch=res.data.data.list.slice(0,2);
+               this.count=this.count+1;
+                // 加载状态结s
+               this.loading = false;
+               
+                 // 数据全部加载完成
+                if (this.count >= this.pages){
+                     this.finished = true;
+                   }
          });
+         
+    }
+    },
+    mounted() {
+        this.$axios.post("/order/list",{
+             showType:this.showType,
+             page:5,
+             limit:10,
+             sort:"update_time",
+             order:"desc",
+         }).then(res=>{
+  console.log(res)
+           })  
     },
 }
 </script>

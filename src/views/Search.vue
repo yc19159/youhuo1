@@ -7,7 +7,14 @@
     
     <div class="price">
       <ul class="glist">
-       <li class="glist-item"  v-for="(item , i) in goodsList" :key="i">
+        <van-list
+        v-model="loading"
+        error-text="请求失败，点击重新加载"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+        >
+        <li class="glist-item"  v-for="(item , i) in showList" :key="i">
          <router-link :to="{name:'good',params:{goodId:item.id}}">
           <img :src="item.picUrl" class="glist-img"/>
         </router-link>
@@ -33,7 +40,8 @@
           <img src="../assets/image/more.png" alt="" class="more">
 
         </li>
-        
+      </van-list>
+
       </ul>
     </div> 
     </van-tab>
@@ -184,6 +192,10 @@ export default {
      listselect:[],
      categoryId:this.$route.params.typeId,
      keyWords: "",
+     loading: false,
+      finished: false,
+      count:0,
+      showList:[],
     }
   },
   components:{
@@ -296,6 +308,38 @@ export default {
     },
     changeKeyWords(text){
       this.keyWords=text;
+    },
+    onLoad() {
+      // 异步更新数据
+     
+      console.log(this.goodsList)
+      setTimeout(() => {
+          if(this.goodsList.length<10){
+            console.log(1)
+           for (let i = 0; i < this.goodsList.length; i++) {
+            this.showList.push(this.goodsList[i])
+        //   this.list.push(this.list.length + 1);
+        }
+          }else{
+            console.log(2)
+              for (let i = 0; i < 10; i++) {
+                if(this.goodsList[i+this.count*10]){
+                   this.showList.push(this.goodsList[i+this.count*10])
+                }
+        //   this.list.push(this.list.length + 1);
+        }
+          }
+        
+         this.count=this.count+1;
+        console.log(this.showList)
+        // 加载状态结束
+        this.loading = false;
+
+        // 数据全部加载完成
+        if (this.showList.length >= this.goodsList.length) {
+          this.finished = true;
+        }
+      }, 200);
     }
 
   },

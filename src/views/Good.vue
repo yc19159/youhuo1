@@ -103,7 +103,7 @@
             <img src="../assets/image/good_zhouqi.png" alt="">
              <img src="../assets/image/good_liucheng.png" alt="">
               <img src="../assets/image/good_xuzu.png" alt="">
-               <img src="../assets/image/good_maiduan.png" alt="">
+               <!-- <img src="../assets/image/good_maiduan.png" alt=""> -->
                 <img src="../assets/image/good_guihuan.png" alt="">
           </div>
        </div>
@@ -276,6 +276,10 @@ export default {
                  this.totalPrice=res.data.data.totalPrice;
                  sessionStorage.totalPrice=this.totalPrice;
                  sessionStorage.price=res.data.data.price;
+                 sessionStorage.size=res.data.data.productList.specifications[0]
+                 if(res.data.data.productList.specifications.length>2){
+                   sessionStorage.color=res.data.data.productList.specifications[1]
+                 }
                 this.$router.push({name:'jiesuan',params:{goodId:this.$route.params.goodId}})
                })
              }

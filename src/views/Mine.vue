@@ -18,7 +18,7 @@
           <div class="login-right">
                 <p class="userName">{{userinfo.nickName}}</p>
                 <!-- //v-if="userinfo.userLevel==0" -->
-                <p class="vipLevel" v-if="userinfo.userLevel!=0">开通会员</p>
+                <!-- <p class="vipLevel" v-if="userinfo.userLevel!=0">开通会员</p> -->
                 <img  v-if="true" src="../assets/image/mine_kthuiyuan.png" class="clubber" alt="" @click="toVipMember">
                 
                 <img v-else src="../assets/image/mine_vip.png" class="isClubber" alt="">
@@ -613,8 +613,8 @@ margin-top: 0.2rem;
      height: 0.3rem;
  }
  .login .login-right .clubber{
-  width: 0.88rem;
-  height: 0.25rem;
+  width: 0.89rem;
+  height: 0.26rem;
   margin-top: 0.15rem;
  }
  .login .login-right .more{

@@ -3930,7 +3930,12 @@ export default {
     //  console.log(this.checked)
           this.$axios.post('/address/save',addressInfo).then(res=>{
               console.log(res.data)
-              this.$router.push({name:"addressmanage"})
+              if(!sessionStorage.lastUrl){
+                  this.$router.push({path:"addressmanage"})
+              }else{
+                  this.$router.push({path: sessionStorage.lastUrl})
+              }
+              
             })
     },
     onDelete() {
@@ -4000,6 +4005,7 @@ button{
   margin-bottom: 0.08rem;
 }
 input{
+  width: 100%;
  border: none;
 }
 input::-webkit-input-placeholder {
@@ -4016,7 +4022,7 @@ input::-webkit-input-placeholder {
     background: linear-gradient(to left, #D50000, #FD9A28) !important;
     border: none;
     border-radius: 0.22rem;
-    margin-left: 0.16rem;
+    /* margin-left: 0.16rem; */
     }
  /* .van-overflow-hidden /deep/ .van-picker__confirm{
    background: white;

@@ -160,6 +160,10 @@ export default {
   height: 100%;
   background: #F5F6FA;
 }
+.van-search--show-action {
+    padding-right: 0;
+    margin-top: 0.2rem;
+}
 #topSearch{
   width: 245px !important;
   height:28px;

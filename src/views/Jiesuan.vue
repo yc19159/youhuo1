@@ -7,7 +7,7 @@
     <img src="../assets/image/jiesuan_dingwei.png" alt="" class="position">
     <div :style="{'margin-left':'0.41rem'}">
        
-    <div class="address-default">
+    <div class="address-default" v-if="dizhi">
          <span class="username">{{dizhi.name}}</span> 
         <span class="usertel">{{dizhi.tel}}</span>
     </div>
@@ -167,6 +167,7 @@ export default {
      methods: {
          ...mapMutations(['changeSearch']),
          gotoAddressManage(){
+             sessionStorage.lastUrl=this.$route.path;
              this.$router.push({name:"addressmanage"})
          },
          submit(){
@@ -360,7 +361,7 @@ export default {
         params:{id:this.$route.params.goodId,
                userId: localStorage.token}
         }).then(res=>{
-            console.log(res)
+            // console.log(res)
             setTimeout(()=>{
              this.detail=res.data.data;
              console.log( this.detail);
@@ -377,7 +378,7 @@ export default {
               }
          }
            ).then(res=>{
-            // console.log(res)
+            console.log(res)
             this.dizhi=res.data.data.list[0]
             console.log(this.dizhi)
           })
