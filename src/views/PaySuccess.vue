@@ -13,72 +13,74 @@
        
     </div>
     <div class="bg-address">
-        <div class="address">
+       <div class="address">
             <div class="user-information">
                <img src="../assets/image/jiesuan_dingwei.png" alt="">
-               <span class="username">小橙子</span>
-               <span class="usetel">13253453329</span>
+               <span class="username">{{orderInfo.consignee}}</span>
+               <span class="usetel">{{orderInfo.mobile}}</span>
             </div>
            <div class="address-detail">
-               <p>地址：湖北省武汉市江夏区江汉路世纪中心508</p>
+               <p >{{orderInfo.address}}</p>
            </div>
-                <span class="sp1">收货不便时，可免费选择暂存服务</span>
-           </div>
+             <span class="sp1">收货不便时，可免费选择暂存服务</span>
+        </div>
        </div>
            <div class="bg-content">
-         <div class="content">
+          <div class="content">
              <div class="store">
+                 <router-link :to="{name:'dianpu',params:{shopId: orderGoods.shopId}}">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
-                    <span class="storename">{佳佳手机专营店}</span>
-                     <img src="../assets/image/more.png" alt="" class="more">
+                    <span class="storename">1{{orderGoods.shopName}}</span>
+                    <img src="../assets/image/more.png" alt="" class="more">
+                </router-link>
              </div>
              <div class="goods-desc">
-                      <img src="" alt="">
+                      <img :src="orderGoods.picUrl" alt="">
+                      <router-link :to="{name:'good',params:{goodId:orderGoods.goodsId}}">
                      <div class="goods-right">
-                         <p class="goods-name">Apple Iphone x11(A2322) 128Gb 黑色 移动联通电信4G手机 双卡双待</p>
+                         <p class="goods-name">{{orderGoods.goodsName}}</p>
                          <div class="goods-model">
-                            <span>{颜色：黑色} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{specification[0]}} </span>
+                            <span v-if='specification.length>2'>{{specification[1]}}</span>
                             
-                         </div>
+                         </div> 
                          <div>
                          <p class="goods-price" >
-                           ￥<span :style="{'font-size':'0.18rem'}">9.99</span> 
+                           ￥<span :style="{'font-size':'0.18rem'}">{{orderGoods.price.toFixed(2)}}</span> 
                          </p>
-                         <p class="goods-number">×200</p>
+                         <p class="goods-number">×{{orderGoods.number}}</p>
                          </div>
                      </div>
+                   </router-link>
              </div>
-             <div class="carrier">
-                  <span class="carrier-p">运费</span>
+            <div class="carrier">
+                 <span class="carrier-p">运费</span>
                  <span class="carrier-arrive">到付</span>
              </div>
               <div class="daoqimd">
                  <span class="carrier-p maiduan">到期买断金额</span>
                  <span class="carrier-arrive">￥{19.00}</span>
              </div>
-              <div class="yunxian">
+              <!-- <div class="yunxian">
                  <span class="carrier-p sp3">运险费</span>
                  <span class="return">退换货可赔付</span>
                  <img src="../assets/image/jiesuan_choose.png" alt="" class="chooseImg"> 
                  <span class="carrier-arrive">￥10.00</span>
-             </div>
+             </div> -->
               <div class="liuyan">
                  <span class="carrier-p sp4">订单留言</span>
-                <!-- <input type="text" class="dd-liuyan" placeholder="选填，建议请先和商家协商一致"> 
-                 -->
-                 <span class="dd-liuyan">选填，建议请先和商家协商一致</span>
+                <input type="text" class="dd-liuyan" placeholder="选填，建议请先和商家协商一致"> 
              </div>
              <div class="total">
-                  <span class="total-number">共200件 </span>
+                  <span class="total-number">共{{orderGoods.number}}件 </span>
                   <span class="xiaoji"> 小计：<span 
                   :style="{color:'#B3381D'}">￥</span>
-                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">999.00</span> </span>
+                  <span :style="{color:'#B3381D','font-size':'0.17rem'}">{{orderInfo.goodsPrice.toFixed(2)}}</span> </span>
              </div>
          </div>
      </div>
      <div class="foot">
-         <button class="cancel">申请退款</button>
+         <button class="cancel">返回首页</button>
        
      </div>
     </div>
@@ -92,7 +94,9 @@ export default {
     
   data(){
         return{
-            
+            orderGoods:[],
+            orderInfo:{},
+            specification: '',
         }
     },
     components: {
@@ -107,6 +111,14 @@ export default {
     mounted() {
         
          this.changeSearch(false);
+         this.$axios.post('/order/detail',{
+             orderId: this.$route.params.orderId,
+         }).then(res=>{
+             this.orderGoods=res.data.data.orderGoods[0];
+             console.log(res)
+             this.orderInfo=res.data.data.orderInfo
+             this.specification=res.data.data.orderGoods[0].specifications
+         })
     },
 }
 </script>
@@ -120,7 +132,7 @@ export default {
 .head{
     background:rgba(0,0,0,0);;
 }
-.bg-top{
+ .bg-top{
     width: 100%;
     background: url("../assets/image/wait_bg.png") 0 0 no-repeat;
     background-size: 100% 100%;
@@ -143,19 +155,19 @@ export default {
         font-size: 0.19rem;
         height: 0.2rem;
         line-height: 0.2rem;
-        margin-top: 0.1rem;
+        margin-top: 0.16rem;
     }
     .onTime{
+        width: 1.4rem;
         font-size: 0.12rem;
         margin-top: 0.05rem;
-        width: 1.4rem;
     }
 }
 .top-third{
-margin-top: 0.34rem;
+margin-top: 0.6rem;
 font-size: 0.13rem;
 margin-left: 0.43rem;
-.havetime{
+.needpay{
     margin-left: 0.25rem;
 }
 }
@@ -172,7 +184,7 @@ margin-left: 0.43rem;
        .user-information{
            margin-top: 0.2rem;
            height: 0.2rem;
-            img{
+           img{
                width: 0.2rem;
                height: 0.22rem;
                float: left;
@@ -193,7 +205,7 @@ margin-left: 0.43rem;
            }
        }
        .address-detail{
-           margin-top: 0.02rem;
+          margin-top: 0.05rem;
           margin-left: 0.1rem;
           p{
               font-size: 0.13rem;
@@ -225,13 +237,12 @@ margin-left: 0.43rem;
        margin-top: 0.24rem;
    }
    .content .goods-desc img{
-       width: 0.63rem;
+       width: 0.8rem;
        height: 0.88rem;
-       border: 1px solid;
        float: left;
    }
    .content .goods-desc .goods-right{
-       width: 2.51rem;
+       width: 2.41rem;
        height: 0.9rem;
        float: right;
        margin-left: 0.13rem;
@@ -241,6 +252,7 @@ margin-left: 0.43rem;
        font-weight: bold;
        line-height: 0.23rem;
        margin-top: -0.04rem;
+       color: black;
    }
    .content .goods-desc .goods-model span{
        font-size: 0.12rem;
@@ -311,9 +323,9 @@ margin-left: 0.43rem;
          border: none;
          float: left;
          margin-left: 0.2rem;
-         font-size: 0.12rem;
-         color:  #C7C7C7;;
-         margin-top: -0.02rem;
+         font-size: 0.14rem;
+         color: black;
+          margin-top: -0.02rem;
     }
     .dd-liuyan::-webkit-input-placeholder {
     color: #C7C7C7;
@@ -323,12 +335,13 @@ margin-left: 0.43rem;
         margin-top:  0.16rem;
     }
     .total .total-number{
-        margin-left: 1.7rem;
+        margin-left: 1.62rem;
         color: #C7C7C7;
         font-size: 0.12rem;
     }
     .total .xiaoji{
-        margin-left: 0.12rem;
+        // margin-left: 0.14rem;
+        float: right;
         font-size: 0.13rem;
         font-weight: bold;
     }
@@ -344,7 +357,8 @@ margin-left: 0.43rem;
         .storename{
             float: left;
             font-size: 0.13rem;
-             margin-left: 0.1rem;
+            margin-left: 0.1rem;
+            color:black;
         }
         .more{
             float: left;
@@ -368,24 +382,24 @@ margin-left: 0.43rem;
       }
       .cancel{
          background: white;
-         float: right;
-        margin-right: 0.16rem;
+          margin-left: 0.58rem;
         border: 1px solid gray;
-         background: -webkit-linear-gradient(to left, #D50000, #FD9A28) !important;
-        background: -o-linear-gradient(to left, #D50000, #FD9A28) !important;
-        background: -moz-linear-gradient(to left, #D50000, #FD9A28) !important;
-        background: linear-gradient(to left, #D50000, #FD9A28) !important;
-        border: none;
       }
-     
+      .tijiao{
+          background: -webkit-linear-gradient(to left, #D50000, #FD9A28) !important;
+          background: -o-linear-gradient(to left, #D50000, #FD9A28) !important;
+          background: -moz-linear-gradient(to left, #D50000, #FD9A28) !important;
+          background: linear-gradient(to left, #D50000, #FD9A28) !important;
+         margin-left: 0.3rem;
+      }
     }
     .sp1{
       color: #FD9828;
       font-size: 0.12rem;
-      padding-top: 0.03rem;
+      padding: 0.03rem;
       float: left;
-      margin-top: 0;
-      margin-left: 0.18rem;
+      padding-top: 0.03rem;
+      margin-left: 0.14rem;
       margin-top: 0.03rem;
   }
 </style>

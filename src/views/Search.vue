@@ -1,19 +1,28 @@
 <template>
   <div class="search">
-       <Head></Head>
+       <Head :type="'searchlist'" :categoryId='categoryId' @searchText='searchText' @changeKeyWords='changeKeyWords'></Head>
        <!-- <input type="text" class=" searchInput" > -->
        <van-tabs v-model="active">
   <van-tab title="价格">
     
     <div class="price">
       <ul class="glist">
-       <li class="glist-item"  v-for="(item , i) in goodsList" :key="i">
+        <van-list
+        v-model="loading"
+        error-text="请求失败，点击重新加载"
+        :finished="finished"
+        finished-text="没有更多了"
+        @load="onLoad"
+        >
+        <li class="glist-item"  v-for="(item , i) in showList" :key="i">
          <router-link :to="{name:'good',params:{goodId:item.id}}">
           <img :src="item.picUrl" class="glist-img"/>
         </router-link>
           <p class="phont-type">{{item.name}}</p>
+          <div :style="{width:'100%','margin-top':'0.15rem'}">
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
-          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+          </div>
           <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
           'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
@@ -31,7 +40,8 @@
           <img src="../assets/image/more.png" alt="" class="more">
 
         </li>
-        
+      </van-list>
+
       </ul>
     </div> 
     </van-tab>
@@ -43,8 +53,10 @@
           <img :src="item.picUrl" class="glist-img"/>
           </router-link>
           <p class="phont-type">{{item.name}}</p>
+          <div :style="{width:'100%','margin-top':'0.15rem'}">
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
-          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+          </div>
           <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
           'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
@@ -73,9 +85,11 @@
           <img :src="item.picUrl" class="glist-img"/>
           </router-link>
           <p class="phont-type">{{item.name}}</p>
+          <div :style="{width:'100%','margin-top':'0.15rem'}">
            <span class="glist-price"><span :style="{'font-size':'0.14rem','font-weight':'normal'}">￥</span>{{item.retailPrice}} <span :style="{'font-size':'0.14rem','font-weight':'normal'}">/天</span></span> 
-          <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
-          <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
+           <span :style="{color:'grey','font-size':'0.13rem','margin-left':'0.03rem'}">销量：{{item.number}}</span>
+          </div>
+         <p :style="{'font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
           'margin-left':'0.12rem','border-radius':'0.02rem',width:'0.32rem',
           'text-align':'center',float:'left','margin-top':'0.1rem'}" class="new">全新</p>
               <p :style="{color:'#269CF0','font-size':'0.13rem','line-height':'0.16rem',height:'0.16rem',
@@ -100,7 +114,9 @@
 </van-tabs>
 <img src="../assets/image/retail_price.png" class="retail_price" alt="" @click="orderByPrice">
 <div class="xiaoliang" @click="orderByNumber"></div>
-<div class="bolting" @click="drawer = true"></div>
+<div class="bolting" @click="drawer = true">
+  <img src="../assets/image/search_select.png" class="selectImg" alt="">
+</div>
   <el-drawer
   title=""
   :visible.sync="drawer"
@@ -174,6 +190,12 @@ export default {
      goodsList:[],
      listxiaoliang:[],
      listselect:[],
+     categoryId:this.$route.params.typeId,
+     keyWords: "",
+     loading: false,
+      finished: false,
+      count:0,
+      showList:[],
     }
   },
   components:{
@@ -194,6 +216,7 @@ export default {
        if(this.$route.params.typeId==1){
         this.$axios.get("/goods/listGoods",{
         params:{
+        keyword: this.keyWords,
         isHot:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -206,6 +229,7 @@ export default {
     }else{
      this.$axios.get("/goods/listGoods",{
        params:{
+        keyword: this.keyWords,
         categoryId:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -225,6 +249,7 @@ export default {
       if(this.$route.params.typeId==1){
         this.$axios.get("/goods/listGoods",{
        params:{
+        keyword: this.keyWords,
         isHot:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -236,6 +261,7 @@ export default {
       }else{
          this.$axios.get("/goods/listGoods",{
       params:{
+        keyword: this.keyWords,
         categoryId:this.$route.params.typeId,
         limit:100,
         sort: this.sort,
@@ -276,13 +302,46 @@ export default {
        }
       
     },
-    onSearch(){
-     this.$axios.get('/vue/getGoods',{
-       params:{value:this.value}
-     }).then(res=>{
-      this.goods=res.data.result;
-     })
+    searchText(childValue){
+      this.active=0;
+      this.goodsList=childValue;
+    },
+    changeKeyWords(text){
+      this.keyWords=text;
+    },
+    onLoad() {
+      // 异步更新数据
+     
+      console.log(this.goodsList)
+      setTimeout(() => {
+          if(this.goodsList.length<10){
+            console.log(1)
+           for (let i = 0; i < this.goodsList.length; i++) {
+            this.showList.push(this.goodsList[i])
+        //   this.list.push(this.list.length + 1);
+        }
+          }else{
+            console.log(2)
+              for (let i = 0; i < 10; i++) {
+                if(this.goodsList[i+this.count*10]){
+                   this.showList.push(this.goodsList[i+this.count*10])
+                }
+        //   this.list.push(this.list.length + 1);
+        }
+          }
+        
+         this.count=this.count+1;
+        console.log(this.showList)
+        // 加载状态结束
+        this.loading = false;
+
+        // 数据全部加载完成
+        if (this.showList.length >= this.goodsList.length) {
+          this.finished = true;
+        }
+      }, 200);
     }
+
   },
   computed: {
      ...mapState(['searchShow']),
@@ -356,19 +415,24 @@ export default {
 </script>
 
 <style  scoped>
+.search{
+  background: #F5F6FA;
+  width: 100vw;
+  height: 100vh;
+}
 .retail_price{
   position: absolute;
   width: 0.1rem;
   height: 0.08rem;
-  top: 0.70rem;
-  left: 0.82rem;
+  top: 0.92rem;
+  left: 0.8rem;
 }
 .xiaoliang{
   position: absolute;
   width: 1.15rem;
   height: 0.44rem;
   opacity: 0;
-  top: 0.55rem;
+  top: 0.75rem;
   left: 1.2rem;
 }
 .bolting{
@@ -376,8 +440,11 @@ export default {
   width: 1.15rem;
   height: 0.44rem;
   opacity: 0;
-  top: 0.55rem;
+  top: 0.75rem;
   left: 2.5rem;
+}
+.bolting .selectImg{
+  color:yellow;
 }
 .searchInput{
   width: 3.02rem;
@@ -485,7 +552,7 @@ export default {
   .glist-img{
        /* border: 1px solid; */
        /* display: block; */
-       width: 1.3rem;
+       width: 1.5rem;
        height: 1.7rem;
        margin: auto;
        margin-top: 0.17rem;
@@ -496,7 +563,9 @@ export default {
    font-size: 0.14rem;
    font-family: "PingFangSC-Semibold";
    font-weight: bold;
-  
+   overflow: hidden;
+   text-overflow: ellipsis;
+   white-space: nowrap;
  }
  .glist-price{
     margin-top: 0.28rem;

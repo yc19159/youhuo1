@@ -23,6 +23,7 @@ export default new VueRouter({
       component: Search,
     },
     {
+<<<<<<< HEAD
       path: '/flowerarea',     //测试
       name: 'flowerarea',
       component: FlowerArea,
@@ -36,6 +37,11 @@ export default new VueRouter({
       path: '/flowerdetail',     //测试
       name: 'flowerdetail',
       component: FlowerDetail,
+=======
+      path: '/tosearch/:keyWords?',
+      name: 'tosearch',
+      component: ()=> import('./views/ToSearch.vue')
+>>>>>>> 37068188bfc8add439f6e8a053cb5f9e31a6b45f
     },
     {
       path: '/login',
@@ -53,7 +59,7 @@ export default new VueRouter({
       component: ()=> import('./views/Mine.vue')
     },
     {
-      path: '/list',
+      path: '/list/:activeDescript?',
       name: 'list',
       component: ()=> import('./views/Alllist.vue')
     },
@@ -79,7 +85,7 @@ export default new VueRouter({
       component: ()=> import('./views/WaitForPay.vue'),
     },
     {
-      path: '/paysuccess',
+      path: '/paysuccess/:orderId',
       name: 'paysuccess',
       component: ()=> import('./views/PaySuccess.vue'),
     },
@@ -162,6 +168,7 @@ export default new VueRouter({
         name: 'comment',
         component: ()=> import('@/views/Comment.vue'),
       },
+<<<<<<< HEAD
     {
       path:'/showCollect',
       name:'showcollect',
@@ -187,5 +194,19 @@ export default new VueRouter({
       name:'position',
       component:()=>import('@/views/Position.vue')
     },   
+=======
+   {
+        path: '/chatbook',
+        name: 'chatbook',
+        component: ()=> import('@/views/ChatBook.vue'),
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: ()=> import('@/views/Test.vue'),
+},
+
+
+>>>>>>> 37068188bfc8add439f6e8a053cb5f9e31a6b45f
   ]
 })

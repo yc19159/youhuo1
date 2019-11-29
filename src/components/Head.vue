@@ -7,8 +7,13 @@
           <img src="../assets/image/goback.png" alt="">
           
         </div> 
+<<<<<<< HEAD
          <slot name="title"></slot>
          <van-search placeholder="请输入搜索关键词" @change="onSearch" v-model="value" v-if="searchShow"/>
+=======
+         
+         <van-search placeholder="请输入搜索关键词" @change="onSearch" v-model="text" v-if="searchShow"/>
+>>>>>>> 37068188bfc8add439f6e8a053cb5f9e31a6b45f
    
     </div>
     
@@ -19,49 +24,78 @@ import {mapState,mapMutations} from "vuex";
 export default {
     data() {
         return {
-            value:"",
+            text: '',
+            childValue: '',
         }
        
+    },
+    props: {
+        type: String,
+        categoryId: String,
+    },
+    computed:{
+        
     },
      methods: {
            goback(){
                  this.$router.go(-1);
            } ,
-           onSearch(){
-                console.log(this.value);
-            this.$axios.post("/order/listSearch",{
-             showType:"",
-             page: 1,
-             limit:100,
-             sort:"update_time",
-             order:"desc",
-             keywords:this.value,
-         }).then(res=>{
-             console.log(res)
-            //  this.listsearch=res.data.data.list;
-            //    console.log( this.listsearch)
-            //    console.log( this.listsearch[0].goodsList[0])
-         })
-           }
+            onSearch(){
+                console.log(this.text , this.type)
+                if(this.type=='goodslist'){
+                this.$axios.get("/goods/listGoods",{params:{
+                 keyword:this.text,
+                 }}).then(res=>{
+                    console.log(res.data.data.list);
+                    this.childValue=res.data.data.list;
+                    this.$emit('searchText',this.childValue);
+                    this.$emit('changeKeyWords',this.text);
+                })
+                }
+                if(this.type=='searchlist'){
+                     console.log(2)
+                     this.$axios.get("/goods/listGoods",{params:{
+                     categoryId:this.categoryId,
+                     keyword:this.text,
+                 }}).then(res=>{
+                    console.log(res.data.data.list);
+                    this.childValue=res.data.data.list;
+                    this.$emit('searchText',this.childValue);
+                    this.$emit('changeKeyWords',this.text);        
+                })
+                }
+                if(this.type=='order'){
+                     this.$axios.post("/order/listSearch",{
+                     page:1,
+                     limit: 100,
+                     keywords:this.text,
+                 }).then(res=>{
+                    console.log(res);
+                    this.childValue=res.data.data.list;
+                    this.$emit('searchText',this.childValue);
+                    this.$emit('changeKeyWords',this.text);        
+                })
+                }
+             },
         },
         computed: {
      ...mapState(['searchShow']),
-  },
+     },
 }
 </script>
 
 <style  scoped>
      .head{
-         height: 0.54rem;
+         height: 0.74rem;
          background-color: white;
-         margin-top: 0.2rem;
+
      }
     .goback{
         width: 0.2rem;
         height: 0.2rem;
         margin-left: 0.16rem;
         float: left;
-         margin-top: 0.16rem;  
+         margin-top: 0.36rem;  
     }
     .goback img{
          width: 0.2rem;
@@ -71,6 +105,7 @@ export default {
          width: 3rem;
          float: left;
          margin-left: 0.26rem;
+         margin-top: 0.2rem;
      }
     .van-search .van-search__content {
 

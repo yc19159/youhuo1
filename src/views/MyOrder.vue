@@ -1,13 +1,19 @@
 <template>
     <div class="myorder">
-        <Head></Head>
+        <Head :type="'order'" @searchText='searchText' ></Head>
          <van-tabs v-model="activeOrder">
           <van-tab title="全部">
+            <van-list
+            v-model="loading"
+            :finished="finished"
+            finished-text="没有更多了"
+            @load="onLoad"
+            >
 <div :style="{background:'#F5F6FA'}">
-    <div class="bg-content" v-for="(item , i) in listsearch" :key="i" ref="content">
+    <div class="bg-content" v-for="(item , i) in showList" :key="i" ref="content">
          <div class="content" v-if="item.goodsList">
               <div class="store">
-                  <router-link :to="{name:'dianpu' , params:{shopId:item.goodsList[0].shopId}}">
+                  <router-link :to="{name:'dianpu', params:{shopId:item.goodsList[0].shopId}}">
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
                     <span class="storename">{{item.goodsList[0].shopName}}</span>
                     <img src="../assets/image/more.png" alt="" class="more">
@@ -15,15 +21,17 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc" >
-                       <!-- <router-link :to="{name:'good',params:{goodId:item.goodList[0].id}}"> -->
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
-                      <!-- </router-link> -->
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
-                            <span v-bind:color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
+                            <!-- <span >{{specification[0]}} </span>
+                            <span v-if='specification.length>2'>{{specification[1]}}</span> -->
+                            <span >{{item.goodsList[0].specifications[0]}} </span>
+                            <span v-if="item.goodsList[0].specifications.length>2">{{item.goodsList[0].specifications[1]}}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -50,12 +58,12 @@
                      <router-link :to="{name:'return',params:{orderId:item.id}}">
                      <button v-if="item.orderStatusText=='租用中'||item.orderStatusText=='待结算'||item.orderStatusText=='已逾期'" class="return">归还</button>
                      </router-link >
-                     <router-link :to="{name:'comment',params:{goodId:item.goodsList[0].id}}">
+                     <router-link :to="{name:'comment',params:{goodId:item.goodsList[0].orderGoodsId}}">
                       <button class="comment" v-if="item.orderStatusText=='已完成'">评论</button>
                      </router-link >
                      <button class="delete" v-if="item.orderStatusText=='已完成'||item.orderStatusText=='已取消(系统)'||item.orderStatusText=='已取消'" @click="del(i)">删除</button>
                      <button class="cancel" v-if="item.orderStatusText=='待付款'"  @click="onCancel(i)">取消</button>
-                      <button class="confirmReceipt" v-if="item.orderStatusText=='待收货'"  @click="onCancel(i)">确认收货</button>
+                      <button class="confirmReceipt" v-if="item.orderStatusText=='待收货'"  @click="confirmReceiptA(i)">确认收货</button>
                      
                <!-- <button class="pay">去支付</button> -->
              </div>
@@ -63,6 +71,7 @@
              
     </div>
 </div>
+</van-list>
     </van-tab>
     <van-tab title="待付款">
 <div :style="{background:'#F5F6FA'}" >
@@ -77,13 +86,15 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
-                            <span v-bind:color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{item.goodsList[0].specifications[0]}} </span>
+                            <span v-if="item.goodsList[0].specifications.length>2">{{item.goodsList[0].specifications[1]}}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -126,13 +137,15 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                   <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
-                            <span v-bind:color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{item.goodsList[0].specifications[0]}} </span>
+                            <span v-if="item.goodsList[0].specifications.length>2">{{item.goodsList[0].specifications[1]}}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -166,13 +179,15 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
-                            <span v-bind:color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{item.goodsList[0].specifications[0]}} </span>
+                            <span v-if="item.goodsList[0].specifications.length>2">{{item.goodsList[0].specifications[1]}}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -212,13 +227,15 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
-                            <span v-bind:color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{item.goodsList[0].specifications[0]}} </span>
+                            <span v-if="item.goodsList[0].specifications.length>2">{{item.goodsList[0].specifications[1]}}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -264,13 +281,15 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
-                            <span v-bind:color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{item.goodsList[0].specifications[0]}} </span>
+                            <span v-if="item.goodsList[0].specifications.length>2">{{item.goodsList[0].specifications[1]}}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -315,13 +334,15 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
-                            <span v-bind:color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{item.goodsList[0].specifications[0]}} </span>
+                            <span v-if="item.goodsList[0].specifications.length>2">{{item.goodsList[0].specifications[1]}}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -342,7 +363,7 @@
                     <router-link :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                        <button class="buyonce">再次购买</button>
                      </router-link>
-                    <router-link :to="{name:'comment',params:{goodId:item.goodsList[0].id}}">
+                    <router-link :to="{name:'comment',params:{goodId:item.goodsList[0].orderGoodsId}}">
                       <button class="comment" >评论</button>
                      </router-link >
                     <button class="delete" @click="onDel(i)">删除</button>
@@ -368,13 +389,15 @@
                      <span class="state">{{item.orderStatusText}}</span>
              </div>
              <div class="goods-desc">
+                    <router-link  :to="{name:'good',params:{goodId:item.goodsList[0].id}}">
                       <img :src="item.goodsList[0].picUrl" alt="">
+                    </router-link>
                     <router-link :to="{name:'dindan',params:{orderId:item.id}}">
                      <div class="goods-right">
                          <p class="goods-name">{{item.goodsList[0].goodsName}}</p>
                          <div class="goods-model">
-                            <span v-bind:color="color">{{color}} </span>
-                            <span>{规格：256GB}</span>
+                            <span >{{item.goodsList[0].specifications[0]}} </span>
+                            <span v-if="item.goodsList[0].specifications.length>2">{{item.goodsList[0].specifications[1]}}</span>
                          </div>
                          <div>
                          <p class="goods-price" >
@@ -410,6 +433,7 @@
 </template>
 
 <script>
+import { Dialog } from 'vant';
 import {mapState,mapMutations} from "vuex";
 import Head from "@/components/Head.vue";
 export default {
@@ -420,7 +444,10 @@ export default {
             color:'黑色',
             listsearch: [],
             showType:0,
-            
+            loading: false,
+            finished: false,
+            count:0,
+            showList:[],
         }
     },
     created(){
@@ -432,38 +459,109 @@ export default {
       methods: {
          ...mapMutations(['changeSearch','changeActiveOrder']),
            del(index){
-              
-              console.log(this.listsearch[index])
-              this.$axios.post('order/delete',{
+
+               Dialog.confirm({
+              message: '确认取消？'
+              }).then(() => {
+            this.$axios.post('order/delete',{
                   orderId:this.listsearch[index].id,
               }).then(res=>{
                 this.$refs.content[index].remove();
               })
+             }).catch(() => {
+
+             });
+              
           },
           onCancel(index){
-              this.$axios.post('order/cancel',{
+              Dialog.confirm({
+              message: '确认取消？'
+              }).then(() => {
+             this.$axios.post('order/cancel',{
                   orderId:this.listsearch[index].id,
               }).then(res=>{
                 this.$refs.waiforpay[index].remove();
               })
+             }).catch(() => {
+ 
+             });
+             
+          },
+          confirmReceiptA(index){
+             Dialog.confirm({
+              message: '确认取消？'
+              }).then(() => {
+             this.$axios.post('order/confirm',{
+                  orderId:this.listsearch[index].id,
+              }).then(res=>{
+                 this.$refs.content[index].remove();
+              })
+             }).catch(() => {
+
+             });
+              
           },
           confirmReceipt(index){
-              this.$axios.post('order/confirm',{
+             Dialog.confirm({
+              message: '确认取消？'
+              }).then(() => {
+             this.$axios.post('order/confirm',{
                   orderId:this.listsearch[index].id,
               }).then(res=>{
-                this.$refs.confirmReceipt[index].remove();
+                 this.$refs.confirmReceipt[index].remove();
               })
+             }).catch(() => {
+
+             });
+              
           },
           onDel(index){
-                this.$axios.post('order/delete',{
+              Dialog.confirm({
+              message: '确认取消？'
+              }).then(() => {
+             this.$axios.post('order/delete',{
                   orderId:this.listsearch[index].id,
-              }).then(res=>{
-              this.$refs.complete[index].remove();
-              })
+                }).then(res=>{
+                this.$refs.complete[index].remove();
+                })
+             }).catch(() => {
+
+             });
+                
+          },
+          searchText(value){
+            this.listsearch=value;
+          },
+            onLoad() {
+      // 异步更新数据
+     
+      console.log(this.count)
+      setTimeout(() => {
+          if(this.listsearch.length<10){
+           for (let i = 0; i < this.listsearch.length; i++) {
+            this.showList.push(this.listsearch[i])
+        //   this.list.push(this.list.length + 1);
+        }
+          }else{
+              for (let i = 0; i < 10; i++) {
+                if(this.listsearch[i+this.count*10]){
+                   this.showList.push(this.listsearch[i+this.count*10])
+                }
+        //   this.list.push(this.list.length + 1);
+        }
           }
-        //   changeActive(){
-        //       this.activeOrder=this.$route.params.active;
-        //   }
+        
+         this.count=this.count+1;
+        console.log(this.showList)
+        // 加载状态结束
+        this.loading = false;
+
+        // 数据全部加载完成
+        if (this.showList.length >= this.listsearch.length) {
+          this.finished = true;
+        }
+      }, 500);
+    }
     },
     computed: {
          ...mapState(['searchShow','activeOrder']),
@@ -515,7 +613,6 @@ export default {
              console.log(res)
              this.listsearch=res.data.data.list;
                console.log( res.data.data.list[0].goodsList) 
-            //    console.log( this.listsearch[0].goodsList[0])
          });
         
     },

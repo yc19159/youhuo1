@@ -7,9 +7,9 @@
     <img src="../assets/image/jiesuan_dingwei.png" alt="" class="position">
     <div :style="{'margin-left':'0.41rem'}">
        
-    <div class="address-default">
-         <span class="username">小橙子</span> 
-        <span class="usertel">18834568888</span>
+    <div class="address-default" v-if="dizhi">
+         <span class="username">{{dizhi.name}}</span> 
+        <span class="usertel">{{dizhi.tel}}</span>
     </div>
     <div class="address-d" @click="gotoAddressManage">
         <p class="address-detail" v-if="dizhi">{{dizhi.address+dizhi.addressDetail}}</p>
@@ -27,11 +27,13 @@
                     <img src="../assets/image/dianpu.png" alt="" class="store-img">
                     <span class="storename" >{{detail.info.shopName}}</span>
                      <img src="../assets/image/more.png" alt="" class="more">
-                     </router-link>
+                    </router-link>
              </div>
              <div class="goods-desc" v-if="detail.info">
                  <!-- v-if="detail.info.picUrl" :src="detail.info.picUrl"  detail.info.name -->
+                   <router-link :to="{name:'good',params:{goodId:detail.info.id}}">
                       <img  alt="" :src="detail.info.picUrl">
+                   </router-link>
                      <div class="goods-right" >
                          <p class="goods-name">{{detail.info.name}}</p>
                          <div class="goods-model">
@@ -65,7 +67,7 @@
              </div> -->
               <div class="liuyan">
                  <span class="carrier-p sp4">订单留言</span>
-                <input type="text" class="dd-liuyan" placeholder="选填，建议请先和商家协商一致" ref="liuyan"> 
+                <input type="text" class="dd-liuyan" placeholder="选填，建议请先和商家协商一致(限100字)" v-model="items.text" ref="liuyan"> 
              </div>
              <div class="total">
                   <span class="total-number">共{{count}}件 </span>
@@ -102,6 +104,7 @@
                       <img src="../assets/image/jiesuan_unchoose.png" alt="" @click="changePaySec"  ref="weixinImg" id="unChooseImg">
                  </div>
                  <button class="pay-sure" @click="paySure">确认支付</button>
+           
           </div>
        </div>
     </div>
@@ -116,6 +119,7 @@ import {mapState,mapMutations} from "vuex";
 import Head from "@/components/Head.vue";
 import ChooseImg from "@/assets/image/jiesuan_choose.png";
 import UnChooseImg from "@/assets/image/jiesuan_unchoose.png";
+import { Dialog } from 'vant';
 import "@/utils/api.js"
 
 export default {
@@ -131,8 +135,26 @@ export default {
             check:"zfb",
             dinDanId:"",
             price:'',
+            orderId:'',
+            number: '100',
+            items: {
+                text:'',
+                },
+
         }
     },
+     watch:{   //watch()监听某个值（双向绑定）的变化，从而达到change事件监听的效果
+                items:{
+                    handler:function(){
+                        var _this = this;
+                        var _sum = 100; //字体限制为100个
+                        _this.$refs.liuyan.setAttribute("maxlength",_sum);
+                        _this.number= _sum- _this.$refs.liuyan.value.length;
+                    },
+                    deep:true
+                }
+            },
+
    components:{
        Head,
    },
@@ -145,11 +167,13 @@ export default {
      methods: {
          ...mapMutations(['changeSearch']),
          gotoAddressManage(){
+             sessionStorage.lastUrl=this.$route.path;
              this.$router.push({name:"addressmanage"})
          },
          submit(){
             // 
-           document.getElementsByClassName('pay')[0].style.display="block";
+            var that=this;
+          
              this.$axios.post('order/submitOrder',{
                     rentId:sessionStorage.rentId,
                     id: this.$route.params.goodId,
@@ -160,17 +184,27 @@ export default {
                }
             
                ).then(res=>{
-               console.log(res)
-               this.dinDanId=res.data.data.orderId;
-               console.log(this.dinDanId)
+                   if(res.data.errno == 0){
+                        console.log(res)
+                        this.dinDanId=res.data.data.orderId;
+                        console.log(this.dinDanId);
+                        this.orderId=res.data.data.orderId;
+                         document.getElementsByClassName('pay')[0].style.display="block";
+                         
+                   }else{
+                       Dialog({message:'订单提交失败'})
+                   }
+              
                })
           
               document.onclick=function(e){
               var event=e||window.event;
               var target=event.target || event.srcElement;
               if(target.className=="pay"&&target.className!="bg-paycontent"){
+                   that.$router.push({name:"waitforpay",params:{orderId: that.orderId}})
                    document.getElementsByClassName('pay')[0].style.display="none";
-              }
+        
+        }
            }
   
             
@@ -178,19 +212,21 @@ export default {
          },
          close(){
     document.getElementsByClassName('pay')[0].style.display="none";
-    this.$router.push({name:"waitforpay"})
+    this.$router.push({name:"waitforpay",params:{orderId: this.orderId}})
          },
          paySure(){
         document.getElementsByClassName('pay')[0].style.display="none";
         var token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGlzIGlzIGxpdGVtYWxsIHRva2VuIiwiYXVkIjoiTUlOSUFQUCIsImlzcyI6IkxJVEVNQUxMIiwidXNlcklkIjoxOCwiaWF0IjoxNTczNzE5MTAwfQ.Si0y8IXc_sqtDahLlMPNjG6xeQEG-nmxVoLl2lSl9RA';
         var dinDanId=this.dinDanId;
+        var that=this;
         console.log(dinDanId)
        console.log(token)
         console.log(this.check);
         console.log(dinDanId);
+        
         if(this.check=='zfb'){
              api.ajax({
-                url: 'http://114.116.230.27:8080/wx/pay/alipayVip',  //url+模块
+                url: 'http://114.116.230.27:8080/wx/pay/alipayOrder',  //url+模块
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
@@ -198,7 +234,7 @@ export default {
                     },
                 data: {
                     body: {
-                        vipPriceId:1
+                        orderId:dinDanId,
                     }
                 }
             },function(ret, err){
@@ -207,48 +243,60 @@ export default {
                   console.log(JSON.stringify(ret));
                   var aliPayPlus = api.require('aliPayPlus');
                   aliPayPlus.payOrder({
-                      orderInfo:ret.data.info.orderInfo
+                      orderInfo:ret.data.orderInfo
                   }, function(ret, err) {
-                      api.alert({
+                     
+                      if(ret.code==9000){
+                        that.$router.push({name:'paysuccess',params:{orderId: that.orderId}})
+                      }else{
+                           api.alert({
                           title: '支付结果',
-                          msg: ret.code,
+                          msg: '支付失败',
                           buttons: ['确定']
-                      });
+                        });
+                      }
+                      
                   });
 
                 });
         }else if(this.check=='wx'){
             api.ajax({
-            url: 'http://114.116.230.27:8080/wx/pay/wxpayVip',
+            url: 'http://114.116.230.27:8080/wx/pay/wxpayOrder',
             method: 'post',
             headers: {
                     'Content-Type': 'application/json',
                     'X-Litemall-Token': token
                     },
             data:{
-                    body:{
-                        vipPriceId:1
-                    }
-                
-            }
-        },function(ret, err){
-                    //   alert(ret.sign);
-            var wxPayPlus = api.require('wxPayPlus');
-          wxPayPlus.payOrder({
-            apiKey: ret.data.info.appid,
-            orderId: ret.data.info.prepayid,
-            mchId: ret.data.info.partnerid,
-            nonceStr: ret.data.info.noncestr,
-            timeStamp: ret.data.info.timestamp,
-            package: ret.data.info.package,
-            sign: ret.data.info.sign}), function(ret, err) {
-              console.log(JSON.stringify(ret));
-              if (ret.status) {
-                  //支付成功
-              } else {
-                  alert(err.code);
+                body:{
+                    orderId:dinDanId,   
+                }
+                                     
               }
-          }
+        },function(ret, err){
+            if(ret.errno == 0){
+                       //   alert(ret.sign);
+                var wxPayPlus = api.require('wxPayPlus');
+                    wxPayPlus.payOrder({
+                    apiKey: ret.data.appid,
+                    orderId: ret.data.prepayid,
+                    mchId: ret.data.partnerid,
+                    nonceStr: ret.data.noncestr,
+                    timeStamp: ret.data.timestamp,
+                    package: ret.data.package,
+                    sign: ret.data.sign
+                }), function(ret, err) {
+                    console.log(JSON.stringify(ret));
+                    if (ret.status) {
+                        that.$router.push({name:'paysuccess',params:{orderId: that.orderId}})
+                    } else {
+                       alert(err.code);
+                    }
+                 }
+            }else{
+
+            }
+             
         });
 
         }
@@ -313,11 +361,11 @@ export default {
         params:{id:this.$route.params.goodId,
                userId: localStorage.token}
         }).then(res=>{
-            console.log(res)
+            // console.log(res)
             setTimeout(()=>{
              this.detail=res.data.data;
              console.log( this.detail);
-             console.log(this.detail.info.shopName)
+            //  console.log(this.detail.info.shopName)
             },300)
         
        
@@ -602,7 +650,7 @@ export default {
   z-index: 100;
   max-width: 3.75rem;
 //   background-color: hsla(0, 0%, 80%, 0.39);
- background:rgba(0,0,0,0.6);;
+ background:rgba(0,0,0,0.6);
 
   .bg-paycontent{
       opacity: 1 !important;

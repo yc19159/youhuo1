@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Head ></Head>
+        <Head :type="'goodslist'"></Head>
       <div class="content">
          <el-tabs :tab-position="tabPosition" v-model="activeName" style="height: 200px;">
     <el-tab-pane label="超值套餐" name="超值套餐">
@@ -17,7 +17,7 @@
          <li ><p></p>
         <span class="phoneType">苹果</span></li>
       </ul></el-tab-pane>
-    <el-tab-pane label="电脑/平板" name="电脑/平板"><ul class="listUl">
+    <el-tab-pane label="电脑.平板" name="电脑.平板"><ul class="listUl">
          <li ><p></p>
         <span class="phoneType">苹果</span></li>
       </ul></el-tab-pane>
@@ -31,7 +31,7 @@
       </ul></el-tab-pane>
     <el-tab-pane label="家居家电" name="家居家电" class="jiadian">
       <ul class="listUl">
-         <li  v-for="(item , i) in list" :key="i">
+         <li  v-for="(item , i) in sixthList" :key="i">
             <router-link :to="{name:'search',params:{typeId:item.id}}">  
              <p><img :src="item.iconUrl" alt="" class="jiadianImg"> </p>
             </router-link>
@@ -59,8 +59,7 @@ import Head from "@/components/Head.vue"
 export default {
       data() {
     return {
-      activeName:"超值套餐",
-      active: 2,
+      // activeName:"超值套餐",
       tabPosition: 'left',
       firstList: [],
       secondList: [],
@@ -79,24 +78,25 @@ export default {
       ...mapMutations(['changeSearch']),
   },
   computed: {
-       ...mapState(['searchShow']),
-              active:{
+       ...mapState(['searchShow','activeName']),
+              activeName:{
             get(){
               
-                return this.$store.state.active;
+                return this.$route.params.activeDescript;
             },
             set(newVal){
                 // newVal=this.$route.params.active;
                
-               var newVal=this.$route.params.active*1
+              //  var newVal=this.$route.params.active*1
                  console.log(newVal)
-                this.$store.commit("changeActive",newVal);
+                 console.log(1)
+                 
+                this.$store.commit("changeActiveName",newVal);
             }
         }
   },
   mounted() {
      this.changeSearch(true);
-    console.log(this.active)
       this.$axios.get("/goods/category",{
         params:{
           id:"1005000",

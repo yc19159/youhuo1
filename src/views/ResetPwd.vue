@@ -54,7 +54,7 @@ export default {
   line-height: 0.2rem;
   font-weight: bold;
   position: absolute;
-  top: 0.18rem;
+  top: 0.38rem;
   left: 0.6rem;
  }
   

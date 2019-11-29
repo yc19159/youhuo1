@@ -4,7 +4,11 @@ import axios from "axios";
 
 let AUTH_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0aGlzIGlzIGxpdGVtYWxsIHRva2VuIiwiYXVkIjoiTUlOSUFQUCIsImlzcyI6IkxJVEVNQUxMIiwidXNlcklkIjoyLCJpYXQiOjE1NzEzODM0NTV9.Bd8k6nLAJpUm114pzoFK5Zeekeb59kJKYA-Ja9HkrrU";
 // let AUTH_TOKEN = ""
+<<<<<<< HEAD
 axios.defaults.baseURL = "http://192.168.0.28:8080/wx"; // 基路径   
+=======
+axios.defaults.baseURL = "http://192.168.0.17:8080/wx"; // 基路径   
+>>>>>>> 37068188bfc8add439f6e8a053cb5f9e31a6b45f
 axios.defaults.headers.common['X-Litemall-Token'] = AUTH_TOKEN;    // token 
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 

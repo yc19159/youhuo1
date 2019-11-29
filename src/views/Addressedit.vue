@@ -50,6 +50,7 @@ export default {
         addressDetail: "",
         checked:false,
          addressInfo:{},
+         isDefault:'',
         areaList :{
       province_list: {
         110000: '北京',
@@ -3875,6 +3876,12 @@ export default {
              that.address=that.addressInfo.address;
              that.addressDetail=that.addressInfo.addressDetail;
              that.id=that.addressInfo.id;
+             that.isDefault=that.addressInfo.isDefault;
+             if(that.isDefault){
+               that.checked=true;
+             }else{
+               that.isDefault=false;
+             }
      };
        unshow();
    
@@ -3914,7 +3921,8 @@ export default {
        var city=address1.split('/')[0];
        var county=address1.split('/')[1];
      }
-     var addressInfo={id:this.id,name,tel,province,city,county,address:address1,addressDetail:address2,isDefault:this.checked}
+     var addressInfo={id:this.id,name,tel,province,city,county,address:address1,addressDetail:address2,
+     isDefault:this.checked,}
      console.log(addressInfo)
      console.log(province)
      console.log(city)
@@ -3922,7 +3930,12 @@ export default {
     //  console.log(this.checked)
           this.$axios.post('/address/save',addressInfo).then(res=>{
               console.log(res.data)
-              this.$router.push({name:"addressmanage"})
+              if(!sessionStorage.lastUrl){
+                  this.$router.push({path:"addressmanage"})
+              }else{
+                  this.$router.push({path: sessionStorage.lastUrl})
+              }
+              
             })
     },
     onDelete() {
@@ -3970,7 +3983,7 @@ button{
   line-height: 0.2rem;
   font-weight: bold;
   position: absolute;
-  top: 0.18rem;
+  top: 0.38rem;
   left: 0.6rem;
  }
  .login-content{
@@ -3992,6 +4005,7 @@ button{
   margin-bottom: 0.08rem;
 }
 input{
+  width: 100%;
  border: none;
 }
 input::-webkit-input-placeholder {
@@ -4008,7 +4022,7 @@ input::-webkit-input-placeholder {
     background: linear-gradient(to left, #D50000, #FD9A28) !important;
     border: none;
     border-radius: 0.22rem;
-    margin-left: 0.16rem;
+    /* margin-left: 0.16rem; */
     }
  /* .van-overflow-hidden /deep/ .van-picker__confirm{
    background: white;
@@ -4024,7 +4038,7 @@ input::-webkit-input-placeholder {
 .isDefaute{
   width: 3.43rem;
   position: absolute;
-  top: 4rem;
+  top: 4.2rem;
   left: 0.16rem;
 }
 .van-switch{

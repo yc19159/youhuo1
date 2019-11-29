@@ -1,5 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from 'vue';
+import Vuex from 'vuex';
+// import iconhome from '../assets/image/home_iconhome.png';
 
 Vue.use(Vuex)
 
@@ -8,10 +9,13 @@ export default new Vuex.Store({
     searchShow:true,
     active:0,
     activeOrder:0,
+    activeName:'超值套餐',
+    value:"",
     list:[
-      {img:"",content:"首页",isActive:true,luyou:'/'},
-      {img:"",content:"送温暖",isActive:false,luyou:'givewarm'},
-      {img:"",content:"我的",isActive:false,luyou:'mine'},
+      {img:require('@/assets/image/home_iconhome.png'),activeImg:require('@/assets/image/home_activehome.png'), content:"首页",isActive:true,luyou:'/'},
+      {img:require('@/assets/image/home_givewarm.png'),activeImg:require('@/assets/image/home_activewarm.png'),content:"送温暖",isActive:false,luyou:'givewarm'},
+      {img:require('@/assets/image/home_chatbook.png'),activeImg:require('@/assets/image/home_activebook.png'),content:"通讯录",isActive:false,luyou:'chatbook'},
+      {img:require('@/assets/image/home_mine.png'),activeImg:require('@/assets/image/home_activemine.png'),content:"我的",isActive:false,luyou:'mine'},
    ],
     chosencity:"",
   },
@@ -28,6 +32,12 @@ export default new Vuex.Store({
    changeActiveOrder(state,activeOrder){
     state.activeOrder=activeOrder;
    },
+   changeActiveName(state,activeName){
+     state.activeName=activeName;
+   },
+   changeValue(state,value){
+     state.value=value;
+   }
   },
   actions: {
 

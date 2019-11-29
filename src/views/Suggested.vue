@@ -10,13 +10,17 @@
 
            </textarea>
        </div>
+         <div class="offer">
+              <input type="text" placeholder="请输入手机号" class="username" v-model="phonenumber" >
+         </div>
       <button class="sure" @click="Submission">确定</button>
     </div>
 </template>
 
 <script>
 import  {mapState,mapMutations} from 'vuex';
-import Head from '@/components/Head.vue'
+import Head from '@/components/Head.vue';
+import { Dialog } from 'vant';
 
 export default {
     data() {
@@ -24,6 +28,7 @@ export default {
             content:'',//用户评论商品信息
             mobile:'',
             feedType:'',
+            phonenumber: '',
         }
     },
     components:{
@@ -37,24 +42,42 @@ export default {
     },
     methods: {
         ...mapMutations(['changeSearch']),
+     
         //提交意见反馈
         Submission(){
-            console.log(111)
+              var regtel=/^1[0-9]{10}$/
+            console.log(this.phonenumber)
             console.log(this.content)
-            this.$axios.post("http://192.168.0.22:8080/wx/feedback/submit",{
-                content:'this.content',
-                mobile:18271464371,
+            if(this.content){
+             if(regtel.test(this.phonenumber)){
+               this.$axios.post("/feedback/submit",{
+                content:this.content,
+                mobile:this.phonenumber,
                 feedType:0
+            }).then(res=>{
+                Dialog({message:res.data.errmsg})
+                // console.log(res)
+                if(res.data.errno==0){
+                    this.content='';
+                    this.phonenumber='';
+                }
             })
-            .then(res=>{
-                console.log(res);
-            })
+            }else{
+                 this.$notify({message:'请输入正确的手机号', color: 'black',background: '#FF4444'});
+            }
+            }else{
+                this.$notify({message:'请输入内容', color: 'black',background: '#FF4444'});
+            }
+            
         }
     },
 }
 </script>
 
 <style  scoped>
+.personal-data{
+    overflow: hidden;
+}
    .title{
   float: right;
   height: 0.2rem;
@@ -63,7 +86,7 @@ export default {
   line-height: 0.2rem;
   font-weight: bold;
   position: absolute;
-  top: 0.18rem;
+  top: 0.38rem;
   left: 0.6rem;
  }
   
@@ -89,4 +112,19 @@ export default {
    text-indent: 0.12rem;
    color: #5E6165;
 }
+.offer{
+ height: 0.55rem;
+ width: 3.43rem;
+ border-bottom: 1px solid #EDEFF2;
+ /* margin-top: 0.4rem; */
+ margin: auto;
+}
+.offer input{
+ border: none;
+ padding-top: 0.2rem;
+}
+.offer input::-webkit-input-placeholder {
+    color: #5E6165;
+    font-size: 0.13rem;
+    }
 </style>

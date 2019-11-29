@@ -17,6 +17,7 @@ import { Card } from 'vant';
 import { Swipe, SwipeItem } from 'vant';
 import { Notify } from 'vant';
 import { Area } from 'vant';
+<<<<<<< HEAD
 import { Popup } from 'vant';
 import { List } from 'vant';
 import { Toast } from 'vant';
@@ -28,6 +29,12 @@ import { DropdownMenu, DropdownItem } from 'vant';
 import { RadioGroup, Radio } from 'vant';
 import { Cell, CellGroup } from 'vant';
 import VueTouch from 'vue-touch'
+=======
+import VueTouch from 'vue-touch';
+import { List } from 'vant';
+
+Vue.use(List);
+>>>>>>> 37068188bfc8add439f6e8a053cb5f9e31a6b45f
 Vue.use(VueTouch, {name: 'v-touch'})
 const routerPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {

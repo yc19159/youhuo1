@@ -104,7 +104,8 @@ export default {
         return{
             goodsList:[],
             // search:'',
-            keywords:''
+            keywords:'',
+            active:1,
         }
     },
     methods:{
@@ -128,8 +129,7 @@ export default {
             let keyword=this.keywords;
             this.$axios.get("http://192.168.0.18:8080/wx/goods/list",{params:{
                  keyword:this.keywords
-            }})
-                .then(res=>{
+            }}).then(res=>{
                     console.log(res.data.data.list);
                     this.goodsList=res.data.data.list;
                     console.log(this.goodsList);
