@@ -13,11 +13,14 @@ export default new Vuex.Store({
       {img:"",content:"送温暖",isActive:false,luyou:'givewarm'},
       {img:"",content:"我的",isActive:false,luyou:'mine'},
    ],
-  
+    chosencity:"",
   },
   mutations: {
    changeSearch(state,searchShow){
        state.searchShow=searchShow;
+   },
+   choosecity(state,city){
+    state.chosencity=city;
    },
    changeActive(state,active){
     state.active=active;

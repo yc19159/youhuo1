@@ -32,8 +32,6 @@
                    <span class="user-aggrement" @click="myAlert">《用户协议》</span>
                </div>
          </div>
-
-       
     </div>
 </template>
 

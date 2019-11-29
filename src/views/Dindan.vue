@@ -27,21 +27,6 @@
                      4有问题
        -->
       <div class="logistics">
-           <!-- <div class="logistics_i">
-                <div class="time">
-                    {{item.AcceptTime}}
-                </div>
-                <div class="logistics_right">
-                        <div class="item">
-                            <img src="../assets/image/collect_item.png" alt="">
-                        </div>
-                       
-                        <div class="received">
-                              [收货地址]湖北省武汉市江汉区江汉路花楼街518号
-                         </div>
-                </div>
-
-           </div> -->
            <div class="logistics_i" v-for="(item,index) in newList" :key="index">
                <div class="time">
                    <p>{{item.oneTime}}</p>

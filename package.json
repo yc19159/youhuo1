@@ -11,6 +11,7 @@
     "axios": "^0.19.0",
     "core-js": "^2.6.5",
     "element-ui": "^2.12.0",
+    "style-loader": "^1.0.0",
     "vant": "^2.1.7",
     "vue": "^2.6.10",
     "vue-router": "^3.0.7",
@@ -20,8 +21,14 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.10.0",
     "@vue/cli-service": "^3.10.0",
-    "sass": "^1.18.0",
-    "sass-loader": "^7.1.0",
+    "eslint": "^6.7.0",
+    "eslint-plugin-vue": "^6.0.1",
+    "node-sass": "^4.13.0",
+    "postcss-loader": "^3.0.0",
+    "sass": "^1.23.7",
+    "sass-loader": "^7.3.1",
+    "scss": "^0.2.4",
+    "scss-loader": "0.0.1",
     "vue-template-compiler": "^2.6.10"
   },
   "postcss": {
@@ -32,5 +39,18 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "main": "babel.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yc19159/youhuo1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yc19159/youhuo1/issues"
+  },
+  "homepage": "https://github.com/yc19159/youhuo1#readme",
+  "description": ""
 }

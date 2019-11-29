@@ -7,7 +7,7 @@
           <img src="../assets/image/goback.png" alt="">
           
         </div> 
-         
+         <slot name="title"></slot>
          <van-search placeholder="请输入搜索关键词" @change="onSearch" v-model="value" v-if="searchShow"/>
    
     </div>
