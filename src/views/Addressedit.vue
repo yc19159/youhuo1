@@ -3928,6 +3928,9 @@ export default {
      console.log(city)
      console.log(this.id)
     //  console.log(this.checked)
+    if(this.checked){
+      sessionStorage.chooseAddressInfo=sessionStorage.addressInfo;
+    }
           this.$axios.post('/address/save',addressInfo).then(res=>{
               console.log(res.data)
               if(!sessionStorage.lastUrl){

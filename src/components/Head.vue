@@ -7,13 +7,8 @@
           <img src="../assets/image/goback.png" alt="">
           
         </div> 
-<<<<<<< HEAD
-         <slot name="title"></slot>
-         <van-search placeholder="请输入搜索关键词" @change="onSearch" v-model="value" v-if="searchShow"/>
-=======
          
          <van-search placeholder="请输入搜索关键词" @change="onSearch" v-model="text" v-if="searchShow"/>
->>>>>>> 37068188bfc8add439f6e8a053cb5f9e31a6b45f
    
     </div>
     
@@ -39,7 +34,7 @@ export default {
      methods: {
            goback(){
                  this.$router.go(-1);
-           } ,
+            } ,
             onSearch(){
                 console.log(this.text , this.type)
                 if(this.type=='goodslist'){
@@ -80,7 +75,10 @@ export default {
         },
         computed: {
      ...mapState(['searchShow']),
-     },
+       },
+       mounted() {
+
+       },
 }
 </script>
 

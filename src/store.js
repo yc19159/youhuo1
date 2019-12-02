@@ -17,14 +17,11 @@ export default new Vuex.Store({
       {img:require('@/assets/image/home_chatbook.png'),activeImg:require('@/assets/image/home_activebook.png'),content:"通讯录",isActive:false,luyou:'chatbook'},
       {img:require('@/assets/image/home_mine.png'),activeImg:require('@/assets/image/home_activemine.png'),content:"我的",isActive:false,luyou:'mine'},
    ],
-    chosencity:"",
+  
   },
   mutations: {
    changeSearch(state,searchShow){
        state.searchShow=searchShow;
-   },
-   choosecity(state,city){
-    state.chosencity=city;
    },
    changeActive(state,active){
     state.active=active;

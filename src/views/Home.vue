@@ -162,7 +162,7 @@ export default {
 }
 .van-search--show-action {
     padding-right: 0;
-    margin-top: 0.2rem;
+    padding-top: 0.2rem;
 }
 #topSearch{
   width: 245px !important;

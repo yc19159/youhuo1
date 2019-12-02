@@ -229,7 +229,7 @@ export default {
   border-radius: 0.2rem;
   margin-top: -0.16rem;
   /* z-index: 99999; */
-  position: absolute;
+  /* position: absolute; */
   box-sizing: border-box;
   padding: 0.16rem 0.14rem 0.14rem;
   background: #fff;

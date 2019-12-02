@@ -11,10 +11,10 @@
         v-model="loading"
         error-text="请求失败，点击重新加载"
         :finished="finished"
-        finished-text="没有更多了"
+       
         @load="onLoad"
         >
-        <li class="glist-item"  v-for="(item , i) in showList" :key="i">
+        <li class="glist-item"  v-for="(item , i) in goodsList" :key="i">
          <router-link :to="{name:'good',params:{goodId:item.id}}">
           <img :src="item.picUrl" class="glist-img"/>
         </router-link>
@@ -193,9 +193,10 @@ export default {
      categoryId:this.$route.params.typeId,
      keyWords: "",
      loading: false,
-      finished: false,
-      count:0,
-      showList:[],
+     finished: false,
+     count:0,
+     showList:[],
+     pages:'',
     }
   },
   components:{
@@ -309,38 +310,78 @@ export default {
     changeKeyWords(text){
       this.keyWords=text;
     },
-    onLoad() {
+  
+     onLoad() {
       // 异步更新数据
-     
-      console.log(this.goodsList)
-      setTimeout(() => {
-          if(this.goodsList.length<10){
-            console.log(1)
-           for (let i = 0; i < this.goodsList.length; i++) {
-            this.showList.push(this.goodsList[i])
-        //   this.list.push(this.list.length + 1);
-        }
-          }else{
-            console.log(2)
-              for (let i = 0; i < 10; i++) {
-                if(this.goodsList[i+this.count*10]){
-                   this.showList.push(this.goodsList[i+this.count*10])
-                }
-        //   this.list.push(this.list.length + 1);
-        }
-          }
-        
-         this.count=this.count+1;
-        console.log(this.showList)
-        // 加载状态结束
-        this.loading = false;
-
+      if(this.$route.params.typeId==1){
+       this.$axios.get("/goods/listGoods",{
+       params:{
+        isHot:this.$route.params.typeId,
+        limit:10,
+        sort: this.sort,
+        order:this.order,
+        page: this.count+1,
+      }
+    }).then(res=>{
+      this.pages=res.data.data.pages;
+      this.goodsList=this.goodsList.concat(res.data.data.list);
+      console.log(res)
+      this.count=this.count+1;
+      console.log(this.count)
+      // 加载状态结s
+      this.loading = false;
+      
         // 数据全部加载完成
-        if (this.showList.length >= this.goodsList.length) {
-          this.finished = true;
-        }
-      }, 200);
+      if (this.count >= this.pages){
+            this.finished = true;
+          }
+     })
+    }else{
+      this.$axios.get("/goods/listGoods",{
+      params:{
+        categoryId:this.$route.params.typeId,
+        limit:10,
+        sort: this.sort,
+        order:this.order,
+        page: this.count+1,
+       }
+    }).then(res=>{
+      this.pages=res.data.data.pages;
+      this.goodsList=this.goodsList.concat(res.data.data.list);
+      console.log(res)
+      this.count=this.count+1;
+      console.log(this.count)
+      // 加载状态结s
+      this.loading = false;
+      
+        // 数据全部加载完成
+      if (this.count >= this.pages){
+            this.finished = true;
+          }
+    })
     }
+        //  this.$axios.post("/order/list",{
+        //      showType:this.showType,
+        //      page: this.count+1,
+        //      limit:10,
+        //      sort:"update_time",
+        //      order:"desc",
+        //  }).then(res=>{
+        //      console.log(res)
+        //      this.pages=res.data.data.pages;
+        //     this.allSearch=this.allSearch.concat(res.data.data.list)
+        //     //  this.allSearch=res.data.data.list.slice(0,2);
+        //        this.count=this.count+1;
+        //         // 加载状态结s
+        //        this.loading = false;
+               
+        //          // 数据全部加载完成
+        //         if (this.count >= this.pages){
+        //              this.finished = true;
+        //            }
+        //  });
+         
+       }
 
   },
   computed: {
@@ -382,34 +423,8 @@ export default {
     },
     console.log(this.$route.params.typeId)
         //  type: "categoryId",
-      if(this.$route.params.typeId==1){
-    this.$axios.get("/goods/listGoods",{
-      params:{
-        isHot:this.$route.params.typeId,
-        limit:100,
-        sort: this.sort,
-        order:this.order,
-      }
-    }).then(res=>{
-     
-      this.goodsList=res.data.data.list
-       console.log(this.goodsList)
-      // 
-    })
-    }else{
-      this.$axios.get("/goods/listGoods",{
-      params:{
-        categoryId:this.$route.params.typeId,
-        limit:100,
-        sort: this.sort,
-        order:this.order,
-      }
-    }).then(res=>{
-      
-       this.goodsList=res.data.data.list
-        console.log(this.goodsList)
-    })
-    }
+       
+  
   },
 }
 </script>

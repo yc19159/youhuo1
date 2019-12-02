@@ -2,10 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from './views/Home.vue'
 import Search from './views/Search.vue'
-import FlowerArea from './views/FlowerArea.vue'
-import FlowerDetail from './views/FlowerDetail.vue'
-import Aaa from './views/Aaa.vue'
-
 
 Vue.use(VueRouter)
 
@@ -23,25 +19,9 @@ export default new VueRouter({
       component: Search,
     },
     {
-<<<<<<< HEAD
-      path: '/flowerarea',     //测试
-      name: 'flowerarea',
-      component: FlowerArea,
-    },
-    {
-      path: '/aaa',     //测试
-      name: 'aaa',
-      component: Aaa,
-    },
-    {
-      path: '/flowerdetail',     //测试
-      name: 'flowerdetail',
-      component: FlowerDetail,
-=======
       path: '/tosearch/:keyWords?',
       name: 'tosearch',
       component: ()=> import('./views/ToSearch.vue')
->>>>>>> 37068188bfc8add439f6e8a053cb5f9e31a6b45f
     },
     {
       path: '/login',
@@ -168,33 +148,6 @@ export default new VueRouter({
         name: 'comment',
         component: ()=> import('@/views/Comment.vue'),
       },
-<<<<<<< HEAD
-    {
-      path:'/showCollect',
-      name:'showcollect',
-      component:()=>import('@/views/showCollect.vue')
-    },
-    {
-      path:'/flowerorder',
-      name:'flowerorder',
-      component:()=>import('@/views/FlowerOrder.vue')
-    },
-    {
-      path:'/flowershop',
-      name:'flowershop',
-      component:()=>import('@/views/FlowerShop.vue')
-    },   
-    {
-      path:'/flowershoplist',
-      name:'flowershoplist',
-      component:()=>import('@/views/FlowerShopList.vue')
-    },  
-    {
-      path:'/position',
-      name:'position',
-      component:()=>import('@/views/Position.vue')
-    },   
-=======
    {
         path: '/chatbook',
         name: 'chatbook',
@@ -204,9 +157,17 @@ export default new VueRouter({
     path: '/test',
     name: 'test',
     component: ()=> import('@/views/Test.vue'),
+ },
+ {
+  path: '/flowerwait/:orderId',
+  name: 'flowerwait',
+  component: ()=> import('@/views/FlowerWait.vue'),
+},
+{
+  path: '/flowerpaysuccess/:orderId',
+  name: 'flowerpaysuccess',
+  component: ()=> import('@/views/FlowerPaysuccess.vue'),
 },
 
-
->>>>>>> 37068188bfc8add439f6e8a053cb5f9e31a6b45f
   ]
 })

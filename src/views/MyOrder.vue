@@ -498,8 +498,7 @@ export default {
               })
              }).catch(() => {
 
-             });
-              
+             }); 
           },
           confirmReceipt(index){
              Dialog.confirm({
@@ -532,35 +531,30 @@ export default {
           searchText(value){
             this.listsearch=value;
           },
-            onLoad() {
+      onLoad() {
       // 异步更新数据
-     
-      console.log(this.count)
-      setTimeout(() => {
-          if(this.listsearch.length<10){
-           for (let i = 0; i < this.listsearch.length; i++) {
-            this.showList.push(this.listsearch[i])
-        //   this.list.push(this.list.length + 1);
-        }
-          }else{
-              for (let i = 0; i < 10; i++) {
-                if(this.listsearch[i+this.count*10]){
-                   this.showList.push(this.listsearch[i+this.count*10])
-                }
-        //   this.list.push(this.list.length + 1);
-        }
-          }
-        
-         this.count=this.count+1;
-        console.log(this.showList)
-        // 加载状态结束
-        this.loading = false;
-
-        // 数据全部加载完成
-        if (this.showList.length >= this.listsearch.length) {
-          this.finished = true;
-        }
-      }, 500);
+       this.showType=this.$route.params.active;
+         this.$axios.post("/order/list",{
+             showType:this.showType,
+             page: this.count+1,
+             limit:10,
+             sort:"update_time",
+             order:"desc",
+         }).then(res=>{
+             console.log(res)
+             this.pages=res.data.data.pages;
+             this.showList=this.showList.concat(res.data.data.list)
+            //  this.allSearch=res.data.data.list.slice(0,2);
+               this.count=this.count+1;
+                // 加载状态结s
+               this.loading = false;
+               
+                 // 数据全部加载完成
+                if (this.count >= this.pages){
+                     this.finished = true;
+                   }
+         });
+         
     }
     },
     computed: {
@@ -603,17 +597,17 @@ export default {
          this.changeSearch(true);
          this.changeActiveOrder(this.$route.params.active*1)
          this.showType=this.$route.params.active;
-         this.$axios.post("/order/list",{
-             showType:this.showType,
-             page: 1,
-             limit:100,
-             sort:"update_time",
-             order:"desc",
-         }).then(res=>{
-             console.log(res)
-             this.listsearch=res.data.data.list;
-               console.log( res.data.data.list[0].goodsList) 
-         });
+        //  this.$axios.post("/order/list",{
+        //      showType:this.showType,
+        //      page: 1,
+        //      limit:100,
+        //      sort:"update_time",
+        //      order:"desc",
+        //  }).then(res=>{
+        //      console.log(res)
+        //      this.listsearch=res.data.data.list;
+        //        console.log( res.data.data.list[0].goodsList) 
+        //  });
         
     },
 }

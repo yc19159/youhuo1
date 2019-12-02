@@ -380,7 +380,11 @@ export default {
            ).then(res=>{
             console.log(res)
             this.dizhi=res.data.data.list[0]
-            console.log(this.dizhi)
+            if(sessionStorage.chooseAddressInfo){
+                this.dizhi=JSON.parse(sessionStorage.chooseAddressInfo);
+                 console.log(this.dizhi)
+            }
+           
           })
        
      },
@@ -413,6 +417,7 @@ export default {
       background: white;
       overflow: hidden;
       margin-top: 0.20rem;
+      position: relative;
   }
   .bg-address{
       width: 100%;
@@ -434,7 +439,7 @@ export default {
  }
   .address-d{
     float: left;
-    
+    // height: 0.3rem;
   }
   .address .address-detail{
       font-size: 0.14rem;

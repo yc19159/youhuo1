@@ -32,6 +32,8 @@
                    <span class="user-aggrement" @click="myAlert">《用户协议》</span>
                </div>
          </div>
+
+       
     </div>
 </template>
 
@@ -49,7 +51,7 @@ export default {
            code: "",
            pwd: "",
            dbpwd: "",
-           num: 60,
+           num: 10,
            codeFlag: false, 
            show:false,
            timer: null,
@@ -94,6 +96,7 @@ export default {
                 this.codeFlag=true;
             }else{
                     this.num=60;
+                    clearInterval(this.timer);
                     txt="获取验证码",
                     document.getElementById('getTestCode').innerHTML=txt;
                    this.codeFlag=false;
@@ -124,7 +127,7 @@ export default {
             var dbpwd=this.dbpwd;
             if(reg.test(username)){
               if(regtel.test(phonenumber)){
-                 if(this.code==this.testCode){
+                //  if(this.code==this.testCode){
                      if(regpwd.test(pwd)){
      
                        if(pwd==dbpwd){
@@ -140,14 +143,10 @@ export default {
                if(res.data.errno==0){
                 //    console.log('注册成功')
                 this.$router.push({name:"login"})
-               }else if(res.data.errno=="705"){
-                    this.$notify({message:'手机号以存在', color: 'black',});
+               }else {
+                    this.$notify({message:res.data.errmsg, color: 'black',});
                }
-               else{
-                    console.log("注册失败")
-                     this.$notify({message:'用户名已存在', color: 'black',});
-               }
-               
+ 
            })
                         }else{
                               this.$notify({message:'请在用户协议处打勾', color: 'black',});  
@@ -161,9 +160,9 @@ export default {
                 // tishi.innerHTML="请输入6-15位密码"
                  this.$notify({message:'请输入6-15位密码', color: 'black',background: '#FF4444'});
                    }
-                 }else{
-               this.$notify({message:'验证码错误', color: 'black',background: '#FF4444'});
-                 }
+            //      }else{
+            //    this.$notify({message:'验证码错误', color: 'black',background: '#FF4444'});
+            //      }
                    
               }else{
                 //    tishi.innerHTML="请输入正确的手机号"
@@ -247,7 +246,7 @@ input::-webkit-input-placeholder {
 
 }
 .login-content .agree{
-    margin-top: 0.2rem;
+    margin-top: 0rem;
     border: 0;
 }
 /* .login-content .agree #check{

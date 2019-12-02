@@ -82,7 +82,7 @@ export default {
              })
         },
         chooseAddress(index){
-            sessionStorage.addressInfo=JSON.stringify({
+            sessionStorage.chooseAddressInfo=JSON.stringify({
             id:this.list[index].id,
             name:this.list[index].name,
             tel:this.list[index].tel,
@@ -129,7 +129,7 @@ export default {
  .bg-addressManage{
      width: 100%;
      height: auto;
-     margin-top: 0.1rem;
+     /* margin-top: 0.1rem; */
  }
  .addressManage{
      width: 100%;
